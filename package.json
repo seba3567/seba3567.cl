@@ -1,0 +1,43 @@
+{
+	"name": "seba.cl",
+	"private": true,
+	"version": "0.1.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsgo --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsgo --tsconfig ./tsconfig.json --watch",
+		"tsgo": "tsgo",
+		"check-types": "tsgo --noEmit",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write .",
+		"skills": "autoskills",
+		"skills:check": "autoskills --dry-run"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.0",
+		"@sveltejs/adapter-auto": "^7.0.1",
+		"@sveltejs/kit": "^2.63.0",
+		"@sveltejs/vite-plugin-svelte": "^7.1.2",
+		"@tailwindcss/vite": "^4.3.0",
+		"@types/bun": "^1.3.14",
+		"@typescript/native-preview": "^7.0.0-dev.20260617.2",
+		"autoskills": "^0.3.6",
+		"svelte": "^5.56.1",
+		"svelte-check": "^4.6.0",
+		"tailwind-variants": "^3.2.2",
+		"tailwindcss": "^4.3.0",
+		"vite": "^8.0.16"
+	},
+	"dependencies": {
+		"@fontsource/geist-mono": "^5.2.8",
+		"@fontsource/geist-sans": "^5.2.5",
+		"clsx": "^2.1.1",
+		"phosphor-svelte": "^3.1.0",
+		"tailwind-merge": "^3.6.0"
+	}
+}
