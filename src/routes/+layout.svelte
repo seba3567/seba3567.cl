@@ -1,57 +1,84 @@
 <script lang="ts">
-import './layout.css';
-import { onMount } from 'svelte';
-import { t } from 'svelte-i18n';
-import favicon from '$lib/assets/favicon.svg';
-import BackgroundBlobs from '$lib/components/BackgroundBlobs.svelte';
-import BackToTop from '$lib/components/BackToTop.svelte';
-import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-import SearchPanel from '$lib/components/SearchPanel.svelte';
-import SiteFooter from '$lib/components/SiteFooter.svelte';
-import SiteHeader from '$lib/components/SiteHeader.svelte';
-import { resolveInitialLocale, setupI18n } from '$lib/i18n';
-import { currentLocale, switchLocale } from '$lib/i18n/locale.svelte';
+	import './layout.css';
+	import { onMount } from 'svelte';
+	import { t } from 'svelte-i18n';
+	import favicon from '$lib/assets/favicon.svg';
+	import BackgroundBlobs from '$lib/components/BackgroundBlobs.svelte';
+	import BackToTop from '$lib/components/BackToTop.svelte';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import SearchPanel from '$lib/components/SearchPanel.svelte';
+	import SiteFooter from '$lib/components/SiteFooter.svelte';
+	import SiteHeader from '$lib/components/SiteHeader.svelte';
+	import { resolveInitialLocale, setupI18n } from '$lib/i18n';
+	import { locale as localeStore } from 'svelte-i18n';
+	import { switchLocale } from '$lib/i18n/locale.svelte';
 
-let { children } = $props();
+	let { children } = $props();
 
-// i18n must be initialized BEFORE any $t() is rendered, so it
-// has to run at the top of the script (server + client), not
-// inside onMount. The setup function is idempotent — calling
-// it here on the server gets the default locale, and on the
-// client we switch to the persisted one after hydration.
-setupI18n();
+	// i18n must be initialized BEFORE any $t() is rendered, so it
+	// has to run at the top of the script (server + client), not
+	// inside onMount. The setup function is idempotent — calling
+	// it here on the server gets the default locale, and on the
+	// client we switch to the persisted one after hydration.
+	setupI18n();
 
-onMount(() => {
-	// After hydration, switch to the persisted / navigator
-	// preference. SSR uses the default locale (es). Read from
-	// localStorage directly here — currentLocale() would return
-	// the still-default 'es' on the first tick.
-	void switchLocale(resolveInitialLocale());
-});
+	onMount(() => {
+		// After hydration, switch to the persisted / navigator
+		// preference. SSR uses the default locale (es). Read from
+		// localStorage directly here — the current $locale value
+		// is still 'es' on the first tick.
+		void switchLocale(resolveInitialLocale());
+	});
 
-// Origin used for absolute URLs in OG/Twitter cards. Static
-// since the site is deployed at a fixed domain.
-const ORIGIN = 'https://seba3567.cl';
-const OG_IMAGE = `${ORIGIN}/og.png`;
+	// Keep <html lang> in sync with the active locale. We can't
+	// put <html> inside <svelte:head> (the browser parser hoists
+	// it out and Svelte 5's hydration walker trips on it with
+	// "Illegal invocation" — the DOM node's prototype chain gets
+	// reshuffled by the parser). So we set the attribute on the
+	// real documentElement after hydration, via a $effect that
+	// tracks svelte-i18n's $locale store.
+	$effect(() => {
+		if (typeof document === 'undefined') return;
+		const current = currentLocaleFromStore();
+		document.documentElement.lang = current ?? 'es';
+	});
 
-// Derived reactive values for the meta tags. The first
-// read returns the default ('es') on the server; after
-// hydration the client updates it.
-const description = $derived($t('home.metaDescription'));
-const ogAlt = $derived($t('common.home') + ' — seba3567');
+	function currentLocaleFromStore(): string | null {
+		// Synchronous read of svelte-i18n's $locale without
+		// pulling in the locale.svelte.ts module (avoids a
+		// separate subscribe/unsubscribe pair when this runs
+		// inside an $effect).
+		let value: string | null = null;
+		const unsub = localeStore.subscribe((v) => {
+			value = v ?? null;
+		});
+		unsub();
+		return value;
+	}
+
+	// Origin used for absolute URLs in OG/Twitter cards. Static
+	// since the site is deployed at a fixed domain.
+	const ORIGIN = 'https://seba3567.cl';
+	const OG_IMAGE = `${ORIGIN}/og.png`;
+
+	// Derived reactive values for the meta tags. The first
+	// read returns the default ('es') on the server; after
+	// hydration the client updates it.
+	const description = $derived($t('home.metaDescription'));
+	const ogAlt = $derived($t('common.home') + ' — seba3567');
 </script>
 
-<svelte:head>
-	<link rel="icon" href={favicon} />
-	<link rel="manifest" href="/manifest.webmanifest" />
-	<meta name="theme-color" content="#0a0a0a" />
-	<meta name="color-scheme" content="dark" />
-	<!-- lang attribute tracks the active locale so screen
-	     readers and search engines see the right one. -->
-	<html lang={currentLocale()}></html>
+	<svelte:head>
+		<link rel="icon" href={favicon} />
+		<link rel="manifest" href="/manifest.webmanifest" />
+		<meta name="theme-color" content="#0a0a0a" />
+		<meta name="color-scheme" content="dark" />
+		<!-- The lang attribute on <html> is set in app.html (static,
+		     defaults to 'es'). A $effect above keeps it in sync with
+		     the active locale on the client. -->
 
-	<!-- Open Graph (Facebook, LinkedIn, Slack, Discord, WhatsApp). -->
-	<meta property="og:type" content="website" />
+		<!-- Open Graph (Facebook, LinkedIn, Slack, Discord, WhatsApp). -->
+		<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="seba3567" />
 	<meta property="og:title" content={$t('home.metaTitle')} />
 	<meta property="og:description" content={description} />
