@@ -413,7 +413,7 @@
 					class="absolute -inset-6 -z-10 rounded-3xl bg-gradient-to-br from-mint-500/15 to-transparent opacity-60 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
 				></div>
 				<div
-					class="relative mx-auto aspect-[9/16] w-full overflow-hidden rounded-[2rem] border border-white/10 bg-neutral-950 shadow-2xl shadow-black/60 transition-transform duration-500 group-hover:scale-[1.02]"
+					class="relative mx-auto aspect-[9/16] max-h-[60vh] w-auto overflow-hidden rounded-[2rem] border border-white/10 bg-neutral-950 shadow-2xl shadow-black/60 transition-transform duration-500 group-hover:scale-[1.02]"
 				>
 					<OptimizedPicture
 						src="/apps/anticall/{featuredShot}"
@@ -524,14 +524,20 @@
 				</p>
 			</div>
 
-			<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+			<!-- max-h-[60vh] on the grid so the 6 phone screenshots
+			     stay inside the 100vh panel. 9:16 aspect at small
+			     widths would otherwise produce ~600px tall tiles. -->
+			<div
+				class="mx-auto grid w-full max-w-full grid-cols-2 content-center gap-3 overflow-hidden sm:grid-cols-3 lg:grid-cols-6"
+				style="max-height: 60vh;"
+			>
 				{#each screenshots as n, i (n)}
 					<button
 						type="button"
 						onclick={() => openLightbox(i)}
 						data-panel-anim
 						aria-label="Abrir pantalla {n} en el visor"
-						class="group/shot relative block aspect-[9/16] cursor-zoom-in overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] transition-all duration-500 hover:-translate-y-0.5 hover:border-mint-400/30 hover:bg-white/[0.04]"
+						class="group/shot relative m-0 block aspect-[9/16] h-full max-h-full w-auto cursor-zoom-in overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] transition-all duration-500 hover:-translate-y-0.5 hover:border-mint-400/30 hover:bg-white/[0.04]"
 					>
 						<OptimizedPicture
 							src="/apps/anticall/{n}"
@@ -794,8 +800,19 @@
 		height: 100dvh; /* mobile-safe: accounts for browser chrome */
 		scroll-snap-align: start;
 		scroll-snap-stop: always;
-		overflow-y: auto;
+		/* overflow:hidden so panel content never produces a vertical
+		   scrollbar — the only scroll in the page is horizontal
+		   between panels. If a panel's content is taller than 100vh
+		   on a small screen it just gets clipped (acceptable for a
+		   horizontal-scroll layout). */
+		overflow: hidden;
 		overscroll-behavior: contain;
+		/* Belt-and-suspenders: hide the panel's scrollbar too in
+		   case a future change re-enables overflow. */
+		scrollbar-width: none;
+	}
+	:global(.anticall-horizontal .panel::-webkit-scrollbar) {
+		display: none;
 	}
 </style>
 
