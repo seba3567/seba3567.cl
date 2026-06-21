@@ -6,9 +6,8 @@ import {
 	resolveInitialLocale,
 	SUPPORTED_LOCALES,
 	type SupportedLocale,
-	setupI18n,
 } from '$lib/i18n/index';
-import { currentLocale, switchLocale } from '$lib/i18n/locale.svelte';
+import { switchLocale } from '$lib/i18n/locale.svelte';
 
 // Two-pill toggle (ES | EN). Mobile collapses to a single
 // button that cycles the locale — the desktop dots look
@@ -16,12 +15,14 @@ import { currentLocale, switchLocale } from '$lib/i18n/locale.svelte';
 
 let locale = $state<SupportedLocale>(DEFAULT_LOCALE);
 
+// i18n is initialized at the top of the root layout (before
+// any child mounts), so by the time this component runs
+// setupI18n() is already done. We only sync our local state
+// to whatever the layout applied. (No `setupI18n()` call
+// here — calling it twice is a no-op but adds noise to the
+// predev/prebuild logs.)
 onMount(() => {
-	setupI18n();
-	// Apply the persisted/navigator preference.
-	const initial = resolveInitialLocale();
-	void switchLocale(initial);
-	locale = initial;
+	locale = resolveInitialLocale();
 });
 
 function onSelect(next: SupportedLocale) {
@@ -37,7 +38,7 @@ function onSelect(next: SupportedLocale) {
 	aria-label="Idioma"
 >
 	{#each SUPPORTED_LOCALES as code (code)}
-		{@const active = code === currentLocale() || code === locale}
+		{@const active = code === locale}
 		<button
 			type="button"
 			onclick={() => onSelect(code)}

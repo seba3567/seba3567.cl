@@ -9,17 +9,24 @@ import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 import SearchPanel from '$lib/components/SearchPanel.svelte';
 import SiteFooter from '$lib/components/SiteFooter.svelte';
 import SiteHeader from '$lib/components/SiteHeader.svelte';
-import { setupI18n } from '$lib/i18n';
-import { currentLocale } from '$lib/i18n/locale.svelte';
+import { resolveInitialLocale, setupI18n } from '$lib/i18n';
+import { currentLocale, switchLocale } from '$lib/i18n/locale.svelte';
 
 let { children } = $props();
 
-// Initialize the i18n store on the client. SSR uses the
-// default locale (es) — the first browser render after
-// hydration switches to the persisted one and re-renders
-// any locale-dependent text.
+// i18n must be initialized BEFORE any $t() is rendered, so it
+// has to run at the top of the script (server + client), not
+// inside onMount. The setup function is idempotent — calling
+// it here on the server gets the default locale, and on the
+// client we switch to the persisted one after hydration.
+setupI18n();
+
 onMount(() => {
-	setupI18n();
+	// After hydration, switch to the persisted / navigator
+	// preference. SSR uses the default locale (es). Read from
+	// localStorage directly here — currentLocale() would return
+	// the still-default 'es' on the first tick.
+	void switchLocale(resolveInitialLocale());
 });
 
 // Origin used for absolute URLs in OG/Twitter cards. Static
