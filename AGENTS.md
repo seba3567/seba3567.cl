@@ -46,3 +46,34 @@ mantener el repo chico: está en `.gitignore`-friendly, pero por ahora SÍ se co
 - `size-*` cuando ancho y alto son iguales
 - `truncate` shorthand, no `overflow-hidden text-ellipsis whitespace-nowrap`
 - Sin raw `dark:` overrides — usar tokens semánticos (`bg-background`, `text-muted-foreground`)
+
+## Paleta de color centralizada (pastel green)
+
+**Regla dura:** todas las páginas y componentes usan la misma paleta. El
+agente NO debe introducir `emerald-*`, `violet-*`, `fuchsia-*`, `cyan-*`,
+`sky-*` como acentos decorativos — están reservados para casos
+semánticos (status / error / info).
+
+- **Único acento decorativo:** `mint-*` (definido en `@theme` de
+  `src/routes/layout.css`). Es la fuente de verdad.
+- **Status semántico:**
+  - `mint-*` — live / active / featured (default)
+  - `amber-*` — wip / beta / "in development"
+  - `rose-*` — archived / error / spam
+  - `neutral-*` — archivado / deshabilitado
+- **Aliases semánticos en `:root`:** `--mint-soft`, `--mint-border`,
+  `--mint-text`, `--mint-softest` — preferir estos cuando sea posible
+  para mantener el código desacoplado del shade exacto.
+- **Gradientes:** NUNCA mezclar colores (e.g. `from-violet via-fuchsia
+  to-amber`). Usar `bg-mint-500` sólido para CTAs primarios, o
+  `from-mint-500/15 to-transparent` para halos decorativos.
+- **ProjectAccent** (`src/lib/data/featured.ts`): solo acepta
+  `'mint' | 'amber' | 'rose'`. No agregar nuevos accent types.
+- **Intranet (`intranet.seba3567.cl`):** debe pasar desapercibida.
+  NO incluirla en la nav del header ni en el panel de contacto del
+  home. Solo vive en `SearchPanel` (búsqueda) y en `SiteFooter` (CTA
+  secundario en páginas no-home).
+
+Para retunear la paleta (e.g. cambiar el shade del verde), editar
+solo `src/routes/layout.css` — todos los componentes se actualizan
+automáticamente.
