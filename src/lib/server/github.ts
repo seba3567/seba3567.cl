@@ -28,21 +28,34 @@ export type RepoWithLanguages = GitHubRepo & {
 };
 
 const USER_AGENT = 'seba3567-cl/0.1 (+https://seba3567.cl)';
-const CACHE_TTL_MS = 1000 * 60 * 60;
+const CACHE_TTL_MS = 1000 * 60 * 60; // 1h — how long a successful response stays fresh
 
 /**
  * Cooldown between GitHub API calls.
  *
- * GitHub's unauthenticated rate limit is 60 req/hour/IP. Each call to
- * this module (even from cache) registers a hit. With dev-server
- * restarts wiping the in-memory cache, we'd burn through 60 in minutes.
+ * GitHub's unauthenticated rate limit is 60 req/hour/IP. With ~90 repos
+ * on seba3567's profile, fetchPublicRepos alone does 1 + N (≥90) requests
+ * per call, which exhausts the hourly budget in ONE page load. To stay
+ * well under the limit we serialize everything through a single
+ * 20-minute cooldown — at most 1 actual API call per 20 min, regardless
+ * of cache state.
  *
- * Rule: at most 1 actual API call per API_COOLDOWN_MS, regardless of
- * cache state. If a call is requested inside the cooldown window, we
- * return the stale cache (or throw if cache is empty — caller should
- * catch and serve a fallback).
+ * 20 min was chosen because:
+ *   - 60 req / hour = 1 req / min average. A burst of 90 requests costs
+ *     ~1.5 hours of budget, so a 20-min cooldown means worst case we
+ *     still hit the limit ~3 times per day (only on hard refreshes
+ *     after dev-server restarts wipe the in-memory cache).
+ *   - 10 min is too aggressive: a quick tab refresh + a navigation
+ *     = 2 cache misses = rate limit hit.
+ *   - 20 min is the sweet spot: still feels "live" but well under
+ *     the 60/h limit even in the worst case.
+ *
+ * If a call is requested inside the cooldown window:
+ *   - Fresh cache    -> return it (no API call)
+ *   - Stale cache     -> return it (stale-while-cooldown) + warn
+ *   - Cold cache      -> throw COOLDOWN so caller can fall back
  */
-const API_COOLDOWN_MS = 5 * 60 * 1000; // 5 min
+const API_COOLDOWN_MS = 20 * 60 * 1000; // 20 min
 
 type CacheEntry<T> = {
 	value: T;
@@ -58,6 +71,12 @@ function withinCooldown(): boolean {
 	return lastApiCallAt > 0 && Date.now() - lastApiCallAt < API_COOLDOWN_MS;
 }
 
+function cooldownRemainingMs(): number {
+	if (lastApiCallAt === 0) return 0;
+	const elapsed = Date.now() - lastApiCallAt;
+	return Math.max(0, API_COOLDOWN_MS - elapsed);
+}
+
 async function githubFetch<T>(url: string): Promise<T> {
 	const cached = cache.get(url);
 	if (cached && cached.expiresAt > Date.now()) {
@@ -68,18 +87,19 @@ async function githubFetch<T>(url: string): Promise<T> {
 	// Cache miss or stale. If we're inside the cooldown window, return
 	// whatever we have (even if stale) instead of hammering GitHub.
 	if (withinCooldown()) {
+		const remaining = Math.ceil(cooldownRemainingMs() / 1000);
 		if (cached) {
 			// Stale-while-cooldown: serve the old value, log it.
 			console.warn(
-				`[github] cooldown active, serving stale cache for ${url} ` +
-					`(age: ${Math.round((Date.now() - (cached.expiresAt - CACHE_TTL_MS)) / 1000)}s)`,
+				`[github] cooldown active (${remaining}s remaining), ` +
+					`serving stale cache for ${url}`,
 			);
 			return cached.value as T;
 		}
 		// Cold cache + cooldown = we have nothing to serve. Throw a
 		// distinctive error so the caller can fall back gracefully.
 		const err = new Error(
-			`GitHub API in cooldown (${API_COOLDOWN_MS / 1000}s) and no cached value for ${url}`,
+			`GitHub API in cooldown (${remaining}s remaining) and no cached value for ${url}`,
 		);
 		(err as Error & { code?: string }).code = 'COOLDOWN';
 		throw err;
@@ -94,11 +114,23 @@ async function githubFetch<T>(url: string): Promise<T> {
 		},
 	});
 	if (!res.ok) {
+		// 403/429 — the rate limiter caught us despite the cooldown.
+		// Could be a shared IP (the Vercel edge, the dev tunnel, etc).
+		// Reset the cooldown so we don't keep hammering for 20 min.
+		const remaining = Math.ceil(cooldownRemainingMs() / 1000);
+		console.error(
+			`[github] API ${res.status} ${res.statusText} for ${url} ` +
+				`(cooldown was at ${remaining}s remaining — GitHub's 60/h limit hit anyway)`,
+		);
 		throw new Error(`GitHub API ${res.status} ${res.statusText} for ${url}`);
 	}
 	const data = (await res.json()) as T;
 	cache.set(url, { value: data, expiresAt: Date.now() + CACHE_TTL_MS });
 	lastApiCallAt = Date.now();
+	console.log(
+		`[github] OK · ${url.split('/').slice(-1)[0] || url} · ` +
+			`next refresh in ${API_COOLDOWN_MS / 1000}s`,
+	);
 	return data;
 }
 
