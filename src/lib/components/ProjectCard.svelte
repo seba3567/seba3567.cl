@@ -50,12 +50,8 @@
 
 	function featuredAccent(accent: string): string {
 		const map: Record<string, string> = {
-			violet: 'ring-violet-400/20',
-			cyan: 'ring-cyan-400/20',
-			fuchsia: 'ring-fuchsia-400/20',
+			mint: 'ring-mint-400/20',
 			amber: 'ring-amber-400/20',
-			emerald: 'ring-emerald-400/20',
-			sky: 'ring-sky-400/20',
 			rose: 'ring-rose-400/20',
 		};
 		return map[accent] ?? '';
@@ -65,7 +61,7 @@
 <GlassCard
 	hover
 	class="group relative flex h-full flex-col gap-3 p-4 ring-1 ring-white/[0.04] {isFeatured
-		? 'border-violet-400/30'
+		? 'border-mint-400/30'
 		: ''} {accentClass}"
 >
 	<div class="flex items-start justify-between gap-2">
@@ -80,7 +76,7 @@
 					href={repo.html_url}
 					target="_blank"
 					rel="noreferrer noopener"
-					class="block truncate text-sm font-semibold text-neutral-50 transition-colors group-hover:text-violet-300"
+					class="block truncate text-sm font-semibold text-neutral-50 transition-colors group-hover:text-mint-300"
 					title={repo.full_name}
 				>
 					{repo.name}
@@ -91,7 +87,7 @@
 
 		{#if isFeatured}
 			<span
-				class="inline-flex shrink-0 items-center gap-1 rounded-full border border-violet-400/30 bg-violet-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-violet-300"
+				class="inline-flex shrink-0 items-center gap-1 rounded-full border border-mint-400/30 bg-mint-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-mint-300"
 			>
 				<PushPin size={9} weight="fill" />
 				featured

@@ -29,6 +29,27 @@
 	--radius-lg: var(--radius);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-sm: calc(var(--radius) - 4px);
+
+	/* =========================================================
+	   Centralised pastel-green palette — the ONE source of truth
+	   for accent colour across every page. Use the semantic
+	   aliases (mint-soft / mint-border / mint-text) when possible
+	   to stay decoupled from the exact shade.
+	   ========================================================= */
+	--color-mint-50: #ecfdf5;
+	--color-mint-100: #d1fae5;
+	--color-mint-200: #a7f3d0;
+	--color-mint-300: #6ee7b7;
+	--color-mint-400: #34d399;
+	--color-mint-500: #10b981;
+	--color-mint-600: #059669;
+	--color-mint-700: #047857;
+
+	/* Pastel status hues — only used for warnings/errors/info.
+	   These are the *only* non-mint accents in the project. */
+	--color-rose-soft: #fda4af; /* warnings · errors */
+	--color-amber-soft: #fcd34d; /* in-progress · beta */
+	--color-sky-soft: #7dd3fc; /* neutral info */
 }
 
 :root {
@@ -78,6 +99,32 @@
 
 @utility border-border {
 	border-color: var(--color-border);
+}
+
+/* =========================================================
+   Semantic accent aliases — every page should reach for
+   these tokens, not raw mint-NNN shades, so the palette
+   can be retuned in one place.
+   ========================================================= */
+@layer base {
+	:root {
+		/* Background tints (low-opacity mint for surfaces) */
+		--mint-soft: rgb(16 185 129 / 0.1);
+		--mint-softer: rgb(16 185 129 / 0.05);
+		--mint-softest: rgb(16 185 129 / 0.02);
+		--mint-hover: rgb(16 185 129 / 0.15);
+		--mint-active: rgb(16 185 129 / 0.2);
+
+		/* Border tints */
+		--mint-border: rgb(52 211 153 / 0.3);
+		--mint-border-soft: rgb(52 211 153 / 0.2);
+		--mint-border-strong: rgb(52 211 153 / 0.4);
+
+		/* Text tints (use for body copy on dark surfaces) */
+		--mint-text: rgb(167 243 208); /* mint-200 — primary */
+		--mint-text-strong: rgb(110 231 183); /* mint-300 — hover */
+		--mint-text-soft: rgb(110 231 183 / 0.7);
+	}
 }
 
 @layer base {

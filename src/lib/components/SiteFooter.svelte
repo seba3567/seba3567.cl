@@ -44,13 +44,13 @@
 			href={INTRANET}
 			target="_blank"
 			rel="noreferrer noopener"
-			class="group h-auto w-full justify-between gap-3 rounded-md border border-violet-400/20 bg-gradient-to-br from-violet-500/10 via-fuchsia-500/5 to-amber-500/5 px-5 py-4 backdrop-blur transition-all hover:border-violet-400/40 hover:from-violet-500/20 sm:px-6"
+			class="group h-auto w-full justify-between gap-3 rounded-md border border-mint-400/20 bg-gradient-to-br bg-mint-500/8 px-5 py-4 backdrop-blur transition-all hover:border-mint-400/40 hover:from-mint-500/20 sm:px-6"
 		>
 			<div class="flex items-center gap-3">
 			<div
-				class="flex size-9 items-center justify-center rounded border border-violet-400/20 bg-violet-500/10"
+				class="flex size-9 items-center justify-center rounded border border-mint-400/20 bg-mint-500/10"
 			>
-					<span class="font-mono text-xs font-semibold text-violet-300">i</span>
+					<span class="font-mono text-xs font-semibold text-mint-300">i</span>
 				</div>
 				<div class="text-left">
 					<p class="text-sm font-semibold text-neutral-100">Intranet seba3567</p>
@@ -60,7 +60,7 @@
 			<ArrowUpRight
 				size={16}
 				weight="bold"
-				class="text-violet-300 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+				class="text-mint-300 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
 			/>
 		</Button>
 	</div>

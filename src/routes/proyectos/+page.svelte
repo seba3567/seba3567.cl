@@ -237,7 +237,7 @@
 				</Tabs.Trigger>
 				<Tabs.Trigger
 					value="live"
-					class="rounded-xl px-3 py-1.5 text-xs font-medium text-neutral-400 transition-all data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-200 hover:text-neutral-200"
+					class="rounded-xl px-3 py-1.5 text-xs font-medium text-neutral-400 transition-all data-[state=active]:bg-mint-500/10 data-[state=active]:text-mint-200 hover:text-neutral-200"
 				>
 					Live <span class="ml-1 font-mono text-[10px] text-neutral-500">{counts.live}</span>
 				</Tabs.Trigger>
@@ -290,13 +290,13 @@
 					onclick={() => (language = null)}
 					class="group/lang inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all {language ===
 					null
-						? 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200'
+						? 'border-mint-400/40 bg-mint-500/10 text-mint-200'
 						: 'border-white/10 bg-white/[0.02] text-neutral-400 hover:border-white/20 hover:bg-white/[0.05] hover:text-neutral-200'}"
 				>
 					Todos
 					<span
 						class="font-mono text-[9px] {language === null
-							? 'text-emerald-300/70'
+							? 'text-mint-300/70'
 							: 'text-neutral-500'}"
 						>{counts.all}</span
 					>
@@ -308,7 +308,7 @@
 						onclick={() => (language = language === lang ? null : lang)}
 						class="group/lang inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all {language ===
 						lang
-							? 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200'
+							? 'border-mint-400/40 bg-mint-500/10 text-mint-200'
 							: 'border-white/10 bg-white/[0.02] text-neutral-400 hover:border-white/20 hover:bg-white/[0.05] hover:text-neutral-200'}"
 					>
 						<span
@@ -318,7 +318,7 @@
 						{lang}
 						<span
 							class="font-mono text-[9px] {language === lang
-								? 'text-emerald-300/70'
+								? 'text-mint-300/70'
 								: 'text-neutral-500'}"
 							>{langCount}</span
 						>
@@ -337,7 +337,7 @@
 						<button
 							type="button"
 							onclick={() => (statusTab = 'all')}
-							class="inline-flex items-center gap-1 rounded-full border border-violet-400/30 bg-violet-500/10 px-2.5 py-1 text-[11px] font-medium text-violet-200 transition-colors hover:bg-violet-500/20"
+							class="inline-flex items-center gap-1 rounded-full border border-mint-400/30 bg-mint-500/10 px-2.5 py-1 text-[11px] font-medium text-mint-200 transition-colors hover:bg-mint-500/20"
 						>
 							{tabs.find((t) => t.value === statusTab)?.label}
 							<X size={10} weight="bold" />
@@ -347,7 +347,7 @@
 						<button
 							type="button"
 							onclick={() => (language = null)}
-							class="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-200 transition-colors hover:bg-emerald-500/20"
+							class="inline-flex items-center gap-1 rounded-full border border-mint-400/30 bg-mint-500/10 px-2.5 py-1 text-[11px] font-medium text-mint-200 transition-colors hover:bg-mint-500/20"
 						>
 							<span
 								class="inline-block size-1.5 rounded-full"

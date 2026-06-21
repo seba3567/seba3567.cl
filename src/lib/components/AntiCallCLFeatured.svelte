@@ -158,7 +158,7 @@
 						<div class="flex items-center gap-1.5">
 							<span class="size-2 rounded-full bg-red-400/70"></span>
 							<span class="size-2 rounded-full bg-amber-400/70"></span>
-							<span class="size-2 rounded-full bg-emerald-400/70"></span>
+							<span class="size-2 rounded-full bg-mint-400/70"></span>
 						</div>
 						<span class="font-mono text-[10px] text-neutral-500">AntiCallCL · dashboard</span>
 					</div>
@@ -170,7 +170,7 @@
 						</div>
 						<div class="mt-1 flex items-baseline gap-2">
 							<span class="font-mono text-3xl font-bold text-neutral-100">128</span>
-							<span class="text-xs text-emerald-300">−42% spam</span>
+							<span class="text-xs text-mint-300">−42% spam</span>
 						</div>
 					</div>
 
@@ -183,14 +183,14 @@
 									{#if call.blocked}
 										<PhoneSlash size={14} weight="duotone" class="text-rose-400" />
 									{:else}
-										<Phone size={14} weight="duotone" class="text-emerald-400" />
+										<Phone size={14} weight="duotone" class="text-mint-400" />
 									{/if}
 									<span class="font-mono text-[11px] text-neutral-300">{call.who}</span>
 								</div>
 								<span
 									class="rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider {call.blocked
 										? 'bg-rose-500/10 text-rose-300'
-										: 'bg-emerald-500/10 text-emerald-300'}"
+										: 'bg-mint-500/10 text-mint-300'}"
 								>
 									{call.blocked ? 'blocked' : 'passed'}
 								</span>

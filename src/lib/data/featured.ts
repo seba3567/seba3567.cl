@@ -1,6 +1,6 @@
 export type ProjectStatus = 'live' | 'active' | 'wip' | 'archived' | 'experimental';
 
-export type ProjectAccent = 'violet' | 'cyan' | 'fuchsia' | 'amber' | 'emerald' | 'rose' | 'sky';
+export type ProjectAccent = 'mint' | 'amber' | 'rose';
 
 export type FeaturedProject = {
 	slug: string;
@@ -35,7 +35,7 @@ export const featuredProjects: FeaturedProject[] = [
 			'Combos: Next + Supabase, Svelte + shadcn, etc.',
 			'Genera `CLAUDE.md` automáticamente',
 		],
-		accent: 'cyan',
+		accent: 'mint',
 		icon: 'sparkle',
 	},
 	{
@@ -54,7 +54,7 @@ export const featuredProjects: FeaturedProject[] = [
 			'BiomeJS para lint+format ultra-rápido',
 			'Glassmorphism-ready (este sitio es la prueba)',
 		],
-		accent: 'amber',
+		accent: 'mint',
 		icon: 'code',
 	},
 	{
@@ -69,7 +69,7 @@ export const featuredProjects: FeaturedProject[] = [
 			github: 'https://github.com/seba3567/Svelte-avanced-components',
 		},
 		highlights: ['Patrones idiomáticos Svelte 5', 'Sin dependencias de UI'],
-		accent: 'emerald',
+		accent: 'mint',
 		icon: 'gear',
 	},
 	{
@@ -84,7 +84,7 @@ export const featuredProjects: FeaturedProject[] = [
 			github: 'https://github.com/seba3567/telefonia_ido',
 		},
 		highlights: ['API REST para validar números', 'Reportes de prefijos spam'],
-		accent: 'sky',
+		accent: 'mint',
 		icon: 'database',
 	},
 	{
@@ -99,7 +99,7 @@ export const featuredProjects: FeaturedProject[] = [
 			github: 'https://github.com/seba3567/PROYECTO-OPS',
 		},
 		highlights: ['Runbooks vivos', 'Bitácora de incidentes'],
-		accent: 'fuchsia',
+		accent: 'amber',
 		icon: 'flame',
 	},
 	{
@@ -114,73 +114,53 @@ export const featuredProjects: FeaturedProject[] = [
 			github: 'https://github.com/seba3567/seba_flutter_skeleton',
 		},
 		highlights: ['CI para build Android + iOS', 'Theming y routing preconfigurados'],
-		accent: 'rose',
+		accent: 'mint',
 		icon: 'cube',
 	},
 ];
 
+/**
+ * Accent → Tailwind class map.
+ * Only three accents remain: mint (primary), amber (wip), rose (archived).
+ * Everything else is mint — the project uses a single pastel-green palette.
+ */
 export const ACCENT_CLASSES: Record<
 	ProjectAccent,
 	{ ring: string; text: string; bg: string; border: string; glow: string }
 > = {
-	violet: {
-		ring: 'ring-violet-400/30',
-		text: 'text-violet-300',
-		bg: 'bg-violet-500/10',
-		border: 'border-violet-400/20',
-		glow: 'shadow-[0_0_60px_-15px_rgba(167,139,250,0.45)]',
-	},
-	cyan: {
-		ring: 'ring-cyan-400/30',
-		text: 'text-cyan-300',
-		bg: 'bg-cyan-500/10',
-		border: 'border-cyan-400/20',
-		glow: 'shadow-[0_0_60px_-15px_rgba(34,211,238,0.45)]',
-	},
-	fuchsia: {
-		ring: 'ring-fuchsia-400/30',
-		text: 'text-fuchsia-300',
-		bg: 'bg-fuchsia-500/10',
-		border: 'border-fuchsia-400/20',
-		glow: 'shadow-[0_0_60px_-15px_rgba(232,121,249,0.45)]',
+	mint: {
+		ring: 'ring-mint-400/30',
+		text: 'text-mint-200',
+		bg: 'bg-mint-500/10',
+		border: 'border-mint-400/20',
+		glow: 'shadow-[0_0_60px_-15px_rgba(52,211,153,0.45)]',
 	},
 	amber: {
 		ring: 'ring-amber-400/30',
-		text: 'text-amber-300',
+		text: 'text-amber-200',
 		bg: 'bg-amber-500/10',
 		border: 'border-amber-400/20',
 		glow: 'shadow-[0_0_60px_-15px_rgba(252,211,77,0.45)]',
 	},
-	emerald: {
-		ring: 'ring-emerald-400/30',
-		text: 'text-emerald-300',
-		bg: 'bg-emerald-500/10',
-		border: 'border-emerald-400/20',
-		glow: 'shadow-[0_0_60px_-15px_rgba(52,211,153,0.45)]',
-	},
 	rose: {
 		ring: 'ring-rose-400/30',
-		text: 'text-rose-300',
+		text: 'text-rose-200',
 		bg: 'bg-rose-500/10',
 		border: 'border-rose-400/20',
 		glow: 'shadow-[0_0_60px_-15px_rgba(251,113,133,0.45)]',
 	},
-	sky: {
-		ring: 'ring-sky-400/30',
-		text: 'text-sky-300',
-		bg: 'bg-sky-500/10',
-		border: 'border-sky-400/20',
-		glow: 'shadow-[0_0_60px_-15px_rgba(56,189,248,0.45)]',
-	},
 };
 
 export const STATUS_LABELS: Record<ProjectStatus, { label: string; color: string }> = {
-	live: { label: 'Live', color: 'text-emerald-300 bg-emerald-500/10 border-emerald-400/20' },
-	active: { label: 'Active', color: 'text-cyan-300 bg-cyan-500/10 border-cyan-400/20' },
-	wip: { label: 'WIP', color: 'text-amber-300 bg-amber-500/10 border-amber-400/20' },
+	live: { label: 'Live', color: 'text-mint-200 bg-mint-500/10 border-mint-400/20' },
+	active: { label: 'Active', color: 'text-mint-200 bg-mint-500/10 border-mint-400/20' },
+	wip: { label: 'WIP', color: 'text-amber-200 bg-amber-500/10 border-amber-400/20' },
 	experimental: {
 		label: 'Experimental',
-		color: 'text-fuchsia-300 bg-fuchsia-500/10 border-fuchsia-400/20',
+		color: 'text-mint-200 bg-mint-500/10 border-mint-400/20',
 	},
-	archived: { label: 'Archived', color: 'text-neutral-400 bg-neutral-500/10 border-neutral-400/20' },
+	archived: {
+		label: 'Archived',
+		color: 'text-neutral-400 bg-neutral-500/10 border-neutral-400/20',
+	},
 };

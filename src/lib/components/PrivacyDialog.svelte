@@ -127,13 +127,13 @@
 			>
 				<Badge
 					variant="outline"
-					class="pointer-events-auto border-emerald-400/20 bg-emerald-500/5 px-2.5 py-0.5 font-mono text-[10px] font-normal uppercase tracking-wider text-emerald-300"
+					class="pointer-events-auto border-mint-400/20 bg-mint-500/5 px-2.5 py-0.5 font-mono text-[10px] font-normal uppercase tracking-wider text-mint-300"
 				>
 					<span class="relative flex size-1.5">
 						<span
-							class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
+							class="absolute inline-flex h-full w-full animate-ping rounded-full bg-mint-400 opacity-75"
 						></span>
-						<span class="relative inline-flex size-1.5 rounded-full bg-emerald-400"></span>
+						<span class="relative inline-flex size-1.5 rounded-full bg-mint-400"></span>
 					</span>
 					Privacidad
 				</Badge>
@@ -166,24 +166,24 @@
 						{@const Icon = s.icon}
 						<Accordion.Item
 							value={s.value}
-							class="group rounded-2xl border border-white/5 bg-white/[0.015] transition-colors hover:border-white/10 data-[state=open]:border-violet-400/20 data-[state=open]:bg-white/[0.03]"
+							class="group rounded-2xl border border-white/5 bg-white/[0.015] transition-colors hover:border-white/10 data-[state=open]:border-mint-400/20 data-[state=open]:bg-white/[0.03]"
 						>
 							<Accordion.Trigger
 								class="flex w-full items-center gap-4 rounded-2xl px-4 py-3.5 text-left transition-colors hover:bg-white/[0.02]"
 							>
 								<div
-									class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-colors group-data-[state=open]:border-violet-400/40 group-data-[state=open]:bg-violet-500/10"
+									class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-colors group-data-[state=open]:border-mint-400/40 group-data-[state=open]:bg-mint-500/10"
 								>
 									<Icon
 										size={16}
 										weight="duotone"
-										class="text-neutral-300 transition-colors group-data-[state=open]:text-violet-300"
+										class="text-neutral-300 transition-colors group-data-[state=open]:text-mint-300"
 									/>
 								</div>
 								<div class="min-w-0 flex-1">
 									<div class="flex items-baseline gap-2.5">
 										<span
-											class="font-mono text-[10px] text-neutral-600 transition-colors group-data-[state=open]:text-violet-400"
+											class="font-mono text-[10px] text-neutral-600 transition-colors group-data-[state=open]:text-mint-400"
 											>0{i + 1}</span
 										>
 										<h3
@@ -196,7 +196,7 @@
 								<CaretDown
 									size={14}
 									weight="bold"
-									class="shrink-0 text-neutral-500 transition-transform duration-300 group-data-[state=open]:rotate-180 group-data-[state=open]:text-violet-300"
+									class="shrink-0 text-neutral-500 transition-transform duration-300 group-data-[state=open]:rotate-180 group-data-[state=open]:text-mint-300"
 								/>
 							</Accordion.Trigger>
 							<Accordion.Content

@@ -95,7 +95,7 @@
 			>
 				<div
 					aria-hidden="true"
-					class="pointer-events-none absolute -top-32 -right-32 size-96 rounded-full bg-gradient-to-br from-violet-500/15 via-fuchsia-500/10 to-amber-500/5 opacity-60 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+					class="pointer-events-none absolute -top-32 -right-32 size-96 rounded-full bg-gradient-to-br from-mint-500/15 to-transparent opacity-60 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
 				></div>
 
 				<div class="relative grid grid-cols-12 items-center gap-6 p-6 sm:p-8">
@@ -103,7 +103,7 @@
 					<div class="col-span-12 sm:col-span-3 lg:col-span-2">
 						<div class="flex items-center gap-4">
 							<div
-								class="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-500 ring-1 ring-violet-400/30"
+								class="flex size-16 items-center justify-center rounded-2xl bg-mint-500 ring-1 ring-mint-400/30"
 							>
 								<PhoneX size={28} weight="duotone" class="text-neutral-950" />
 							</div>
@@ -154,7 +154,7 @@
 						>
 							<span>com.seba3567.anticall_chile</span>
 							<span class="text-neutral-700">·</span>
-							<span class="text-emerald-300">100% local</span>
+							<span class="text-mint-300">100% local</span>
 						</div>
 					</div>
 
@@ -162,7 +162,7 @@
 					<div class="col-span-12 flex flex-wrap items-center gap-2 lg:col-span-3 lg:flex-col lg:items-stretch">
 						<a
 							href={APP_DETAIL}
-							class="group inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-500 px-4 py-2.5 text-sm font-semibold text-neutral-950 shadow-lg shadow-violet-500/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-violet-500/40 lg:flex-none"
+							class="group inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-mint-500 px-4 py-2.5 text-sm font-semibold text-neutral-950 shadow-lg shadow-mint-500/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-mint-500/40 lg:flex-none"
 						>
 							Ver app
 							<ArrowUpRight
@@ -223,7 +223,7 @@
 		>
 			<div
 				aria-hidden="true"
-				class="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-gradient-to-br from-violet-500/15 to-transparent blur-3xl"
+				class="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-gradient-to-br from-mint-500/15 to-transparent blur-3xl"
 			></div>
 			<div class="relative flex flex-col items-start gap-6 p-8 sm:flex-row sm:items-center sm:p-10">
 				<div
@@ -246,7 +246,7 @@
 					href={`mailto:${CONTACT_EMAIL}`}
 					class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-neutral-100 transition-all hover:border-white/20 hover:bg-white/[0.08]"
 				>
-					<Sparkle size={13} weight="duotone" class="text-violet-300" />
+					<Sparkle size={13} weight="duotone" class="text-mint-300" />
 					Hablemos
 					<ArrowUpRight
 						size={12}

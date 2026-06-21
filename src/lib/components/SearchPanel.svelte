@@ -370,7 +370,7 @@
 									<Icon
 										size={15}
 										weight="duotone"
-										class={i === selectedIndex ? 'text-violet-300' : 'text-neutral-400'}
+										class={i === selectedIndex ? 'text-mint-300' : 'text-neutral-400'}
 									/>
 								</div>
 								<div class="min-w-0 flex-1">

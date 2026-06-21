@@ -56,7 +56,7 @@
 			<input
 				type="checkbox"
 				bind:checked={onlyFeatured}
-				class="size-3.5 cursor-pointer rounded border-white/20 bg-neutral-900 accent-violet-500"
+				class="size-3.5 cursor-pointer rounded border-white/20 bg-neutral-900 accent-mint-500"
 			/>
 			Solo featured
 		</label>

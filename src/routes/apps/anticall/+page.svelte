@@ -148,7 +148,7 @@
 			<div class="col-span-12 lg:col-span-9">
 				<div class="flex items-center gap-4">
 					<div
-						class="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-500 ring-1 ring-violet-400/30"
+						class="flex size-14 items-center justify-center rounded-2xl bg-mint-500 ring-1 ring-mint-400/30"
 					>
 						<PhoneX size={26} weight="duotone" class="text-neutral-950" />
 					</div>
@@ -183,7 +183,7 @@
 						href={BETA_PROGRAM}
 						target="_blank"
 						rel="noreferrer noopener"
-						class="group inline-flex items-center gap-2 rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-500 px-4 py-2.5 text-sm font-semibold text-neutral-950 shadow-lg shadow-violet-500/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-violet-500/40"
+						class="group inline-flex items-center gap-2 rounded-lg bg-mint-500 px-4 py-2.5 text-sm font-semibold text-neutral-950 shadow-lg shadow-mint-500/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-mint-500/40"
 					>
 						<Flask size={14} weight="fill" />
 						Unirme a la beta
@@ -233,7 +233,7 @@
 					</div>
 					<div class="bg-neutral-950 p-4">
 						<dt class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">Procesamiento</dt>
-						<dd class="mt-2 font-mono text-sm font-semibold text-emerald-300">100% local</dd>
+						<dd class="mt-2 font-mono text-sm font-semibold text-mint-300">100% local</dd>
 					</div>
 				</dl>
 			</div>
@@ -253,7 +253,7 @@
 		>
 			<div
 				aria-hidden="true"
-				class="absolute -inset-6 -z-10 rounded-3xl bg-gradient-to-br from-violet-500/15 via-fuchsia-500/5 to-amber-500/5 opacity-60 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
+				class="absolute -inset-6 -z-10 rounded-3xl bg-gradient-to-br from-mint-500/10 to-transparent opacity-60 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
 			></div>
 			<div
 				class="relative mx-auto aspect-[9/16] w-full overflow-hidden rounded-[2rem] border border-white/10 bg-neutral-950 shadow-2xl shadow-black/60 transition-transform duration-500 group-hover:scale-[1.01]"
@@ -321,12 +321,12 @@
 								>0{i + 1}</span
 							>
 							<div
-								class="flex size-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all group-hover:scale-110 group-hover:border-violet-400/40 group-hover:bg-violet-500/10"
+								class="flex size-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all group-hover:scale-110 group-hover:border-mint-400/40 group-hover:bg-mint-500/10"
 							>
 								<Icon
 									size={16}
 									weight="duotone"
-									class="text-neutral-300 transition-colors group-hover:text-violet-300"
+									class="text-neutral-300 transition-colors group-hover:text-mint-300"
 								/>
 							</div>
 						</div>
@@ -434,7 +434,7 @@
 					<DeviceMobile
 						size={18}
 						weight="duotone"
-						class="mt-1 shrink-0 text-neutral-600 transition-colors group-hover:text-violet-300"
+						class="mt-1 shrink-0 text-neutral-600 transition-colors group-hover:text-mint-300"
 					/>
 				</div>
 			{/each}
@@ -448,7 +448,7 @@
 		<div class="mb-10" data-reveal>
 			<Badge
 				variant="outline"
-				class="border-emerald-400/20 bg-emerald-500/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-emerald-300"
+				class="border-mint-400/20 bg-mint-500/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-mint-300"
 			>
 				Privacidad
 			</Badge>
@@ -498,11 +498,11 @@
 		>
 			<div
 				aria-hidden="true"
-				class="pointer-events-none absolute -top-32 -right-32 size-96 rounded-full bg-gradient-to-br from-violet-500/20 via-fuchsia-500/10 to-transparent blur-3xl"
+				class="pointer-events-none absolute -top-32 -right-32 size-96 rounded-full bg-gradient-to-br from-mint-500/20 via-mint-500/10 to-transparent blur-3xl"
 			></div>
 			<div
 				aria-hidden="true"
-				class="pointer-events-none absolute -bottom-32 -left-32 size-96 rounded-full bg-gradient-to-tr from-amber-500/15 via-violet-500/5 to-transparent blur-3xl"
+				class="pointer-events-none absolute -bottom-32 -left-32 size-96 rounded-full bg-gradient-to-tr from-mint-500/10 to-transparent blur-3xl"
 			></div>
 
 			<div class="relative grid grid-cols-12 gap-6 p-8 sm:p-12 lg:gap-10">
@@ -547,7 +547,7 @@
 							href={BETA_PROGRAM}
 							target="_blank"
 							rel="noreferrer noopener"
-							class="group inline-flex items-center gap-2 rounded-lg bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 px-5 py-3 text-sm font-semibold text-neutral-950 shadow-lg shadow-amber-500/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-amber-500/40"
+							class="group inline-flex items-center gap-2 rounded-lg bg-mint-500 px-5 py-3 text-sm font-semibold text-neutral-950 shadow-lg shadow-amber-500/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-amber-500/40"
 						>
 							<Flask size={15} weight="fill" />
 							Unirme a la beta — Google Play
@@ -579,11 +579,11 @@
 					>
 						<div
 							aria-hidden="true"
-							class="pointer-events-none absolute -top-12 -right-12 size-40 rounded-full bg-gradient-to-br from-violet-500/15 to-transparent blur-2xl"
+							class="pointer-events-none absolute -top-12 -right-12 size-40 rounded-full bg-gradient-to-br from-mint-500/15 to-transparent blur-2xl"
 						></div>
 						<div class="relative space-y-4">
 							<div class="flex items-center gap-2">
-								<Code size={14} weight="duotone" class="text-violet-300" />
+								<Code size={14} weight="duotone" class="text-mint-300" />
 								<p
 									class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500"
 								>
@@ -595,7 +595,7 @@
 							</p>
 							<a
 								href={`mailto:${CONTACT_EMAIL}`}
-								class="group inline-flex items-center gap-1.5 break-all font-mono text-xs text-neutral-200 transition-colors hover:text-violet-300"
+								class="group inline-flex items-center gap-1.5 break-all font-mono text-xs text-neutral-200 transition-colors hover:text-mint-300"
 							>
 								{CONTACT_EMAIL}
 								<ArrowUpRight

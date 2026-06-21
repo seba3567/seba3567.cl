@@ -11,7 +11,6 @@
 		Flask,
 		ShieldCheck,
 		Storefront,
-		Tabs,
 		CaretDown,
 		ArrowUpRight,
 	} from 'phosphor-svelte';
@@ -223,7 +222,7 @@
 			<div bind:this={avatarWrapEl} class="avatar-3d-wrap">
 				<div
 					bind:this={avatarEl}
-					class="avatar-3d relative flex size-9 items-center justify-center overflow-hidden rounded-md bg-emerald-500 ring-1 ring-emerald-400/30"
+					class="avatar-3d relative flex size-9 items-center justify-center overflow-hidden rounded-md bg-mint-500 ring-1 ring-mint-400/30"
 				>
 					<img
 						src="https://avatars.githubusercontent.com/u/44386561?v=4"
@@ -233,7 +232,7 @@
 						decoding="async"
 					/>
 					<span
-						class="pointer-events-none absolute inset-0 bg-gradient-to-tr from-emerald-500/30 via-transparent to-emerald-300/10 mix-blend-overlay"
+						class="pointer-events-none absolute inset-0 bg-gradient-to-tr from-mint-500/30 via-transparent to-mint-300/10 mix-blend-overlay"
 					></span>
 					<span
 						class="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10 rounded-md"
@@ -323,12 +322,12 @@
 											class="group/item flex items-center gap-3.5 rounded-xl p-3 transition-all hover:bg-white/[0.04] hover:ring-1 hover:ring-white/10"
 										>
 											<div
-												class="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-gradient-to-br from-white/[0.04] to-white/[0.01] transition-all group-hover/item:scale-105 group-hover/item:border-emerald-400/30 group-hover/item:from-emerald-500/10 group-hover/item:to-emerald-500/[0.02]"
+												class="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-gradient-to-br from-white/[0.04] to-white/[0.01] transition-all group-hover/item:scale-105 group-hover/item:border-mint-400/30 group-hover/item:from-mint-500/10 group-hover/item:to-mint-500/[0.02]"
 											>
 												<Icon
 													size={16}
 													weight="duotone"
-													class="text-neutral-300 transition-colors group-hover/item:text-emerald-300"
+													class="text-neutral-300 transition-colors group-hover/item:text-mint-300"
 												/>
 											</div>
 											<div class="min-w-0 flex-1">
@@ -396,16 +395,6 @@
 				class="group/gh hidden size-9 items-center justify-center rounded-md border border-white/10 bg-white/5 text-neutral-300 transition-all hover:scale-110 hover:border-white/25 hover:bg-white/10 hover:text-neutral-100 sm:inline-flex"
 			>
 				<GithubLogo size={16} weight="fill" class="transition-transform group-hover/gh:rotate-[-6deg]" />
-			</a>
-			<a
-				href="https://intranet.seba3567.cl/"
-				target="_blank"
-				rel="noreferrer noopener"
-				aria-label="Intranet"
-				title="Abrir intranet.seba3567.cl en nueva pestaña"
-				class="hidden size-9 items-center justify-center rounded-md border border-violet-400/20 bg-violet-500/5 text-violet-300 transition-all hover:scale-110 hover:border-violet-400/40 hover:bg-violet-500/15 sm:inline-flex"
-			>
-				<Tabs size={16} weight="bold" />
 			</a>
 
 			<Sheet.Root bind:open={mobileOpen}>
