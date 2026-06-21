@@ -31,6 +31,10 @@ assets/
 !static/assets/**
 
 # Generated optimized images (re-generated on every prebuild)
+# NOTE: we keep the SOURCE (jpg/png/avif) in git but ignore the
+# generated variants — they're rebuilt on every prebuild/predev.
 static/**/*.avif
 static/**/*.webp
+static/**/*@2x.avif
+static/**/*@2x.webp
 

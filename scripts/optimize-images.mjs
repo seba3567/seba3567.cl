@@ -3,11 +3,15 @@
  * Optimize images: convert JPG/PNG in static/ to AVIF + WebP at 1x/2x.
  * Run: `bun run optimize:images` or `bun run build` (added to build pipeline).
  *
- * Inputs:  static/apps/anticall/1.jpg ... N.jpg
- * Outputs: static/apps/anticall/1.avif + 1@2x.avif
- *                   1.webp + 1@2x.webp
+ * Inputs:  static (recursively), extensions .jpg, .jpeg, .png
+ * Outputs: same basename with .avif + .webp at 1x and 2x
  *
  * Idempotent: skips outputs newer than inputs.
+ *
+ * Note: AVIF is intentionally NOT a supported input — sharp can't read
+ * from and write to the same path, and processing already-generated
+ * 2x variants would create 2x2x variants. Keep source formats as
+ * JPG/PNG; the pipeline emits AVIF as the optimized output.
  */
 
 import { readdir, mkdir, stat, readFile, writeFile } from 'node:fs/promises';
