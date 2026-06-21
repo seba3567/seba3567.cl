@@ -152,6 +152,31 @@
 	"apps": {
 		"metaTitle": "Apps · seba3567.cl",
 		"metaDescription": "Aplicaciones publicadas de Sebastián Muñoz — AntiCallCL (Android, beta abierta).",
+		"title": "Apps",
+		"heroIntro": "Software que se descarga, se abre y se usa. Cosas distintas del",
+		"heroIntroLink": "catálogo de GitHub",
+		"sectionBadge": "01 — 01",
+		"sectionTitle": "Publicadas.",
+		"sectionNote": "1 app · más en desarrollo",
+		"card": {
+			"beta": "Beta abierta",
+			"android": "Android 8+",
+			"stack": "Flutter · Kotlin",
+			"description": "Gestor local de llamadas no deseadas. Filtra por prefijo, base curada chilena y la decisión queda en tu teléfono — sin nube, sin cuentas.",
+			"package": "com.seba3567.anticall_chile",
+			"local": "100% local",
+			"viewApp": "Ver app",
+			"betaCta": "Beta",
+			"privacyCta": "Privacidad",
+			"thumbAlt": "AntiCallCL preview {n}"
+		},
+		"cta": {
+			"eyebrow": "Más en camino",
+			"title": "¿Una app propia? Colaboremos.",
+			"body": "Si tenés una idea que necesita salir del repositorio y llegar a un APK, hablemos.",
+			"button": "Hablemos"
+		},
+		"footer": "© {year} · /apps · /proyectos · seba3567.cl",
 		"appCard": {
 			"packageLabel": "Paquete",
 			"playCta": "Unirme a la beta",

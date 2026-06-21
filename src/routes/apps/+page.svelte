@@ -1,50 +1,50 @@
 <script lang="ts">
-import { ArrowUpRight, Flask, Lock, Sparkle, Star } from 'phosphor-svelte';
-import { onMount } from 'svelte';
-import { t } from 'svelte-i18n';
-import { revealChars, revealOnScroll } from '$lib/animations';
-import AntiCallLogo from '$lib/components/AntiCallLogo.svelte';
-import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
-import SiteFooter from '$lib/components/SiteFooter.svelte';
-import { Badge } from '$lib/components/ui/badge';
-import * as Card from '$lib/components/ui/card';
-import { Separator } from '$lib/components/ui/separator';
+	import { ArrowUpRight, Flask, Lock, Sparkle, Star } from 'phosphor-svelte';
+	import { onMount } from 'svelte';
+	import { t } from 'svelte-i18n';
+	import { revealChars, revealOnScroll } from '$lib/animations';
+	import AntiCallLogo from '$lib/components/AntiCallLogo.svelte';
+	import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
+	import SiteFooter from '$lib/components/SiteFooter.svelte';
+	import { Badge } from '$lib/components/ui/badge';
+	import * as Card from '$lib/components/ui/card';
+	import { Separator } from '$lib/components/ui/separator';
 
-const BETA_PROGRAM =
-	'https://play.google.com/apps/testing/com.seba3567.anticall_chile';
-const PLAY_STORE =
-	'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile&hl=en-US';
-const PRIVACY = 'https://seba3567.github.io/anticall_pages/';
-const APP_DETAIL = '/apps/anticall';
-const CONTACT_EMAIL = 'seba3567.dev@gmail.com';
+	const BETA_PROGRAM =
+		'https://play.google.com/apps/testing/com.seba3567.anticall_chile';
+	const PLAY_STORE =
+		'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile&hl=en-US';
+	const PRIVACY = 'https://seba3567.github.io/anticall_pages/';
+	const APP_DETAIL = '/apps/anticall';
+	const CONTACT_EMAIL = 'seba3567.dev@gmail.com';
 
-const pageTitle = $derived($t('apps.metaTitle'));
-const pageDescription = $derived($t('apps.metaDescription'));
+	const pageTitle = $derived($t('apps.metaTitle'));
+	const pageDescription = $derived($t('apps.metaDescription'));
 
-let titleEl: HTMLElement | undefined = $state();
-let listEl: HTMLElement | undefined = $state();
-let ctaEl: HTMLElement | undefined = $state();
+	let titleEl: HTMLElement | undefined = $state();
+	let listEl: HTMLElement | undefined = $state();
+	let ctaEl: HTMLElement | undefined = $state();
 
-onMount(() => {
-	if (titleEl) {
-		revealChars(titleEl, {
-			staggerMs: 32,
-			offsetY: 60,
-			duration: 700,
-			delay: 200,
-		});
-	}
-	for (const sec of [listEl, ctaEl]) {
-		if (sec) {
-			revealOnScroll(sec, {
-				selector: '[data-reveal]',
-				staggerMs: 70,
-				offsetY: 24,
+	onMount(() => {
+		if (titleEl) {
+			revealChars(titleEl, {
+				staggerMs: 32,
+				offsetY: 60,
 				duration: 700,
+				delay: 200,
 			});
 		}
-	}
-});
+		for (const sec of [listEl, ctaEl]) {
+			if (sec) {
+				revealOnScroll(sec, {
+					selector: '[data-reveal]',
+					staggerMs: 70,
+					offsetY: 24,
+					duration: 700,
+				});
+			}
+		}
+	});
 </script>
 
 <svelte:head>
@@ -61,13 +61,14 @@ onMount(() => {
 			bind:this={titleEl}
 			class="text-[clamp(3.5rem,12vw,9rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
 		>
-			Apps<span class="text-neutral-600">.</span>
+			{$t('apps.title')}<span class="text-neutral-600">.</span>
 		</h1>
 		<p class="mt-8 max-w-2xl text-balance text-lg leading-relaxed text-neutral-400 sm:text-xl">
-			Software que se descarga, se abre y se usa. Cosas distintas del
+			{$t('apps.heroIntro')}
 			<a
 				href="/proyectos"
-				class="underline decoration-neutral-700 underline-offset-4 transition-colors hover:text-neutral-100 hover:decoration-neutral-400">catálogo de GitHub</a
+				class="underline decoration-neutral-700 underline-offset-4 transition-colors hover:text-neutral-100 hover:decoration-neutral-400"
+				>{$t('apps.heroIntroLink')}</a
 			>.
 		</p>
 	</header>
@@ -82,14 +83,14 @@ onMount(() => {
 					variant="outline"
 					class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
 				>
-					01 — 01
+					{$t('apps.sectionBadge')}
 				</Badge>
 				<h2 class="mt-4 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
-					Published.
+					{$t('apps.sectionTitle')}
 				</h2>
 			</div>
 			<p class="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 sm:block">
-				1 app · más en desarrollo
+				{$t('apps.sectionNote')}
 			</p>
 		</div>
 
@@ -122,19 +123,19 @@ onMount(() => {
 								variant="outline"
 								class="border-amber-400/20 bg-amber-500/5 px-2 py-0.5 font-mono text-[10px] font-normal uppercase tracking-wider text-amber-300"
 							>
-								Beta abierta
+								{$t('apps.card.beta')}
 							</Badge>
 							<Badge
 								variant="outline"
 								class="border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] font-normal uppercase tracking-wider text-neutral-400"
 							>
-								Android 8+
+								{$t('apps.card.android')}
 							</Badge>
 							<Badge
 								variant="outline"
 								class="border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] font-normal uppercase tracking-wider text-neutral-400"
 							>
-								Flutter · Kotlin
+								{$t('apps.card.stack')}
 							</Badge>
 						</div>
 
@@ -142,16 +143,15 @@ onMount(() => {
 							AntiCallCL.
 						</h3>
 						<p class="mt-2 max-w-xl text-balance text-sm text-neutral-400 sm:text-base">
-							Gestor local de llamadas no deseadas. Filtra por prefijo, base curada chilena
-							y la decisión queda en tu teléfono — sin nube, sin cuentas.
+							{$t('apps.card.description')}
 						</p>
 
 						<div
 							class="mt-3 hidden flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500 sm:flex"
 						>
-							<span>com.seba3567.anticall_chile</span>
+							<span>{$t('apps.card.package')}</span>
 							<span class="text-neutral-700">·</span>
-							<span class="text-mint-300">100% local</span>
+							<span class="text-mint-300">{$t('apps.card.local')}</span>
 						</div>
 					</div>
 
@@ -161,7 +161,7 @@ onMount(() => {
 							href={APP_DETAIL}
 							class="group inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-mint-500 px-4 py-2.5 text-sm font-semibold text-neutral-950 shadow-lg shadow-mint-500/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-mint-500/40 lg:flex-none"
 						>
-							Ver app
+							{$t('apps.card.viewApp')}
 							<ArrowUpRight
 								size={12}
 								weight="bold"
@@ -175,7 +175,7 @@ onMount(() => {
 							class="group inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-amber-400/20 bg-amber-500/5 px-4 py-2.5 text-sm font-semibold text-amber-100 transition-all duration-300 hover:border-amber-400/40 hover:bg-amber-500/15 lg:flex-none"
 						>
 							<Flask size={13} weight="fill" />
-							Beta
+							{$t('apps.card.betaCta')}
 						</a>
 						<a
 							href={PRIVACY}
@@ -184,7 +184,7 @@ onMount(() => {
 							class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-medium text-neutral-300 transition-all hover:border-white/20 hover:bg-white/[0.08] lg:w-full"
 						>
 							<Lock size={12} weight="bold" />
-							Privacidad
+							{$t('apps.card.privacyCta')}
 						</a>
 					</div>
 				</div>
@@ -198,7 +198,7 @@ onMount(() => {
 						>
 							<OptimizedPicture
 								src="/apps/anticall/{n}"
-								alt="AntiCallCL preview {n}"
+								alt={$t('apps.card.thumbAlt', { values: { n } })}
 								class="size-full object-cover transition-transform duration-500 group-hover/shot:scale-[1.04]"
 								width={540}
 								height={1200}
@@ -230,13 +230,13 @@ onMount(() => {
 				</div>
 				<div class="flex-1">
 					<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
-						Más en camino
+						{$t('apps.cta.eyebrow')}
 					</p>
 					<h3 class="mt-2 text-2xl font-semibold tracking-tight text-neutral-50 sm:text-3xl">
-						¿Una app propia? Colaboremos.
+						{$t('apps.cta.title')}
 					</h3>
 					<p class="mt-2 text-sm text-neutral-400 sm:text-base">
-						Si tenés una idea que necesita salir del repositorio y llegar a un APK, hablemos.
+						{$t('apps.cta.body')}
 					</p>
 				</div>
 				<a
@@ -244,7 +244,7 @@ onMount(() => {
 					class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-neutral-100 transition-all hover:border-white/20 hover:bg-white/[0.08]"
 				>
 					<Sparkle size={13} weight="duotone" class="text-mint-300" />
-					Hablemos
+					{$t('apps.cta.button')}
 					<ArrowUpRight
 						size={12}
 						weight="bold"
@@ -257,7 +257,7 @@ onMount(() => {
 
 	<footer class="border-t border-white/5 py-12">
 		<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-600">
-			© {new Date().getFullYear()} · /apps · /proyectos · seba3567.cl
+			{$t('apps.footer', { values: { year: new Date().getFullYear() } })}
 		</p>
 	</footer>
 

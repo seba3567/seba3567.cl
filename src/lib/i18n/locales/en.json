@@ -152,6 +152,31 @@
 	"apps": {
 		"metaTitle": "Apps · seba3567.cl",
 		"metaDescription": "Published apps by Sebastián Muñoz — AntiCallCL (Android, open beta).",
+		"title": "Apps",
+		"heroIntro": "Software you download, open, and use. Different from the",
+		"heroIntroLink": "GitHub catalog",
+		"sectionBadge": "01 — 01",
+		"sectionTitle": "Published.",
+		"sectionNote": "1 app · more in development",
+		"card": {
+			"beta": "Open beta",
+			"android": "Android 8+",
+			"stack": "Flutter · Kotlin",
+			"description": "Local unwanted-call manager. Filter by prefix, curated Chilean database — the decision stays on your phone, no cloud, no accounts.",
+			"package": "com.seba3567.anticall_chile",
+			"local": "100% local",
+			"viewApp": "View app",
+			"betaCta": "Beta",
+			"privacyCta": "Privacy",
+			"thumbAlt": "AntiCallCL preview {n}"
+		},
+		"cta": {
+			"eyebrow": "More coming",
+			"title": "Got an app idea? Let's collaborate.",
+			"body": "If you have an idea that needs to leave the repo and ship as an APK, let's talk.",
+			"button": "Let's talk"
+		},
+		"footer": "© {year} · /apps · /proyectos · seba3567.cl",
 		"appCard": {
 			"packageLabel": "Package",
 			"playCta": "Join the beta",
