@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import {
 		GithubLogo,
 		LinkedinLogo,
@@ -6,6 +7,10 @@
 		ArrowUpRight,
 	} from 'phosphor-svelte';
 	import * as Avatar from '$lib/components/ui/avatar';
+	import * as Card from '$lib/components/ui/card';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Separator } from '$lib/components/ui/separator';
+	import { revealChars, revealOnScroll, countUpOnVisible } from '$lib/animations';
 
 	const AVATAR_URL = 'https://avatars.githubusercontent.com/u/44386561?v=4';
 
@@ -23,7 +28,7 @@
 			n: '01',
 			title: 'AntiCallCL.',
 			sub: 'Android · Kotlin · Python',
-			accent: 'violet',
+			tags: ['Kotlin', 'Python', 'REST'],
 			href: 'https://github.com/seba3567/anticall_pages',
 			span: 'col-span-12 lg:col-span-7 row-span-2',
 		},
@@ -31,7 +36,7 @@
 			n: '02',
 			title: 'autoskills.',
 			sub: 'TypeScript · CLI',
-			accent: 'cyan',
+			tags: ['TS', 'Node', 'NPM'],
 			href: 'https://github.com/seba3567/autoskills',
 			span: 'col-span-6 lg:col-span-5',
 		},
@@ -39,7 +44,7 @@
 			n: '03',
 			title: 'frontend.skeleton.',
 			sub: 'Svelte 5 · Tailwind v4',
-			accent: 'amber',
+			tags: ['Svelte', 'Bun'],
 			href: 'https://github.com/seba3567/frontend.skeleton',
 			span: 'col-span-6 lg:col-span-3',
 		},
@@ -47,7 +52,7 @@
 			n: '04',
 			title: 'telefonia_ido.',
 			sub: 'Python · REST',
-			accent: 'sky',
+			tags: ['Python', 'SQL'],
 			href: 'https://github.com/seba3567/telefonia_ido',
 			span: 'col-span-6 lg:col-span-2',
 		},
@@ -55,7 +60,7 @@
 			n: '05',
 			title: 'Svelte advanced.',
 			sub: 'Svelte · TS',
-			accent: 'emerald',
+			tags: ['Svelte', 'TS'],
 			href: 'https://github.com/seba3567/Svelte-avanced-components',
 			span: 'col-span-6 lg:col-span-5',
 		},
@@ -63,7 +68,7 @@
 			n: '06',
 			title: 'seba.cl.',
 			sub: 'este sitio',
-			accent: 'fuchsia',
+			tags: ['Svelte', 'Tailwind'],
 			href: '/proyectos',
 			span: 'col-span-6 lg:col-span-3',
 		},
@@ -71,7 +76,7 @@
 			n: '07',
 			title: 'seba_flutter_skeleton.',
 			sub: 'Dart · Flutter',
-			accent: 'rose',
+			tags: ['Dart'],
 			href: 'https://github.com/seba3567/seba_flutter_skeleton',
 			span: 'col-span-6 lg:col-span-2',
 		},
@@ -79,16 +84,20 @@
 			n: '08',
 			title: 'PROYECTO-OPS.',
 			sub: 'TypeScript',
-			accent: 'cyan',
+			tags: ['TS'],
 			href: 'https://github.com/seba3567/PROYECTO-OPS',
 			span: 'col-span-6 lg:col-span-2',
 		},
 	];
 
 	const stack = [
-		{ label: 'In use', items: 'TypeScript · Django · SQL · Python' },
-		{ label: 'In progress', items: 'Kotlin · Dart · Go · Ruby' },
-		{ label: 'Base', items: 'JavaScript · Lua · REST · Docker' },
+		{ label: 'In use', items: 'TypeScript · Django · SQL · Python', value: 4 },
+		{
+			label: 'In progress',
+			items: 'Kotlin · Dart · Go · Ruby',
+			value: 4,
+		},
+		{ label: 'Base', items: 'JavaScript · Lua · REST · Docker', value: 5 },
 	];
 
 	const contact = [
@@ -104,6 +113,84 @@
 	function isInternal(href: string): boolean {
 		return href.startsWith('/');
 	}
+
+	// Refs for animations
+	let headerEl: HTMLElement | undefined = $state();
+	let heroNameEl: HTMLElement | undefined = $state();
+	let heroSubEl: HTMLElement | undefined = $state();
+	let workSectionEl: HTMLElement | undefined = $state();
+	let stackSectionEl: HTMLElement | undefined = $state();
+	let contactSectionEl: HTMLElement | undefined = $state();
+	const stackCountRefs: HTMLElement[] = $state([]);
+
+	onMount(() => {
+		const cleanups: Array<() => void> = [];
+
+		// Hero name: char-by-char reveal
+		if (heroNameEl) {
+			revealChars(heroNameEl, { staggerMs: 35, offsetY: 60, duration: 700, delay: 200 });
+		}
+
+		// Hero subtitle + tags: simple fade up
+		if (heroSubEl) {
+			revealOnScroll(heroSubEl, {
+				selector: '[data-reveal]',
+				staggerMs: 100,
+				offsetY: 16,
+				duration: 700,
+				once: true,
+			});
+		}
+
+		// Work grid: stagger from top-left, on scroll
+		if (workSectionEl) {
+			cleanups.push(
+				revealOnScroll(workSectionEl, {
+					selector: '[data-reveal-tile]',
+					staggerMs: 50,
+					offsetY: 30,
+					duration: 700,
+					once: true,
+				}),
+			);
+		}
+
+		// Stack counters
+		if (stackSectionEl) {
+			cleanups.push(
+				revealOnScroll(stackSectionEl, {
+					selector: '[data-reveal-block]',
+					staggerMs: 120,
+					offsetY: 24,
+					duration: 700,
+					once: true,
+				}),
+			);
+			// Animate the number labels (1, 2, 3 → 01, 02, 03 are static; the count is on data-count)
+			for (const el of stackCountRefs) {
+				if (!el) continue;
+				const final = Number(el.dataset.count ?? '0');
+				countUpOnVisible(el, final, { duration: 1400, delay: 300 });
+			}
+		}
+
+		// Contact cells
+		if (contactSectionEl) {
+			cleanups.push(
+				revealOnScroll(contactSectionEl, {
+					selector: '[data-reveal-cell]',
+					staggerMs: 80,
+					offsetY: 20,
+					duration: 600,
+					once: true,
+				}),
+			);
+		}
+
+		return () => {
+			for (const c of cleanups) c();
+		};
+	});
 </script>
 
 <svelte:head>
@@ -114,33 +201,65 @@
 	/>
 </svelte:head>
 
-<main class="relative mx-auto w-full max-w-6xl flex-1 px-6 sm:px-10">
+<main class="relative mx-auto w-full max-w-6xl flex-1 px-6 sm:px-10" bind:this={headerEl}>
 	<!-- ============= HERO ============= -->
 	<header class="pt-24 pb-32 sm:pt-36 sm:pb-44">
 		<div class="grid grid-cols-12 items-end gap-6">
 			<div class="col-span-12 lg:col-span-9">
-				<p class="flex items-center gap-3 font-mono text-xs text-neutral-500">
-					<span class="size-1.5 rounded-full bg-emerald-400"></span>
+				<div class="flex items-center gap-3 font-mono text-xs text-neutral-500" data-reveal>
+					<span class="relative flex size-1.5">
+						<span
+							class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
+						></span>
+						<span class="relative inline-flex size-1.5 rounded-full bg-emerald-400"></span>
+					</span>
 					<span>{profile.handle} · {profile.location}</span>
-				</p>
+				</div>
 
 				<h1
+					bind:this={heroNameEl}
 					class="mt-10 text-[clamp(3.5rem,12vw,9rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
 				>
 					Sebastián<br />
 					<span class="text-neutral-600">Muñoz.</span>
 				</h1>
 
-				<p
+				<div
+					bind:this={heroSubEl}
 					class="mt-10 max-w-xl text-balance text-lg leading-relaxed text-neutral-400 sm:text-xl"
 				>
-					{profile.intro}
-				</p>
+					<p data-reveal>{profile.intro}</p>
+					<div class="mt-6 flex flex-wrap items-center gap-2" data-reveal>
+						<a
+							href="https://github.com/seba3567"
+							target="_blank"
+							rel="noreferrer noopener"
+							class="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-medium text-neutral-200 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
+						>
+							<GithubLogo size={12} weight="bold" />
+							GitHub
+							<ArrowUpRight
+								size={10}
+								weight="bold"
+								class="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+							/>
+						</a>
+						<Badge
+							variant="outline"
+							class="border-emerald-400/20 bg-emerald-500/5 px-2.5 py-0.5 text-[10px] font-normal text-emerald-300"
+						>
+							Open to collaborate
+						</Badge>
+					</div>
+				</div>
 			</div>
 
-			<div class="col-span-12 flex items-center gap-5 lg:col-span-3 lg:flex-col lg:items-end">
+			<div
+				class="col-span-12 flex items-center gap-5 lg:col-span-3 lg:flex-col lg:items-end"
+				data-reveal
+			>
 				<Avatar.Root
-					class="size-24 overflow-hidden rounded-2xl border border-white/10 ring-1 ring-white/5 sm:size-32"
+					class="size-24 overflow-hidden rounded-2xl border border-white/10 ring-1 ring-white/5 transition-all duration-500 hover:scale-[1.04] hover:ring-violet-400/40 sm:size-32"
 				>
 					<Avatar.Image src={AVATAR_URL} alt={profile.name} class="rounded-2xl object-cover" />
 					<Avatar.Fallback
@@ -151,38 +270,32 @@
 				</Avatar.Root>
 				<div class="flex flex-col gap-1 lg:items-end">
 					<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">Find me</p>
-					<a
-						href="https://github.com/seba3567"
-						target="_blank"
-						rel="noreferrer noopener"
-						class="group inline-flex items-center gap-1.5 text-sm text-neutral-300 transition-colors hover:text-neutral-50"
-					>
-						GitHub
-						<ArrowUpRight
-							size={11}
-							weight="bold"
-							class="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-						/>
-					</a>
+					<p class="font-mono text-xs text-neutral-300">{profile.handle}</p>
 				</div>
 			</div>
 		</div>
 	</header>
 
 	<!-- ============= SELECTED WORK ============= -->
-	<section id="work" class="scroll-mt-24 border-t border-white/5 py-20 sm:py-28">
+	<section id="work" bind:this={workSectionEl} class="scroll-mt-24 py-20 sm:py-28">
+		<Separator class="mb-14 bg-white/5" />
+
 		<div class="mb-14 flex items-end justify-between gap-6">
-			<div>
-				<p class="font-mono text-xs text-neutral-500">01 — 08</p>
-				<h2
-					class="mt-3 text-5xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-6xl"
+			<div data-reveal>
+				<Badge
+					variant="outline"
+					class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
 				>
+					01 — 08
+				</Badge>
+				<h2 class="mt-4 text-5xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-6xl">
 					Work.
 				</h2>
 			</div>
 			<a
 				href="/proyectos"
 				class="group inline-flex items-center gap-1.5 font-mono text-xs text-neutral-400 transition-colors hover:text-neutral-100"
+				data-reveal
 			>
 				All projects
 				<ArrowUpRight
@@ -195,52 +308,86 @@
 
 		<div class="grid auto-rows-[180px] grid-cols-12 gap-3">
 			{#each work as w (w.n)}
-				<a
-					href={w.href}
-					target={isInternal(w.href) ? undefined : '_blank'}
-					rel={isInternal(w.href) ? undefined : 'noreferrer noopener'}
-					class="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] p-5 transition-all duration-500 hover:border-white/15 hover:bg-white/[0.04] {w.span}"
+				<Card.Root
+					data-reveal-tile
+					data-slot="card"
+					class="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border-white/5 bg-white/[0.015] p-0 transition-all duration-500 hover:border-white/20 hover:bg-white/[0.04] {w
+						.span}"
 				>
-					<div class="relative flex items-start justify-between">
-						<span class="font-mono text-[11px] text-neutral-600 transition-colors group-hover:text-neutral-400"
-							>{w.n}</span
-						>
-						<ArrowUpRight
-							size={14}
-							weight="bold"
-							class="text-neutral-600 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-neutral-200"
-						/>
-					</div>
-					<div class="relative">
-						<div
-							class="font-semibold tracking-[-0.02em] text-neutral-100 sm:text-lg md:text-xl"
-						>
-							{w.title}
+					<a
+						href={w.href}
+						target={isInternal(w.href) ? undefined : '_blank'}
+						rel={isInternal(w.href) ? undefined : 'noreferrer noopener'}
+						class="flex h-full flex-col justify-between p-5"
+					>
+						<div class="flex items-start justify-between">
+							<span
+								class="font-mono text-[11px] text-neutral-600 transition-colors group-hover:text-neutral-400"
+								>{w.n}</span
+							>
+							<ArrowUpRight
+								size={14}
+								weight="bold"
+								class="text-neutral-600 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-neutral-200"
+							/>
 						</div>
-						<div class="mt-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
-							{w.sub}
+						<div>
+							<Card.Title
+								class="text-base font-semibold tracking-[-0.02em] text-neutral-100 sm:text-lg md:text-xl"
+							>
+								{w.title}
+							</Card.Title>
+							<Card.Description class="mt-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
+								{w.sub}
+							</Card.Description>
+							<div class="mt-2.5 flex flex-wrap gap-1">
+								{#each w.tags as t (t)}
+									<Badge
+										variant="outline"
+										class="border-white/5 bg-white/[0.02] px-1.5 py-0 text-[9px] font-normal text-neutral-500"
+									>
+										{t}
+									</Badge>
+								{/each}
+							</div>
 						</div>
-					</div>
-				</a>
+					</a>
+				</Card.Root>
 			{/each}
 		</div>
 	</section>
 
 	<!-- ============= STACK ============= -->
-	<section id="stack" class="scroll-mt-24 border-t border-white/5 py-20 sm:py-28">
-		<div class="mb-14">
-			<p class="font-mono text-xs text-neutral-500">Stack</p>
-			<h2 class="mt-3 text-5xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-6xl">
+	<section id="stack" bind:this={stackSectionEl} class="scroll-mt-24 py-20 sm:py-28">
+		<Separator class="mb-14 bg-white/5" />
+
+		<div class="mb-14" data-reveal>
+			<Badge
+				variant="outline"
+				class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
+			>
+				Stack
+			</Badge>
+			<h2 class="mt-4 text-5xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-6xl">
 				What I use.
 			</h2>
 		</div>
 
 		<div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
-			{#each stack as s (s.label)}
-				<div>
-					<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
-						{s.label}
-					</p>
+			{#each stack as s, i (s.label)}
+				<div data-reveal-block>
+					<div class="flex items-baseline gap-3">
+						<span
+							bind:this={stackCountRefs[i]}
+							data-count={i + 1}
+							class="font-mono text-3xl font-semibold tracking-tight text-neutral-700"
+						>
+							0{i + 1}
+						</span>
+						<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+							{s.label}
+						</p>
+					</div>
 					<p
 						class="mt-5 text-balance text-2xl leading-tight tracking-[-0.02em] text-neutral-100 sm:text-3xl"
 					>
@@ -252,17 +399,26 @@
 	</section>
 
 	<!-- ============= CONTACT ============= -->
-	<section class="border-t border-white/5 py-20 sm:py-28">
-		<div class="mb-14">
-			<p class="font-mono text-xs text-neutral-500">Contact</p>
-			<h2 class="mt-3 text-5xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-6xl">
+	<section bind:this={contactSectionEl} class="py-20 sm:py-28">
+		<Separator class="mb-14 bg-white/5" />
+
+		<div class="mb-14" data-reveal>
+			<Badge
+				variant="outline"
+				class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
+			>
+				Contact
+			</Badge>
+			<h2 class="mt-4 text-5xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-6xl">
 				Say hi.
 			</h2>
 		</div>
 
-		<ul class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5 md:grid-cols-3">
+		<ul
+			class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5 md:grid-cols-3"
+		>
 			{#each contact as c (c.label)}
-				<li class="bg-neutral-950">
+				<li class="bg-neutral-950" data-reveal-cell>
 					<a
 						href={c.href}
 						target={isInternal(c.href) ? undefined : '_blank'}
