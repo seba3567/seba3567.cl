@@ -73,6 +73,21 @@ semánticos (status / error / info).
   NO incluirla en la nav del header ni en el panel de contacto del
   home. Solo vive en `SearchPanel` (búsqueda) y en `SiteFooter` (CTA
   secundario en páginas no-home).
+- **AntiCallCL es 100% local en runtime.** La app Flutter NO
+  consulta servidores en uso normal: no hay fetch, ni auth, ni
+  tracking, ni sincronización en vivo. El sitio web
+  `/apps/anticall` también es 100% estático (sin `fetch`, sin
+  auth, sin tracking) — es solo un showcase del APK. La sección
+  correspondiente del PrivacyDialog, las stats de "0 Servers" en
+  el panel hero, y el copy del meta description tienen que ser
+  consistentes.
+- **`telefonia_ido` es la fuente de datos (NO el backend) de
+  AntiCallCL.** El pipeline Python produce un dataset crudo de
+  números a bloquear, prefijos spam y clasificación de carriers
+  que la app importa y usa 100% local. La diferencia con un
+  "backend" es importante: el dato se empaqueta en el APK o se
+  importa una vez; el teléfono NO consulta ningún endpoint
+  cuando el usuario está bloqueando llamadas.
 
 Para retunear la paleta (e.g. cambiar el shade del verde), editar
 solo `src/routes/layout.css` — todos los componentes se actualizan

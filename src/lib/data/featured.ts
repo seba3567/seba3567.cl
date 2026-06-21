@@ -87,15 +87,18 @@ export const featuredProjects: FeaturedProject[] = [
 	{
 		slug: 'telefonia-ido',
 		name: 'telefonia_ido',
-		tagline: 'Backend Python para análisis de telefonía',
+		tagline: 'Fuente de datos para AntiCallCL',
 		description:
-			'Servicios en Python para analizar, clasificar y reportar llamadas. Sirve como backend de datos para AntiCallCL y como dataset de prefijos/spam.',
+			'Pipeline Python que produce el dataset crudo (números a bloquear, prefijos spam, clasificación de carriers) que AntiCallCL importa y bloquea de forma local. Sin API runtime: el dato se empaqueta y se importa dentro del APK — el teléfono no consulta ningún servidor en uso normal.',
 		status: 'active',
-		stack: ['Python', 'Flask/FastAPI', 'SQL'],
+		stack: ['Python', 'Pandas', 'SQL'],
 		links: {
 			github: 'https://github.com/seba3567/telefonia_ido',
 		},
-		highlights: ['API REST para validar números', 'Reportes de prefijos spam'],
+		highlights: [
+			'Genera el raw de números que AntiCallCL importa',
+			'Reportes y validación de prefijos spam',
+		],
 		accent: 'mint',
 		icon: 'database',
 	},
