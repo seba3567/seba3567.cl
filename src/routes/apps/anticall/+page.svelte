@@ -19,7 +19,7 @@
 	import GlassCard from '$lib/components/GlassCard.svelte';
 	import AntiCallLogo from '$lib/components/AntiCallLogo.svelte';
 	import { animate, stagger } from 'animejs';
-	import { revealOnScroll, revealChars } from '$lib/animations';
+	import { revealOnScroll } from '$lib/animations';
 
 	const PLAY_STORE =
 		'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile&hl=en-US';
@@ -166,16 +166,25 @@
 		}
 
 		// Entrance animations
-		if (titleEl) {
-			revealChars(titleEl, { staggerMs: 28, offsetY: 50, duration: 700, delay: 200 });
-		}
 		animate('[data-panel-anim]', {
 			opacity: [0, 1],
 			translateY: [20, 0],
-			delay: stagger(60, { start: 300 }),
+			delay: stagger(60, { start: 200 }),
 			duration: 600,
 			ease: 'out(3)',
 		});
+
+		// Title: simple fade-in (no char split — those leave the
+		// element invisible if the JS races with the initial paint)
+		if (titleEl) {
+			animate(titleEl, {
+				opacity: [0, 1],
+				translateY: [30, 0],
+				duration: 800,
+				delay: 100,
+				ease: 'out(4)',
+			});
+		}
 
 		// Privacy listener
 		const onPrivacy = () => (privacyOpen = true);
@@ -197,9 +206,13 @@
 	/>
 </svelte:head>
 
-<!-- Breadcrumb floating top-left -->
-<div class="pointer-events-none fixed inset-x-0 top-4 z-40 flex justify-center px-4">
-	<div class="pointer-events-auto flex items-center gap-2 rounded-md border border-white/5 bg-neutral-950/80 px-3 py-1.5 font-mono text-[11px] text-neutral-500 backdrop-blur">
+<!-- Breadcrumb floating top-left (below the navbar so they don't overlap) -->
+<div
+	class="pointer-events-none fixed inset-x-0 top-20 z-30 flex justify-center px-4 sm:justify-start sm:pl-8"
+>
+	<div
+		class="pointer-events-auto flex items-center gap-1.5 rounded-md border border-white/5 bg-neutral-950/70 px-2.5 py-1 font-mono text-[10px] text-neutral-500 backdrop-blur"
+	>
 		<a href="/apps" class="transition-colors hover:text-neutral-300">/ apps</a>
 		<span class="text-neutral-700">/</span>
 		<span class="text-neutral-300">anticall</span>
@@ -239,14 +252,12 @@
 				<h1
 					bind:this={titleEl}
 					class="mt-10 text-[clamp(3rem,9vw,7.5rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
-					style="opacity: 0;"
 				>
 					AntiCallCL<span class="text-neutral-600">.</span>
 				</h1>
 
 				<p
-					class="panel-h1 mt-8 max-w-xl text-balance text-lg leading-relaxed text-neutral-400 sm:text-xl"
-					style="opacity: 0;"
+					class="mt-8 max-w-xl text-balance text-lg leading-relaxed text-neutral-400 sm:text-xl"
 				>
 					Gestor de llamadas no deseadas para Android. Trabaja entera en tu teléfono, sin
 					servidores ni cuentas. Tú decides qué hacer con cada llamada.
@@ -303,27 +314,51 @@
 					/>
 				</div>
 
-				<!-- Compact 4-stat strip below the logo -->
-				<div class="grid grid-cols-4 gap-2">
-					<div class="glass flex flex-col items-center gap-1 rounded-xl p-3 text-center">
-						<DeviceMobile size={14} weight="duotone" class="text-neutral-300" />
-						<div class="font-mono text-sm font-bold text-neutral-50">Flutter</div>
-						<div class="text-[8px] uppercase tracking-wider text-neutral-500">UI</div>
+				<!-- Compact 2x2 stat grid below the logo (no overflow) -->
+				<div class="grid grid-cols-2 gap-2">
+					<div class="glass flex items-center gap-2.5 rounded-xl p-2.5">
+						<div
+							class="flex size-7 shrink-0 items-center justify-center rounded-md border border-white/10 bg-white/5"
+						>
+							<DeviceMobile size={12} weight="duotone" class="text-neutral-300" />
+						</div>
+						<div class="min-w-0">
+							<div class="truncate font-mono text-sm font-bold text-neutral-50">Flutter</div>
+							<div class="text-[9px] uppercase tracking-wider text-neutral-500">UI</div>
+						</div>
 					</div>
-					<div class="glass flex flex-col items-center gap-1 rounded-xl p-3 text-center">
-						<Code size={14} weight="duotone" class="text-neutral-300" />
-						<div class="font-mono text-sm font-bold text-neutral-50">Kotlin</div>
-						<div class="text-[8px] uppercase tracking-wider text-neutral-500">Nativo</div>
+					<div class="glass flex items-center gap-2.5 rounded-xl p-2.5">
+						<div
+							class="flex size-7 shrink-0 items-center justify-center rounded-md border border-white/10 bg-white/5"
+						>
+							<Code size={12} weight="duotone" class="text-neutral-300" />
+						</div>
+						<div class="min-w-0">
+							<div class="truncate font-mono text-sm font-bold text-neutral-50">Kotlin</div>
+							<div class="text-[9px] uppercase tracking-wider text-neutral-500">Nativo</div>
+						</div>
 					</div>
-					<div class="glass flex flex-col items-center gap-1 rounded-xl p-3 text-center">
-						<ShieldCheck size={14} weight="duotone" class="text-mint-300" />
-						<div class="font-mono text-sm font-bold text-mint-300">100%</div>
-						<div class="text-[8px] uppercase tracking-wider text-neutral-500">Local</div>
+					<div class="glass flex items-center gap-2.5 rounded-xl p-2.5">
+						<div
+							class="flex size-7 shrink-0 items-center justify-center rounded-md border border-mint-400/30 bg-mint-500/10"
+						>
+							<ShieldCheck size={12} weight="duotone" class="text-mint-300" />
+						</div>
+						<div class="min-w-0">
+							<div class="truncate font-mono text-sm font-bold text-mint-300">100%</div>
+							<div class="text-[9px] uppercase tracking-wider text-neutral-500">Local</div>
+						</div>
 					</div>
-					<div class="glass flex flex-col items-center gap-1 rounded-xl p-3 text-center">
-						<Database size={14} weight="duotone" class="text-neutral-300" />
-						<div class="font-mono text-sm font-bold text-neutral-50">0</div>
-						<div class="text-[8px] uppercase tracking-wider text-neutral-500">Servers</div>
+					<div class="glass flex items-center gap-2.5 rounded-xl p-2.5">
+						<div
+							class="flex size-7 shrink-0 items-center justify-center rounded-md border border-white/10 bg-white/5"
+						>
+							<Database size={12} weight="duotone" class="text-neutral-300" />
+						</div>
+						<div class="min-w-0">
+							<div class="truncate font-mono text-sm font-bold text-neutral-50">0</div>
+							<div class="text-[9px] uppercase tracking-wider text-neutral-500">Servidores</div>
+						</div>
 					</div>
 				</div>
 			</div>
