@@ -227,12 +227,22 @@
 	</div>
 </div>
 
-<!-- Horizontal scroll track -->
-<div id="anticall-track" bind:this={trackEl} class="anticall-horizontal relative">
-	<!-- ============= PANEL 1: HERO ============= -->
+<!-- Horizontal scroll track — h-screen locks the track to exactly
+     one viewport so the body can't scroll past it into the next
+     route's content. h-[100dvh] is the mobile-safe fallback for
+     when the URL bar is showing. -->
+<div
+	id="anticall-track"
+	bind:this={trackEl}
+	class="anticall-horizontal relative h-screen w-screen overflow-hidden"
+>
+	<!-- ============= PANEL 1: HERO =============
+	     The first panel gets padding-top: 7rem via the :first-of-type
+	     rule in the <style> block below — clears the fixed breadcrumb
+	     at top-20. Other panels use the standard pt-20 (navbar only). -->
 	<section
 		id="hero"
-		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-20 sm:px-12 lg:px-20"
+		class="panel relative flex h-full w-screen flex-col justify-center px-6 sm:px-12 lg:px-20"
 	>
 		<div class="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-8 lg:grid-cols-[1.3fr_1fr]">
 			<!-- Left: title + intro + CTAs -->
@@ -391,7 +401,7 @@
 	<!-- ============= PANEL 2: SCREENSHOT ============= -->
 	<section
 		id="screenshot"
-		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-16 sm:px-12 lg:px-20"
+		class="panel relative flex h-full w-screen flex-col justify-center px-6 pt-20 sm:px-12 lg:px-20"
 	>
 		<div class="mx-auto w-full max-w-5xl">
 			<div class="mb-8 flex items-end justify-between gap-6" data-panel-anim>
@@ -450,7 +460,7 @@
 	<!-- ============= PANEL 3: ABOUT ============= -->
 	<section
 		id="about"
-		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-16 sm:px-12 lg:px-20"
+		class="panel relative flex h-full w-screen flex-col justify-center px-6 pt-20 sm:px-12 lg:px-20"
 	>
 		<div class="mx-auto w-full max-w-5xl">
 			<div class="mb-10" data-panel-anim>
@@ -513,7 +523,7 @@
 	<!-- ============= PANEL 4: GALLERY ============= -->
 	<section
 		id="gallery"
-		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-16 sm:px-12 lg:px-20"
+		class="panel relative flex h-full w-screen flex-col justify-center px-6 pt-20 sm:px-12 lg:px-20"
 	>
 		<div class="mx-auto w-full max-w-5xl">
 			<div class="mb-8 flex items-end justify-between gap-6" data-panel-anim>
@@ -567,7 +577,7 @@
 	<!-- ============= PANEL 5: STACK ============= -->
 	<section
 		id="stack"
-		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-16 sm:px-12 lg:px-20"
+		class="panel relative flex h-full w-screen flex-col justify-center px-6 pt-20 sm:px-12 lg:px-20"
 	>
 		<div class="mx-auto w-full max-w-5xl">
 			<div class="mb-10" data-panel-anim>
@@ -612,7 +622,7 @@
 	<!-- ============= PANEL 6: PRIVACY ============= -->
 	<section
 		id="privacy"
-		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-16 sm:px-12 lg:px-20"
+		class="panel relative flex h-full w-screen flex-col justify-center px-6 pt-20 sm:px-12 lg:px-20"
 	>
 		<div class="mx-auto w-full max-w-5xl">
 			<div class="mb-10" data-panel-anim>
@@ -665,7 +675,7 @@
 	<!-- ============= PANEL 7: BETA ============= -->
 	<section
 		id="beta"
-		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-16 sm:px-12 lg:px-20"
+		class="panel relative flex h-full w-screen flex-col justify-center px-6 pt-20 sm:px-12 lg:px-20"
 	>
 		<div
 			class="relative mx-auto w-full max-w-5xl overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-8 sm:p-12"
@@ -801,10 +811,16 @@
 		flex: 0 0 100vw;
 		min-width: 100vw;
 		height: 100vh;
+		height: 100dvh; /* mobile-safe: accounts for browser chrome */
 		scroll-snap-align: start;
 		scroll-snap-stop: always;
 		overflow-y: auto;
 		overscroll-behavior: contain;
+	}
+	/* The first panel needs more top padding to clear the
+	   fixed breadcrumb (top-20 ≈ 80px + ~32px height + gap). */
+	:global(.anticall-horizontal .panel:first-of-type) {
+		padding-top: 7rem; /* 112px — navbar (~76px) + breadcrumb clearance */
 	}
 </style>
 
