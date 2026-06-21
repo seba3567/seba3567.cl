@@ -1,23 +1,37 @@
 <script lang="ts">
 import './layout.css';
+import { onMount } from 'svelte';
+import { t } from 'svelte-i18n';
 import favicon from '$lib/assets/favicon.svg';
 import BackgroundBlobs from '$lib/components/BackgroundBlobs.svelte';
 import BackToTop from '$lib/components/BackToTop.svelte';
+import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 import SearchPanel from '$lib/components/SearchPanel.svelte';
+import SiteFooter from '$lib/components/SiteFooter.svelte';
 import SiteHeader from '$lib/components/SiteHeader.svelte';
+import { setupI18n } from '$lib/i18n';
+import { currentLocale } from '$lib/i18n/locale.svelte';
 
 let { children } = $props();
 
-// Origin used for absolute URLs in OG/Twitter cards. Falls back
-// to the production domain in prod (and the Vite preview host
-// in dev). Vite exposes VITE_*-style env vars but SvelteKit uses
-// its own (we get the runtime URL from $app/stores or by deriving
-// from location in the browser; SSR-side, env.PUBLIC_ORIGIN is
-// the only reliable source).
+// Initialize the i18n store on the client. SSR uses the
+// default locale (es) — the first browser render after
+// hydration switches to the persisted one and re-renders
+// any locale-dependent text.
+onMount(() => {
+	setupI18n();
+});
+
+// Origin used for absolute URLs in OG/Twitter cards. Static
+// since the site is deployed at a fixed domain.
 const ORIGIN = 'https://seba3567.cl';
 const OG_IMAGE = `${ORIGIN}/og.png`;
-const DESCRIPTION =
-	'Sebastián Muñoz — ingeniería, datos y mobile. Proyectos open source, apps y contacto.';
+
+// Derived reactive values for the meta tags. The first
+// read returns the default ('es') on the server; after
+// hydration the client updates it.
+const description = $derived($t('home.metaDescription'));
+const ogAlt = $derived($t('common.home') + ' — seba3567');
 </script>
 
 <svelte:head>
@@ -25,50 +39,53 @@ const DESCRIPTION =
 	<link rel="manifest" href="/manifest.webmanifest" />
 	<meta name="theme-color" content="#0a0a0a" />
 	<meta name="color-scheme" content="dark" />
+	<!-- lang attribute tracks the active locale so screen
+	     readers and search engines see the right one. -->
+	<html lang={currentLocale()}></html>
 
 	<!-- Open Graph (Facebook, LinkedIn, Slack, Discord, WhatsApp). -->
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="seba3567" />
-	<meta property="og:title" content="seba3567.cl · Sebastián Muñoz" />
-	<meta property="og:description" content={DESCRIPTION} />
+	<meta property="og:title" content={$t('home.metaTitle')} />
+	<meta property="og:description" content={description} />
 	<meta property="og:image" content={OG_IMAGE} />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
-	<meta property="og:image:alt" content="seba3567 — ingeniería, datos y mobile" />
+	<meta property="og:image:alt" content={ogAlt} />
 	<meta property="og:locale" content="es_CL" />
 
-	<!-- Twitter / X. The card is 'summary_large_image' so the OG
-	     image is used; the alt text mirrors the OG image alt. -->
+	<!-- Twitter / X. -->
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="seba3567.cl · Sebastián Muñoz" />
-	<meta name="twitter:description" content={DESCRIPTION} />
+	<meta name="twitter:title" content={$t('home.metaTitle')} />
+	<meta name="twitter:description" content={description} />
 	<meta name="twitter:image" content={OG_IMAGE} />
-	<meta name="twitter:image:alt" content="seba3567 — ingeniería, datos y mobile" />
+	<meta name="twitter:image:alt" content={ogAlt} />
 
 	<!-- Common meta. -->
-	<meta name="description" content={DESCRIPTION} />
+	<meta name="description" content={description} />
 </svelte:head>
 
 <!--
-  Skip-to-content link: hidden until focused, then jumps keyboard users
-  past the site header straight to <main>. WCAG 2.4.1 bypass blocks.
-  The link sits OUTSIDE the BackgroundBlobs so it inherits a solid
-  z-stack and works regardless of layout context.
+  Skip-to-content link. The label is set by the i18n store; it
+  lives OUTSIDE the BackgroundBlobs so it inherits a solid z-stack.
 -->
 <a
 	href="#main"
 	class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-mint-500 focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:font-medium focus:text-neutral-950 focus:shadow-2xl focus:shadow-mint-500/40 focus:outline-none"
 >
-	Saltar al contenido principal
+	{$t('common.saltarContenido')}
 </a>
 
 <BackgroundBlobs />
 
 <div class="relative z-10 flex min-h-screen flex-col">
-	<SiteHeader />
+	<SiteHeader>
+		<LanguageSwitcher />
+	</SiteHeader>
 	<main id="main" tabindex="-1" class="flex-1 outline-none">
 		{@render children()}
 	</main>
+	<SiteFooter />
 </div>
 
 <SearchPanel />

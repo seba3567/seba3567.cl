@@ -15,6 +15,7 @@ import {
 	X,
 } from 'phosphor-svelte';
 import { onMount } from 'svelte';
+import { t } from 'svelte-i18n';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import * as Dialog from '$lib/components/ui/dialog';
@@ -349,14 +350,14 @@ onMount(() => {
 					bind:this={inputEl}
 					bind:value={query}
 					onkeydown={handleKey}
-					placeholder="Buscar páginas, apps, repositorios…"
+					placeholder={$t('search.placeholder')}
 					class="w-full bg-transparent text-base text-neutral-100 placeholder:text-neutral-500 focus:outline-none"
 					autocomplete="off"
 					spellcheck="false"
 				/>
 				<Dialog.Close
 					class="inline-flex size-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-neutral-400 transition-colors hover:bg-white/10 hover:text-neutral-100"
-					aria-label="Cerrar"
+					aria-label={$t('common.close')}
 				>
 					<X size={12} weight="bold" />
 				</Dialog.Close>
@@ -368,9 +369,9 @@ onMount(() => {
 					<div class="px-4 py-12 text-center">
 						<p class="text-sm text-neutral-500">
 							{#if query.trim()}
-								Sin resultados para "{query}"
+								{$t('search.empty')} "{query}"
 							{:else}
-								Empezá a escribir para buscar…
+								{$t('search.hint')}
 							{/if}
 						</p>
 					</div>

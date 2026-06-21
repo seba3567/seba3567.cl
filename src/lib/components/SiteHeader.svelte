@@ -9,7 +9,8 @@ import {
 	MagnifyingGlass,
 	type ShieldCheck,
 } from 'phosphor-svelte';
-import { onMount } from 'svelte';
+import { onMount, type Snippet } from 'svelte';
+import { t } from 'svelte-i18n';
 import { page } from '$app/state';
 import { Badge } from '$lib/components/ui/badge';
 import { Button } from '$lib/components/ui/button';
@@ -21,8 +22,9 @@ import SearchPanel from './SearchPanel.svelte';
 type Props = {
 	username?: string;
 	repoCount?: number;
+	children?: Snippet;
 };
-let { username = 'seba3567', repoCount = 0 }: Props = $props();
+let { username = 'seba3567', repoCount = 0, children }: Props = $props();
 
 const currentPath = $derived(page.url?.pathname ?? '/');
 const isHome = $derived(currentPath === '/');
@@ -301,7 +303,7 @@ function scrollToSection(e: MouseEvent, id: string) {
 							? 'bg-white/10 text-neutral-50'
 							: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
 					>
-						Inicio
+						{$t('nav.home')}
 					</NavigationMenu.Link>
 				</NavigationMenu.Item>
 
@@ -313,7 +315,7 @@ function scrollToSection(e: MouseEvent, id: string) {
 							? 'bg-white/10 text-neutral-50'
 							: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
 					>
-						Proyectos
+						{$t('nav.projects')}
 					</NavigationMenu.Link>
 				</NavigationMenu.Item>
 
@@ -346,7 +348,7 @@ function scrollToSection(e: MouseEvent, id: string) {
 										href={group.href}
 										class="group/seeall inline-flex items-center gap-1 font-mono text-[10px] text-neutral-400 transition-colors hover:text-neutral-100"
 									>
-										Ver todo
+										{$t('common.viewAll')}
 										<ArrowUpRight
 											size={10}
 											weight="bold"
@@ -398,11 +400,11 @@ function scrollToSection(e: MouseEvent, id: string) {
 				bind:this={searchTriggerEl}
 				type="button"
 				onclick={() => (searchOpen = true)}
-				aria-label="Buscar"
+				aria-label={$t('common.search')}
 				class="hidden items-center gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-neutral-400 transition-all hover:scale-[1.02] hover:border-white/20 hover:bg-white/10 sm:inline-flex"
 			>
 				<MagnifyingGlass size={12} weight="bold" />
-				<span class="font-mono">Buscar…</span>
+				<span class="font-mono">{$t('common.search')}…</span>
 				<kbd
 					class="rounded border border-white/10 bg-white/5 px-1 py-0.5 font-mono text-[9px] text-neutral-500"
 				>/</kbd>
@@ -417,6 +419,10 @@ function scrollToSection(e: MouseEvent, id: string) {
 			>
 				<GithubLogo size={16} weight="fill" class="transition-transform group-hover/gh:rotate-[-6deg]" />
 			</a>
+
+			<!-- Language switcher (ES | EN). Pass via the layout
+			     using <SiteHeader><LanguageSwitcher /></SiteHeader>. -->
+			{#if children}{@render children()}{/if}
 
 			<Sheet.Root bind:open={mobileOpen}>
 				<Sheet.Trigger
@@ -440,10 +446,10 @@ function scrollToSection(e: MouseEvent, id: string) {
 							class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-neutral-300 transition-colors hover:bg-white/5 hover:text-neutral-100"
 						>
 							<MagnifyingGlass size={14} weight="bold" />
-							Buscar…
+							{$t('common.search')}…
 							<kbd
 								class="ml-auto rounded border border-white/10 bg-white/5 px-1 py-0.5 font-mono text-[9px] text-neutral-500"
-								>/</kbd>
+							>/</kbd>
 						</button>
 						<div class="my-2">
 							<Separator class="bg-white/5" />
@@ -456,7 +462,7 @@ function scrollToSection(e: MouseEvent, id: string) {
 								? 'bg-white/10 text-neutral-50'
 								: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
 						>
-							Inicio
+							{$t('nav.home')}
 						</a>
 						<a
 							href="/proyectos"
@@ -466,7 +472,7 @@ function scrollToSection(e: MouseEvent, id: string) {
 								? 'bg-white/10 text-neutral-50'
 								: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
 						>
-							Proyectos
+							{$t('nav.projects')}
 						</a>
 						{#each navGroups as group (group.trigger)}
 							<div class="mt-3">
@@ -480,7 +486,7 @@ function scrollToSection(e: MouseEvent, id: string) {
 									onclick={() => (mobileOpen = false)}
 									class="mt-1 block rounded-lg px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:bg-white/5 hover:text-neutral-200"
 								>
-									Ver todo
+									{$t('common.viewAll')}
 								</a>
 								{#each group.items as item (item.href)}
 									<a

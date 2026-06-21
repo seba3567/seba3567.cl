@@ -1,0 +1,293 @@
+{
+	"common": {
+		"back": "Back",
+		"home": "Home",
+		"close": "Close",
+		"search": "Search",
+		"cancel": "Cancel",
+		"loading": "Loading…",
+		"year": "© {year} · seba3567.cl",
+		"minutes": "min",
+		"bytes": "bytes",
+		"stars": "★ {count}",
+		"saltarContenido": "Skip to main content",
+		"viewAll": "View all"
+	},
+	"nav": {
+		"home": "Home",
+		"projects": "Projects",
+		"apps": "Apps",
+		"contact": "Contact"
+	},
+	"search": {
+		"placeholder": "Search projects, apps, shortcuts…",
+		"hint": "↑↓ to navigate · ↵ to open · esc to close",
+		"empty": "No results match your search.",
+		"noProjects": "No projects match your search.",
+		"sections": {
+			"projects": "Projects",
+			"apps": "Apps",
+			"shortcuts": "Shortcuts"
+		},
+		"poweredBy": "Fuse.js",
+		"intranet": {
+			"title": "Intranet seba3567",
+			"subtitle": "Private panel · intranet.seba3567.cl"
+		}
+	},
+	"home": {
+		"metaTitle": "seba3567.cl · Sebastián Muñoz",
+		"metaDescription": "Sebastián Muñoz (@seba3567) — Software & Data Engineer. Backend, data, mobile, QA. Projects, apps, and contact.",
+		"hero": {
+			"status": "Available to collaborate",
+			"location": "Chile",
+			"nameFirst": "Sebastián",
+			"nameLast": "Muñoz.",
+			"intro": "Backend, data, mobile, QA. I combine data analysis, backend architecture, and software quality to turn requirements into maintainable, measurable solutions.",
+			"viewApps": "View apps",
+			"github": "GitHub",
+			"email": "Email",
+			"stats": {
+				"languages": "Languages",
+				"repos": "Repos",
+				"apps": "Apps",
+				"stack": "Stack"
+			}
+		},
+		"selection": {
+			"badge": "01 — {count}",
+			"title": "Selected work.",
+			"viewAll": "View all",
+			"featuredTag": "App"
+		},
+		"stack": {
+			"badge": "Stack",
+			"title": "What I use.",
+			"groups": {
+				"inUse": "In use",
+				"learning": "Learning",
+				"base": "Foundation"
+			}
+		},
+		"specialties": {
+			"badge": "Specialties",
+			"title": "What I specialize in."
+		},
+		"contact": {
+			"badge": "Contact",
+			"title": "Get in touch.",
+			"githubLabel": "GitHub",
+			"githubHandle": "@seba3567",
+			"emailLabel": "Email",
+			"emailHandle": "Secure form",
+			"emailNote": "Protected form · address never published"
+		}
+	},
+	"proyectos": {
+		"metaTitle": "Projects · seba3567.cl",
+		"metaDescription": "All public repos by @seba3567, with search, language filter, and status (live / beta / archived).",
+		"title": "Projects.",
+		"subtitle": "Open source, data, and mobile.",
+		"search": "Search repos…",
+		"filters": {
+			"all": "All",
+			"live": "Live",
+			"wip": "In development",
+			"archived": "Archived"
+		},
+		"languageFilter": "Language",
+		"languageAll": "All languages",
+		"empty": "No projects match your search.",
+		"featured": "Featured"
+	},
+	"apps": {
+		"metaTitle": "Apps · seba3567.cl",
+		"metaDescription": "Published apps by Sebastián Muñoz — AntiCallCL (Android, open beta).",
+		"appCard": {
+			"packageLabel": "Package",
+			"playCta": "Join the beta",
+			"details": "View details"
+		}
+	},
+	"anticall": {
+		"metaTitle": "AntiCallCL · seba3567.cl",
+		"metaDescription": "AntiCallCL — a local call screener for Android (Flutter + Kotlin). Filter by prefix, no cloud, no accounts. Open beta.",
+		"hero": {
+			"beta": "Open beta",
+			"android": "Android 8+",
+			"title": "AntiCallCL",
+			"intro": "A call screener for Android. Runs entirely on your phone — no servers, no accounts. You decide what to do with every call.",
+			"joinBeta": "Join the beta",
+			"playStore": "Play Store",
+			"privacy": "Privacy",
+			"stats": {
+				"ui": "UI",
+				"native": "Native",
+				"local": "Local",
+				"servers": "Servers"
+			},
+			"localValue": "100%"
+		},
+		"screenshot": {
+			"badge": "01",
+			"title": "Main screen.",
+			"hint": "Click to enlarge",
+			"ariaOpen": "Open screen {n} in the viewer"
+		},
+		"about": {
+			"badge": "02",
+			"title": "What AntiCallCL is."
+		},
+		"gallery": {
+			"badge": "03",
+			"title": "Screenshots.",
+			"subtitle": "Click any image to open the viewer.",
+			"format": "AVIF · WebP · JPG"
+		},
+		"stack": {
+			"badge": "04",
+			"title": "How it's built.",
+			"subtitle": "The app runs 100% on the phone. No backend, no servers, no accounts."
+		},
+		"privacy": {
+			"badge": "05",
+			"title": "No cloud, no accounts.",
+			"readPolicy": "Read the full policy",
+			"viewSummary": "View interactive summary"
+		},
+		"beta": {
+			"badge": "Open beta",
+			"title": "Join the beta program.",
+			"intro": "Try the latest builds before public release. Your feedback shapes the roadmap.",
+			"joinBeta": "Join the beta",
+			"viewPlay": "View on Play Store"
+		}
+	},
+	"contact": {
+		"dialog": {
+			"title": "Get in touch",
+			"subtitle": "I reply by email. No tracking, no newsletters.",
+			"name": "Name",
+			"namePlaceholder": "Your name",
+			"email": "Email",
+			"emailPlaceholder": "you@email.com",
+			"subject": "Subject",
+			"subjectPlaceholder": "One line",
+			"message": "Message",
+			"messagePlaceholder": "Tell me in a few lines…",
+			"sending": "Sending…",
+			"send": "Send",
+			"cancel": "Cancel",
+			"honeypot": "Website (leave empty)",
+			"success": {
+				"title": "Received.",
+				"subtitle": "I'll reply soon. Your reference is",
+				"ref": "{id}",
+				"close": "Done"
+			},
+			"errors": {
+				"required": "This field is required.",
+				"email": "Email doesn't look valid.",
+				"minLength": "Message is too short.",
+				"cooldown": "Wait a moment before sending another message.",
+				"generic": "Couldn't send the message. Try again."
+			}
+		}
+	},
+	"privacy": {
+		"title": "AntiCall Chile Privacy Policy",
+		"lastUpdated": "Last updated · {date}",
+		"close": "Close",
+		"sections": {
+			"datos": {
+				"title": "Data we collect",
+				"body": "AntiCall Chile does not collect, store, or transmit personal data to external servers. All blocking and analysis logic runs locally on your device.",
+				"bullets": [
+					"We do not request accounts or credentials: the app runs without registration.",
+					"Blocked numbers and custom lists live only on your phone.",
+					"Call metrics are stored locally and you can delete them whenever you want.",
+					"We only access system permissions to run essential features and never copy that information off the device."
+				]
+			},
+			"uso": {
+				"title": "How we use information",
+				"body": "Since there's no cloud transfer, information use is strictly limited to the app's local operation.",
+				"bullets": [
+					"Process call events on the device to detect and block spam.",
+					"Remember your settings, lists, and preferences only inside the app's storage.",
+					"Show basic metrics so you can gauge blocking effectiveness.",
+					"Let you manually export or delete any locally-stored data."
+				]
+			},
+			"compartir": {
+				"title": "Who we share with",
+				"body": "Nobody. AntiCall Chile does not sell, transfer, or share data with third parties. The app has no ad SDKs or remote analytics.",
+				"bullets": [
+					"No ad network integration.",
+					"No remote analytics or beacons.",
+					"No third-party services that receive user data."
+				]
+			},
+			"derechos": {
+				"title": "Your rights and control",
+				"body": "Even though the app doesn't keep data on servers, we respect the rights granted by Chilean and international law.",
+				"bullets": [
+					"Local processing: no sync with servers, no cloud copies.",
+					"Deleting the app deletes all associated data.",
+					"You can review or wipe the local database at any time from settings."
+				]
+			},
+			"seguridad": {
+				"title": "Security",
+				"body": "All information is stored encrypted by Android itself. AntiCall doesn't open any outbound channels to the internet.",
+				"bullets": [
+					"Encrypted at rest (Android sandbox).",
+					"Sensitive permissions (calls, contacts) are user-granted and revocable.",
+					"No tracking or telemetry code."
+				]
+			},
+			"menores": {
+				"title": "Minors",
+				"body": "AntiCall Chile is not directed at children under 13. Since the app is local-only with no registration, we don't collect user ages.",
+				"bullets": [
+					"We don't ask for age and we don't verify identity.",
+					"Parents can supervise the app's use and uninstall it whenever they want."
+				]
+			},
+			"cambios": {
+				"title": "Changes to this policy",
+				"body": "If we change this policy, we'll publish the new version on this same page. The last-updated date is shown at the top.",
+				"bullets": [
+					"Updates will be reflected in the 'last updated' date.",
+					"For questions, contact us through the app."
+				]
+			}
+		},
+		"actions": {
+			"viewOriginal": "View original",
+			"understood": "Understood"
+		},
+		"footer": "© 2025 AntiCall Chile · All rights reserved"
+	},
+	"footer": {
+		"built": "Built with SvelteKit · Sharp · Anime.js",
+		"copyright": "© {year} Sebastián Muñoz",
+		"intranet": "Intranet"
+	},
+	"error": {
+		"title": "Error {status}",
+		"notFoundTitle": "This page doesn't exist.",
+		"notFoundBody": "The URL you requested isn't on this site. Check the URL, or go back home and use search (Ctrl/⌘ + K) to find what you're looking for.",
+		"serverBody": "Something broke on the server.",
+		"stack": "Stack trace (dev)",
+		"messages": {
+			"generic": "Something broke on the server."
+		}
+	},
+	"language": {
+		"es": "Español",
+		"en": "English",
+		"switchToEs": "Switch to Spanish",
+		"switchToEn": "Switch to English"
+	}
+}

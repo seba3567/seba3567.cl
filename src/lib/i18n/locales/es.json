@@ -1,0 +1,293 @@
+{
+	"common": {
+		"back": "Volver",
+		"home": "Inicio",
+		"close": "Cerrar",
+		"search": "Buscar",
+		"cancel": "Cancelar",
+		"loading": "Cargando…",
+		"year": "© {year} · seba3567.cl",
+		"minutes": "min",
+		"bytes": "bytes",
+		"stars": "★ {count}",
+		"saltarContenido": "Saltar al contenido principal",
+		"viewAll": "Ver todo"
+	},
+	"nav": {
+		"home": "Inicio",
+		"projects": "Proyectos",
+		"apps": "Apps",
+		"contact": "Contacto"
+	},
+	"search": {
+		"placeholder": "Buscar proyectos, apps, atajos…",
+		"hint": "↑↓ para navegar · ↵ para abrir · esc para cerrar",
+		"empty": "No hay resultados que coincidan con tu búsqueda.",
+		"noProjects": "No hay proyectos que coincidan con tu búsqueda.",
+		"sections": {
+			"projects": "Proyectos",
+			"apps": "Apps",
+			"shortcuts": "Atajos"
+		},
+		"poweredBy": "Fuse.js",
+		"intranet": {
+			"title": "Intranet seba3567",
+			"subtitle": "Panel privado · intranet.seba3567.cl"
+		}
+	},
+	"home": {
+		"metaTitle": "seba3567.cl · Sebastián Muñoz",
+		"metaDescription": "Sebastián Muñoz (@seba3567) — Ingeniero en Informática. Backend, datos, mobile, QA. Proyectos, apps y contacto.",
+		"hero": {
+			"status": "Disponible para colaborar",
+			"location": "Chile",
+			"nameFirst": "Sebastián",
+			"nameLast": "Muñoz.",
+			"intro": "Backend, datos, mobile, QA. Combino análisis de datos, arquitectura backend y calidad de software para convertir requerimientos en soluciones mantenibles y medibles.",
+			"viewApps": "Ver apps",
+			"github": "GitHub",
+			"email": "Email",
+			"stats": {
+				"languages": "Lenguajes",
+				"repos": "Repos",
+				"apps": "Apps",
+				"stack": "Stack"
+			}
+		},
+		"selection": {
+			"badge": "01 — {count}",
+			"title": "Selección.",
+			"viewAll": "Ver todos",
+			"featuredTag": "App"
+		},
+		"stack": {
+			"badge": "Stack",
+			"title": "Lo que uso.",
+			"groups": {
+				"inUse": "En uso",
+				"learning": "En progreso",
+				"base": "Base"
+			}
+		},
+		"specialties": {
+			"badge": "Especialidades",
+			"title": "En qué me especializo."
+		},
+		"contact": {
+			"badge": "Contacto",
+			"title": "Escríbeme.",
+			"githubLabel": "GitHub",
+			"githubHandle": "@seba3567",
+			"emailLabel": "Email",
+			"emailHandle": "Formulario seguro",
+			"emailNote": "Form protegido · no se publica la dirección"
+		}
+	},
+	"proyectos": {
+		"metaTitle": "Proyectos · seba3567.cl",
+		"metaDescription": "Todos los repos públicos de @seba3567, con búsqueda, filtro por lenguaje y estado (live / beta / archivado).",
+		"title": "Proyectos.",
+		"subtitle": "Open source, datos y mobile.",
+		"search": "Buscar repos…",
+		"filters": {
+			"all": "Todos",
+			"live": "Live",
+			"wip": "En desarrollo",
+			"archived": "Archivados"
+		},
+		"languageFilter": "Lenguaje",
+		"languageAll": "Todos los lenguajes",
+		"empty": "No hay proyectos que coincidan con tu búsqueda.",
+		"featured": "Destacado"
+	},
+	"apps": {
+		"metaTitle": "Apps · seba3567.cl",
+		"metaDescription": "Aplicaciones publicadas de Sebastián Muñoz — AntiCallCL (Android, beta abierta).",
+		"appCard": {
+			"packageLabel": "Paquete",
+			"playCta": "Unirme a la beta",
+			"details": "Ver detalle"
+		}
+	},
+	"anticall": {
+		"metaTitle": "AntiCallCL · seba3567.cl",
+		"metaDescription": "AntiCallCL — gestor local de llamadas no deseadas para Android (Flutter + Kotlin). Filtra por prefijo, sin nube, sin cuentas. Beta abierta.",
+		"hero": {
+			"beta": "Beta abierta",
+			"android": "Android 8+",
+			"title": "AntiCallCL",
+			"intro": "Gestor de llamadas no deseadas para Android. Trabaja entera en tu teléfono, sin servidores ni cuentas. Tú decides qué hacer con cada llamada.",
+			"joinBeta": "Unirme a la beta",
+			"playStore": "Play Store",
+			"privacy": "Privacidad",
+			"stats": {
+				"ui": "UI",
+				"native": "Nativo",
+				"local": "Local",
+				"servers": "Servers"
+			},
+			"localValue": "100%"
+		},
+		"screenshot": {
+			"badge": "01",
+			"title": "Pantalla principal.",
+			"hint": "Click para ampliar",
+			"ariaOpen": "Abrir pantalla {n} en el visor"
+		},
+		"about": {
+			"badge": "02",
+			"title": "Qué es AntiCallCL."
+		},
+		"gallery": {
+			"badge": "03",
+			"title": "Screenshots.",
+			"subtitle": "Click en cualquier imagen para abrir el visor.",
+			"format": "AVIF · WebP · JPG"
+		},
+		"stack": {
+			"badge": "04",
+			"title": "Cómo está hecho.",
+			"subtitle": "La app corre 100% en el teléfono. Sin backend, sin servidores, sin cuentas."
+		},
+		"privacy": {
+			"badge": "05",
+			"title": "Sin nube, sin cuentas.",
+			"readPolicy": "Leer la política completa",
+			"viewSummary": "Ver resumen interactivo"
+		},
+		"beta": {
+			"badge": "Beta abierta",
+			"title": "Únete al programa beta.",
+			"intro": "Probá las últimas builds antes del release público. Tu feedback ayuda a definir el roadmap.",
+			"joinBeta": "Unirme a la beta",
+			"viewPlay": "Ver en Play Store"
+		}
+	},
+	"contact": {
+		"dialog": {
+			"title": "Escríbeme",
+			"subtitle": "Te respondo a vuelta de correo. Sin tracking, sin newsletters.",
+			"name": "Nombre",
+			"namePlaceholder": "Tu nombre",
+			"email": "Email",
+			"emailPlaceholder": "tu@correo.cl",
+			"subject": "Asunto",
+			"subjectPlaceholder": "En una línea",
+			"message": "Mensaje",
+			"messagePlaceholder": "Contame en pocas líneas…",
+			"sending": "Enviando…",
+			"send": "Enviar",
+			"cancel": "Cancelar",
+			"honeypot": "Sitio web (dejar vacío)",
+			"success": {
+				"title": "Recibido.",
+				"subtitle": "Te respondo pronto. Tu referencia es",
+				"ref": "{id}",
+				"close": "Listo"
+			},
+			"errors": {
+				"required": "Este campo es obligatorio.",
+				"email": "Email no parece válido.",
+				"minLength": "Mensaje muy corto.",
+				"cooldown": "Esperá un momento antes de enviar otro mensaje.",
+				"generic": "No pude enviar el mensaje. Probá de nuevo."
+			}
+		}
+	},
+	"privacy": {
+		"title": "Política de Privacidad de Anticall Chile",
+		"lastUpdated": "Última actualización · {date}",
+		"close": "Cerrar",
+		"sections": {
+			"datos": {
+				"title": "Datos que recopilamos",
+				"body": "Anticall Chile no recopila, almacena ni transmite datos personales a servidores externos. Toda la lógica de bloqueo y análisis ocurre localmente en tu dispositivo.",
+				"bullets": [
+					"No solicitamos cuentas ni credenciales: la app opera sin registro.",
+					"Los números bloqueados o listas personalizadas residen únicamente en tu teléfono.",
+					"Las métricas de llamadas se guardan de manera local y puedes eliminarlas cuando quieras.",
+					"Solo accedemos a permisos del sistema para ejecutar funciones esenciales y nunca copiamos esa información fuera del equipo."
+				]
+			},
+			"uso": {
+				"title": "Cómo usamos la información",
+				"body": "Al no existir transferencia a la nube, el uso de información se limita estrictamente al funcionamiento local de la aplicación.",
+				"bullets": [
+					"Procesar eventos de llamadas en el dispositivo para detectar y bloquear spam.",
+					"Recordar tus configuraciones, listas y preferencias solo dentro del almacenamiento de la app.",
+					"Mostrar métricas básicas en la interfaz para que evalúes la efectividad del bloqueo.",
+					"Permitir que exportes o elimines manualmente cualquier dato almacenado localmente."
+				]
+			},
+			"compartir": {
+				"title": "Con quién se comparte",
+				"body": "Con nadie. Anticall Chile no vende, transfiere ni comparte datos con terceros. La app no incluye SDKs publicitarios ni analítica remota.",
+				"bullets": [
+					"Sin integración con redes de anuncios.",
+					"Sin analítica remota ni beacons.",
+					"Sin servicios de terceros que reciban datos del usuario."
+				]
+			},
+			"derechos": {
+				"title": "Tus derechos y control",
+				"body": "Aunque la aplicación no conserva datos en servidores, respetamos los derechos otorgados por la legislación chilena e internacional.",
+				"bullets": [
+					"Procesamiento local: sin sincronización con servidores ni copias en la nube.",
+					"Eliminar la app elimina todos los datos asociados.",
+					"Puedes revisar o borrar la base local en cualquier momento desde los ajustes."
+				]
+			},
+			"seguridad": {
+				"title": "Seguridad",
+				"body": "Toda la información se almacena cifrada por el propio sistema operativo Android. Anticall no introduce canales de transmisión hacia internet.",
+				"bullets": [
+					"Almacenamiento cifrado en reposo (sandbox de Android).",
+					"Permisos sensibles (llamadas, contactos) otorgados por el usuario; revocables.",
+					"Sin código de rastreo ni telemetría."
+				]
+			},
+			"menores": {
+				"title": "Menores de edad",
+				"body": "Anticall Chile no está dirigida a menores de 13 años. Al ser una app local sin registro, no recopilamos edad de los usuarios.",
+				"bullets": [
+					"No se solicita edad ni se verifica identidad.",
+					"Los padres pueden supervisar el uso de la app y desinstalarla cuando lo deseen."
+				]
+			},
+			"cambios": {
+				"title": "Cambios a esta política",
+				"body": "Si modificamos esta política, publicaremos la nueva versión en esta misma página. La fecha de la última actualización aparece al inicio.",
+				"bullets": [
+					"Las actualizaciones se reflejarán en la fecha de 'última actualización'.",
+					"Para dudas, contáctanos a través de la app."
+				]
+			}
+		},
+		"actions": {
+			"viewOriginal": "Ver original",
+			"understood": "Entendido"
+		},
+		"footer": "© 2025 Anticall Chile · Todos los derechos reservados"
+	},
+	"footer": {
+		"built": "Construido con SvelteKit · Sharp · Anime.js",
+		"copyright": "© {year} Sebastián Muñoz",
+		"intranet": "Intranet"
+	},
+	"error": {
+		"title": "Error {status}",
+		"notFoundTitle": "Esta página no existe.",
+		"notFoundBody": "La ruta que pediste no está en este sitio. Revisá la URL, o volvé al inicio y usá la búsqueda (Ctrl/⌘ + K) para encontrar lo que buscás.",
+		"serverBody": "Algo se rompió del lado del servidor.",
+		"stack": "Stack trace (dev)",
+		"messages": {
+			"generic": "Algo se rompió del lado del servidor."
+		}
+	},
+	"language": {
+		"es": "Español",
+		"en": "English",
+		"switchToEs": "Cambiar a Español",
+		"switchToEn": "Switch to English"
+	}
+}

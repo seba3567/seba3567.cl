@@ -1,5 +1,6 @@
 <script lang="ts">
 import { ArrowUpRight, EnvelopeSimple, GithubLogo } from 'phosphor-svelte';
+import { t } from 'svelte-i18n';
 import { Button } from '$lib/components/ui/button';
 import GlassCard from './GlassCard.svelte';
 
@@ -47,14 +48,14 @@ const GITHUB = 'https://github.com/seba3567';
 			class="group h-auto w-full justify-between gap-3 rounded-md border border-mint-400/20 bg-gradient-to-br bg-mint-500/8 px-5 py-4 backdrop-blur transition-all hover:border-mint-400/40 hover:from-mint-500/20 sm:px-6"
 		>
 			<div class="flex items-center gap-3">
-			<div
-				class="flex size-9 items-center justify-center rounded border border-mint-400/20 bg-mint-500/10"
-			>
+				<div
+					class="flex size-9 items-center justify-center rounded border border-mint-400/20 bg-mint-500/10"
+				>
 					<span class="font-mono text-xs font-semibold text-mint-300">i</span>
 				</div>
 				<div class="text-left">
-					<p class="text-sm font-semibold text-neutral-100">Intranet seba3567</p>
-					<p class="text-[11px] text-neutral-500">intranet.seba3567.cl</p>
+					<p class="text-sm font-semibold text-neutral-100">{$t('search.intranet.title')}</p>
+					<p class="text-[11px] text-neutral-500">{$t('search.intranet.subtitle')}</p>
 				</div>
 			</div>
 			<ArrowUpRight
@@ -66,6 +67,6 @@ const GITHUB = 'https://github.com/seba3567';
 	</div>
 
 	<p class="mt-6 font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-600">
-		© {new Date().getFullYear()} · seba3567.cl
+		{$t('footer.copyright')}
 	</p>
 </footer>
