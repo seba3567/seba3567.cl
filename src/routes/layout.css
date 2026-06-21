@@ -245,6 +245,7 @@
 
 @media (prefers-reduced-motion: reduce) {
 	* {
+		/* biome-ignore lint/complexity/noImportantStyles: prefers-reduced-motion requires !important to override utility classes */
 		animation-duration: 0.001ms !important;
 	}
 	.glass-liquid:hover::before {

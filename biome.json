@@ -12,7 +12,9 @@
 			"!**/.svelte-kit",
 			"!**/build",
 			"!**/.output",
-			"!**/node_modules"
+			"!**/node_modules",
+			"!**/.agents/skills",
+			"!**/src/lib/components/ui"
 		]
 	},
 	"formatter": {

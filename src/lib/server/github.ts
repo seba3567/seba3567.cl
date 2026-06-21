@@ -148,7 +148,11 @@ export async function fetchPublicRepos(
 		`https://api.github.com/users/${user}/repos?per_page=100&sort=updated&type=owner`,
 	);
 	const filtered = repos.filter(
-		(r) => !r.private && !r.disabled && (options.includeForks || !r.fork) && !r.archived,
+		(r) =>
+			!r.private &&
+			!r.disabled &&
+			(options.includeForks || !r.fork) &&
+			!r.archived,
 	);
 	// Enrich with languages. The cooldown is per-module (1 call / 5min),
 	// but the cache is per-URL. The repo list URL is already cached
@@ -160,7 +164,9 @@ export async function fetchPublicRepos(
 	const enriched = await Promise.all(
 		filtered.map(async (r) => {
 			try {
-				const langs = await githubFetch<Record<string, number>>(r.languages_url);
+				const langs = await githubFetch<Record<string, number>>(
+					r.languages_url,
+				);
 				return { ...r, languages: langs };
 			} catch (err) {
 				if ((err as Error & { code?: string }).code === 'COOLDOWN') {
@@ -200,7 +206,10 @@ export async function fetchTopRepos(
 	);
 	return repos
 		.filter((r) => !r.archived && !r.fork && !r.private && !r.disabled)
-		.sort((a, b) => new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime())
+		.sort(
+			(a, b) =>
+				new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime(),
+		)
 		.slice(0, limit);
 }
 
@@ -246,7 +255,7 @@ const repoListUrl = (user: string) =>
 const repoListCacheKey = (user: string) => `${repoListUrl(user)}#full`;
 const repoTopCacheKey = (user: string) => `${repoListUrl(user)}#top`;
 
-let backgroundRefreshInFlight = new Set<string>();
+const backgroundRefreshInFlight = new Set<string>();
 
 function triggerBackgroundRefresh(user: string, fn: () => Promise<unknown>) {
 	if (withinCooldown()) {
@@ -337,7 +346,8 @@ export async function getCachedTopRepos(
 		const all = (cached.value as GitHubRepo[])
 			.filter((r) => !r.archived && !r.fork && !r.private && !r.disabled)
 			.sort(
-				(a, b) => new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime(),
+				(a, b) =>
+					new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime(),
 			);
 		return all.slice(0, limit);
 	}
