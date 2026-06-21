@@ -4,10 +4,10 @@ import { onMount } from 'svelte';
 import ContactDialog from '$lib/components/ContactDialog.svelte';
 import ContactPanel from '$lib/components/home/ContactPanel.svelte';
 import HeroPanel from '$lib/components/home/HeroPanel.svelte';
-import HomeDots from '$lib/components/home/HomeDots.svelte';
 import SelectionPanel from '$lib/components/home/SelectionPanel.svelte';
 import SpecialtiesPanel from '$lib/components/home/SpecialtiesPanel.svelte';
 import StackPanel from '$lib/components/home/StackPanel.svelte';
+import PanelDots from '$lib/components/PanelDots.svelte';
 import type { PageData } from './$types';
 
 let { data }: { data: PageData } = $props();
@@ -206,7 +206,7 @@ onMount(() => {
 		});
 	}
 
-	// Pulse on the active slide dot is handled by HomeDots.svelte
+	// Pulse on the active slide dot is handled by PanelDots.svelte
 	// via a $effect on the activeId prop — the previous
 	// MutationObserver approach watched the whole dot container
 	// and re-queried on every attribute change (hover, focus,
@@ -245,7 +245,7 @@ onMount(() => {
 
 <!-- Slide indicator: dots at the bottom-center of the viewport (vertical layout,
    not inside the horizontal track). Shows active panel + label. -->
-<HomeDots sections={SECTIONS} activeId={activeSection} onSelect={scrollToSection} />
+<PanelDots sections={SECTIONS} activeId={activeSection} onSelect={scrollToSection} />
 
 <style>
 	/* Horizontal scroll track for the home page */

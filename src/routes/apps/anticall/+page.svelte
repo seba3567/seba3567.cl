@@ -8,8 +8,8 @@ import HeroPanel from '$lib/components/anticall/HeroPanel.svelte';
 import PrivacyPanel from '$lib/components/anticall/PrivacyPanel.svelte';
 import ScreenshotPanel from '$lib/components/anticall/ScreenshotPanel.svelte';
 import StackPanel from '$lib/components/anticall/StackPanel.svelte';
-import HomeDots from '$lib/components/home/HomeDots.svelte';
 import Lightbox from '$lib/components/Lightbox.svelte';
+import PanelDots from '$lib/components/PanelDots.svelte';
 import PrivacyDialog from '$lib/components/PrivacyDialog.svelte';
 import { galleryItems } from '$lib/data/anticall';
 
@@ -137,7 +137,7 @@ onMount(() => {
 </div>
 
 <!-- Slide indicator: dots at the bottom-center of the viewport -->
-<HomeDots sections={SECTIONS} activeId={activeSection} onSelect={scrollToSection} />
+<PanelDots sections={SECTIONS} activeId={activeSection} onSelect={scrollToSection} />
 
 <style>
 	/* Horizontal scroll track for the anticall page */
