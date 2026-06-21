@@ -206,19 +206,21 @@
 	/>
 </svelte:head>
 
-<!-- Location chip: centered below the navbar, prominent.
-     Stays centered on every screen size (not pushed to a side
-     where it gets lost). z-30 so it sits above the panel content
-     but below the navbar (z-40). -->
+<!-- Location chip: centered, just below the navbar.
+     top-24 (96px) leaves a clear 20px gap from the navbar
+     (navbar ends at ~76px). z-30 keeps it under the navbar
+     (z-40) so hover/click on the nav still works.
+     Width auto + max-w prevents it from being centered on
+     very wide screens (which would look detached from the page). -->
 <div
-	class="pointer-events-none fixed inset-x-0 top-20 z-30 flex justify-center px-4"
+	class="pointer-events-none fixed inset-x-0 top-24 z-30 flex justify-center px-4"
 >
 	<div
-		class="pointer-events-auto flex items-center gap-2 rounded-md border border-white/10 bg-neutral-950/80 px-3.5 py-1.5 font-mono text-[11px] backdrop-blur shadow-lg shadow-black/20"
+		class="pointer-events-auto flex items-center gap-1.5 rounded-md border border-white/5 bg-neutral-950/60 px-2.5 py-1 font-mono text-[10px] text-neutral-400 backdrop-blur transition-colors hover:border-white/10"
 	>
 		<a
 			href="/apps"
-			class="text-neutral-500 transition-colors hover:text-neutral-200"
+			class="transition-colors hover:text-neutral-200"
 		>
 			/apps
 		</a>
@@ -818,9 +820,10 @@
 		overscroll-behavior: contain;
 	}
 	/* The first panel needs more top padding to clear the
-	   fixed breadcrumb (top-20 ≈ 80px + ~32px height + gap). */
+	   fixed breadcrumb at top-24 (~96px) + its height (~28px)
+	   + a small gap. Total clearance needed ≈ 130px. */
 	:global(.anticall-horizontal .panel:first-of-type) {
-		padding-top: 7rem; /* 112px — navbar (~76px) + breadcrumb clearance */
+		padding-top: 8.5rem; /* 136px — navbar + breadcrumb + gap */
 	}
 </style>
 
