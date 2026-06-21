@@ -117,21 +117,67 @@
 		0 25px 50px -12px rgb(0 0 0 / 0.6);
 }
 
+/* ===== Modern glass hover =====
+   Card lifts, blur intensifies, border + inner highlight brighten,
+   soft shadow grows, accent glow halo. All in one composable animation. */
 @utility glass-hover {
 	transition:
-		background-color 200ms ease,
-		border-color 200ms ease,
-		transform 200ms ease,
-		box-shadow 200ms ease;
+		background-color 300ms cubic-bezier(0.22, 1, 0.36, 1),
+		border-color 300ms cubic-bezier(0.22, 1, 0.36, 1),
+		transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+		box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1),
+		backdrop-filter 300ms ease;
+	will-change: transform, box-shadow, backdrop-filter;
 }
 @utility glass-hover {
 	&:hover {
-		background-color: rgb(255 255 255 / 0.07);
-		border-color: rgb(255 255 255 / 0.14);
-		transform: translateY(-2px);
+		background-color: rgb(255 255 255 / 0.08);
+		border-color: rgb(255 255 255 / 0.18);
+		transform: translateY(-3px) scale(1.005);
 		box-shadow:
-			0 1px 0 0 rgb(255 255 255 / 0.1) inset,
-			0 30px 60px -15px rgb(0 0 0 / 0.7);
+			0 1px 0 0 rgb(255 255 255 / 0.14) inset,
+			0 30px 60px -20px rgb(0 0 0 / 0.8),
+			0 0 0 1px rgb(255 255 255 / 0.04),
+			0 0 40px -10px rgba(167, 139, 250, 0.25);
+	}
+}
+
+@utility glass-tap {
+	&:active {
+		transform: translateY(-1px) scale(0.998);
+		transition-duration: 80ms;
+	}
+}
+
+@utility glass-glow {
+	position: relative;
+	isolation: isolate;
+}
+@utility glass-glow {
+	&::after {
+		content: '';
+		position: absolute;
+		inset: -1px;
+		border-radius: inherit;
+		padding: 1px;
+		background: linear-gradient(
+			135deg,
+			rgba(167, 139, 250, 0.5),
+			rgba(232, 121, 249, 0.3),
+			rgba(252, 211, 77, 0.3)
+		);
+		-webkit-mask:
+			linear-gradient(#fff 0 0) content-box,
+			linear-gradient(#fff 0 0);
+		-webkit-mask-composite: xor;
+		mask-composite: exclude;
+		opacity: 0;
+		transition: opacity 300ms ease;
+		pointer-events: none;
+		z-index: 1;
+	}
+	&:hover::after {
+		opacity: 1;
 	}
 }
 
