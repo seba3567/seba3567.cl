@@ -1,6 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { PhoneX, ArrowUpRight, GithubLogo, Sparkle, Flask, Star } from 'phosphor-svelte';
+	import {
+		PhoneX,
+		ArrowUpRight,
+		Flask,
+		Star,
+		Lock,
+		Sparkle,
+	} from 'phosphor-svelte';
 	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Separator } from '$lib/components/ui/separator';
@@ -11,7 +18,9 @@
 		'https://play.google.com/apps/testing/com.seba3567.anticall_chile';
 	const PLAY_STORE =
 		'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile&hl=en-US';
+	const PRIVACY = 'https://seba3567.github.io/anticall_pages/';
 	const APP_DETAIL = '/apps/anticall';
+	const CONTACT_EMAIL = 'seba3567.dev@gmail.com';
 
 	let titleEl: HTMLElement | undefined = $state();
 	let listEl: HTMLElement | undefined = $state();
@@ -89,7 +98,7 @@
 				></div>
 
 				<div class="relative grid grid-cols-12 items-center gap-6 p-6 sm:p-8">
-					<!-- Icon + status -->
+					<!-- Icon -->
 					<div class="col-span-12 sm:col-span-3 lg:col-span-2">
 						<div class="flex items-center gap-4">
 							<div
@@ -127,7 +136,7 @@
 								variant="outline"
 								class="border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] font-normal uppercase tracking-wider text-neutral-400"
 							>
-								Kotlin · Flutter
+								Flutter · Kotlin
 							</Badge>
 						</div>
 
@@ -135,16 +144,16 @@
 							AntiCallCL.
 						</h3>
 						<p class="mt-2 max-w-xl text-balance text-sm text-neutral-400 sm:text-base">
-							Gestor de llamadas no deseadas para Android. Filtra por prefijo, identifica spam
-							chileno y decide tú qué hacer con cada llamada.
+							Gestor local de llamadas no deseadas. Filtra por prefijo, base curada chilena
+							y la decisión queda en tu teléfono — sin nube, sin cuentas.
 						</p>
 
-						<div class="mt-3 hidden flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500 sm:flex">
+						<div
+							class="mt-3 hidden flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500 sm:flex"
+						>
 							<span>com.seba3567.anticall_chile</span>
 							<span class="text-neutral-700">·</span>
-							<span>120+ testers</span>
-							<span class="text-neutral-700">·</span>
-							<span>1.2k prefijos CL</span>
+							<span class="text-emerald-300">100% local</span>
 						</div>
 					</div>
 
@@ -171,18 +180,18 @@
 							Beta
 						</a>
 						<a
-							href="https://github.com/seba3567/anticall_pages"
+							href={PRIVACY}
 							target="_blank"
 							rel="noreferrer noopener"
 							class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-medium text-neutral-300 transition-all hover:border-white/20 hover:bg-white/[0.08] lg:w-full"
 						>
-							<GithubLogo size={12} weight="bold" />
-							GitHub
+							<Lock size={12} weight="bold" />
+							Privacidad
 						</a>
 					</div>
 				</div>
 
-				<!-- Mini gallery strip -->
+				<!-- Mini gallery strip linking to detail page -->
 				<div class="grid grid-cols-6 gap-1.5 border-t border-white/5 bg-neutral-950/30 p-3 sm:gap-2 sm:p-4">
 					{#each [1, 2, 3, 4, 5, 6] as n (n)}
 						<a
@@ -207,13 +216,18 @@
 	<section bind:this={ctaEl} class="py-16 sm:py-20">
 		<Separator class="mb-12 bg-white/5" />
 
-		<div class="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02]" data-reveal>
+		<div
+			class="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02]"
+			data-reveal
+		>
 			<div
 				aria-hidden="true"
 				class="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-gradient-to-br from-violet-500/15 to-transparent blur-3xl"
 			></div>
 			<div class="relative flex flex-col items-start gap-6 p-8 sm:flex-row sm:items-center sm:p-10">
-				<div class="flex size-12 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+				<div
+					class="flex size-12 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5"
+				>
 					<Star size={20} weight="duotone" class="text-amber-300" />
 				</div>
 				<div class="flex-1">
@@ -228,7 +242,7 @@
 					</p>
 				</div>
 				<a
-					href="mailto:seba3567.dev@gmail.com"
+					href={`mailto:${CONTACT_EMAIL}`}
 					class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-neutral-100 transition-all hover:border-white/20 hover:bg-white/[0.08]"
 				>
 					<Sparkle size={13} weight="duotone" class="text-violet-300" />

@@ -19,29 +19,6 @@ export type FeaturedProject = {
 
 export const featuredProjects: FeaturedProject[] = [
 	{
-		slug: 'anticallcl',
-		name: 'AntiCallCL',
-		tagline: 'Firewall anti-spam de llamadas para Android',
-		description:
-			'Aplicación Android nativa (Kotlin) que identifica y bloquea llamadas spam / telemarketing en tiempo real sobre la red chilena. Trabaja con una base curada de prefijos y reportes comunitarios, sin depender de un servidor central obligatorio.',
-		status: 'wip',
-		stack: ['Kotlin', 'Android', 'Python', 'REST', 'SQLite'],
-		links: {
-			github: 'https://github.com/seba3567/anticall_pages',
-			demo: 'https://seba3567.github.io/anticall_pages',
-		},
-		highlights: [
-			'Bloqueo en tiempo real sin servidor central obligatorio',
-			'Lista curada de prefijos chilenos + reporte comunitario',
-			'Backend Python (`telefonia_ido`) para sincronización',
-			'Landing estática con onboarding y métricas',
-		],
-		relatedRepos: ['anticall_pages', 'telefonia_ido'],
-		accent: 'violet',
-		icon: 'phone-shield',
-		hero: true,
-	},
-	{
 		slug: 'autoskills',
 		name: '@seba3567/autoskills',
 		tagline: 'CLI que autodetecta tu stack e instala skills de IA',

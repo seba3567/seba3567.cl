@@ -3,29 +3,38 @@
 	import {
 		PhoneX,
 		ArrowUpRight,
-		GithubLogo,
-		Sparkle,
 		Flask,
 		ShieldCheck,
 		Database,
 		Code,
 		Users,
+		DeviceMobile,
+		Lock,
+		Eye,
 	} from 'phosphor-svelte';
 	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Separator } from '$lib/components/ui/separator';
 	import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
+	import Lightbox from '$lib/components/Lightbox.svelte';
 	import { revealOnScroll, revealChars } from '$lib/animations';
 
 	const PLAY_STORE =
 		'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile&hl=en-US';
 	const BETA_PROGRAM =
 		'https://play.google.com/apps/testing/com.seba3567.anticall_chile';
-	const GITHUB_LANDING = 'https://github.com/seba3567/anticall_pages';
-	const GITHUB_TELEFONIA = 'https://github.com/seba3567/telefonia_ido';
+	const PRIVACY =
+		'https://seba3567.github.io/anticall_pages/';
+	const CONTACT_EMAIL = 'seba3567.dev@gmail.com';
 
 	const screenshots = [1, 2, 3, 4, 5, 6];
 	const featuredShot = 1;
+
+	const galleryItems = screenshots.map((n) => ({
+		src: `/apps/anticall/${n}`,
+		alt: `AntiCallCL · pantalla ${n}`,
+		caption: `Pantalla ${n} de ${screenshots.length}`,
+	}));
 
 	const aboutParagraphs = [
 		'Anticall nació como respuesta al problema creciente de las llamadas no deseadas: empresas y servicios que llaman de forma repetida — a veces varias veces en pocas horas —, sumadas a nuevas formas de estafa y spam telefónico que afectan a miles de personas en Chile cada día.',
@@ -40,77 +49,70 @@
 			body: 'Rangos de números identificables para marketing, telemarketing o intentos de estafa.',
 		},
 		{
+			icon: Eye,
+			title: 'Tú decides',
+			body: 'No bloquea en automático. Te entrega la información y la decisión queda en tu lado.',
+		},
+		{
 			icon: Database,
 			title: 'Base curada CL',
-			body: 'Lista comunitaria de números reportados + prefijos chilenos verificados.',
+			body: 'Lista de prefijos chilenos verificables, editables y exportables desde la app.',
 		},
 		{
-			icon: Code,
-			title: 'Open source',
-			body: 'Repos públicos: `anticall_pages` (landing) + `telefonia_ido` (backend).',
-		},
-		{
-			icon: Users,
-			title: 'Tú decides',
-			body: 'No bloquea solo. Te entrega la información y la decisión queda en tu lado.',
+			icon: Lock,
+			title: '100% local',
+			body: 'Sin cuentas, sin servidores, sin nube. Todo se procesa y guarda en tu teléfono.',
 		},
 	];
 
 	const stackLayers = [
 		{
-			layer: 'Android · UI',
+			layer: 'UI',
 			tech: 'Flutter',
-			detail: 'Cross-platform UI, theming, navegación, formularios.',
+			detail: 'Interfaz cross-platform, theming, navegación, formularios y estados.',
 		},
 		{
-			layer: 'Android · Native',
+			layer: 'Nativo Android',
 			tech: 'Kotlin',
-			detail: 'CallScreeningService, contactos, broadcast receivers, persistencia.',
+			detail: 'CallScreeningService, contactos, permisos sensibles y persistencia local.',
 		},
-		{
-			layer: 'Backend',
-			tech: 'Python · FastAPI',
-			detail: 'Reportes comunitarios, sincronización de prefijos (`telefonia_ido`).',
-		},
-		{
-			layer: 'Landing',
-			tech: 'HTML · CSS · JS',
-			detail: 'Página estática del producto (`anticall_pages`).',
-		},
+	];
+
+	const privacyPoints = [
+		'Tus listas y métricas viven solo en tu dispositivo',
+		'La app opera sin registro, sin cuentas, sin nube',
+		'Puedes borrar todo desde los ajustes en cualquier momento',
+		'Al desinstalar se eliminan automáticamente todos los datos',
 	];
 
 	const betaPerks = [
-		'Acceso anticipado a nuevas versiones antes del release público',
-		'Canal directo de feedback con el equipo de desarrollo',
-		'Lista de prefijos actualizada en tiempo real',
-		'Tu opinión pesa en el roadmap de la app',
-	];
-
-	const metrics = [
-		{ label: 'Testers activos', value: '120+' },
-		{ label: 'Prefijos CL', value: '1.2k' },
-		{ label: 'Llamadas filtradas', value: '8.5k' },
-		{ label: 'Versión', value: '0.4.2' },
-	];
-
-	const relatedRepos = [
-		{ title: 'anticall_pages.', sub: 'Landing estática del producto', href: GITHUB_LANDING },
-		{ title: 'telefonia_ido.', sub: 'Backend Python · prefijos', href: GITHUB_TELEFONIA },
-		{ title: '@seba3567', sub: 'Más proyectos en el catálogo', href: 'https://github.com/seba3567' },
+		'Acceso anticipado antes del release público',
+		'Canal directo con el equipo de desarrollo',
+		'Ayuda a moldear el roadmap con tu feedback',
+		'Prefijos actualizados con cada build',
 	];
 
 	let titleEl: HTMLElement | undefined = $state();
 	let featuredEl: HTMLElement | undefined = $state();
 	let aboutEl: HTMLElement | undefined = $state();
 	let galleryEl: HTMLElement | undefined = $state();
-	let betaEl: HTMLElement | undefined = $state();
 	let stackEl: HTMLElement | undefined = $state();
+	let privacyEl: HTMLElement | undefined = $state();
+	let betaEl: HTMLElement | undefined = $state();
+
+	let lightboxOpen = $state(false);
+	let lightboxIndex = $state(0);
+
+	function openLightbox(i: number) {
+		lightboxIndex = i;
+		lightboxOpen = true;
+	}
 
 	onMount(() => {
 		if (titleEl) {
 			revealChars(titleEl, { staggerMs: 32, offsetY: 60, duration: 700, delay: 200 });
 		}
-		for (const sec of [featuredEl, aboutEl, galleryEl, betaEl, stackEl]) {
+		for (const sec of [featuredEl, aboutEl, galleryEl, stackEl, privacyEl, betaEl]) {
 			if (sec) {
 				revealOnScroll(sec, { selector: '[data-reveal]', staggerMs: 70, offsetY: 24, duration: 700 });
 			}
@@ -122,7 +124,7 @@
 	<title>AntiCallCL · seba3567.cl</title>
 	<meta
 		name="description"
-		content="AntiCallCL — gestor de llamadas no deseadas para Android (Kotlin + Flutter). Filtra por prefijo, base curada chilena, open source, beta abierta."
+		content="AntiCallCL — gestor local de llamadas no deseadas para Android (Flutter + Kotlin). Filtra por prefijo, sin nube, sin cuentas. Beta abierta."
 	/>
 </svelte:head>
 
@@ -165,8 +167,8 @@
 				</h1>
 
 				<p class="mt-6 max-w-xl text-balance text-lg leading-relaxed text-neutral-400 sm:text-xl">
-					Gestor de llamadas no deseadas para Android. Filtra por prefijo, identifica spam
-					chileno y decide tú qué hacer con cada llamada.
+					Gestor de llamadas no deseadas para Android. Trabaja entera en tu teléfono, sin
+					servidores ni cuentas. Tú decides qué hacer con cada llamada.
 				</p>
 
 				<div class="mt-7 flex flex-wrap items-center gap-2">
@@ -198,13 +200,13 @@
 						Play Store
 					</a>
 					<a
-						href={GITHUB_LANDING}
+						href={PRIVACY}
 						target="_blank"
 						rel="noreferrer noopener"
 						class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-neutral-100 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
 					>
-						<GithubLogo size={14} weight="bold" />
-						GitHub
+						<Lock size={14} weight="bold" />
+						Privacidad
 					</a>
 				</div>
 			</div>
@@ -212,20 +214,20 @@
 			<div class="col-span-12 lg:col-span-3" data-reveal>
 				<dl class="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5">
 					<div class="bg-neutral-950 p-4">
-						<dt class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">Stack</dt>
-						<dd class="mt-2 font-mono text-sm font-semibold text-neutral-100">Kotlin · Flutter</dd>
+						<dt class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">UI</dt>
+						<dd class="mt-2 font-mono text-sm font-semibold text-neutral-100">Flutter</dd>
+					</div>
+					<div class="bg-neutral-950 p-4">
+						<dt class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">Nativo</dt>
+						<dd class="mt-2 font-mono text-sm font-semibold text-neutral-100">Kotlin</dd>
 					</div>
 					<div class="bg-neutral-950 p-4">
 						<dt class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">Plataforma</dt>
 						<dd class="mt-2 font-mono text-sm font-semibold text-neutral-100">Android 8+</dd>
 					</div>
 					<div class="bg-neutral-950 p-4">
-						<dt class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">Privacidad</dt>
-						<dd class="mt-2 font-mono text-sm font-semibold text-emerald-300">No tracking</dd>
-					</div>
-					<div class="bg-neutral-950 p-4">
-						<dt class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">Licencia</dt>
-						<dd class="mt-2 font-mono text-sm font-semibold text-neutral-100">Open source</dd>
+						<dt class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">Procesamiento</dt>
+						<dd class="mt-2 font-mono text-sm font-semibold text-emerald-300">100% local</dd>
 					</div>
 				</dl>
 			</div>
@@ -236,13 +238,19 @@
 	<section bind:this={featuredEl} class="scroll-mt-24 py-8 sm:py-12">
 		<Separator class="mb-12 bg-white/5" />
 
-		<div class="relative mx-auto max-w-md" data-reveal>
+		<button
+			type="button"
+			onclick={() => openLightbox(featuredShot - 1)}
+			data-reveal
+			class="group relative mx-auto block max-w-md cursor-zoom-in"
+			aria-label="Abrir pantalla {featuredShot} en el visor"
+		>
 			<div
 				aria-hidden="true"
-				class="absolute -inset-6 -z-10 rounded-3xl bg-gradient-to-br from-violet-500/15 via-fuchsia-500/5 to-amber-500/5 opacity-60 blur-2xl"
+				class="absolute -inset-6 -z-10 rounded-3xl bg-gradient-to-br from-violet-500/15 via-fuchsia-500/5 to-amber-500/5 opacity-60 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
 			></div>
 			<div
-				class="relative mx-auto aspect-[9/16] w-full overflow-hidden rounded-[2rem] border border-white/10 bg-neutral-950 shadow-2xl shadow-black/60"
+				class="relative mx-auto aspect-[9/16] w-full overflow-hidden rounded-[2rem] border border-white/10 bg-neutral-950 shadow-2xl shadow-black/60 transition-transform duration-500 group-hover:scale-[1.01]"
 			>
 				<OptimizedPicture
 					src="/apps/anticall/{featuredShot}"
@@ -252,12 +260,21 @@
 					height={1200}
 					loading="eager"
 				/>
+				<div
+					aria-hidden="true"
+					class="pointer-events-none absolute inset-0 bg-gradient-to-t from-neutral-950/40 via-transparent to-transparent"
+				></div>
 			</div>
 			<div
 				aria-hidden="true"
 				class="pointer-events-none absolute -top-3 left-1/2 -translate-x-1/2 h-1.5 w-20 rounded-full bg-white/20 blur-md"
 			></div>
-		</div>
+			<span
+				class="absolute right-3 bottom-3 inline-flex items-center gap-1 rounded-full border border-white/10 bg-neutral-950/80 px-2.5 py-1 font-mono text-[10px] text-neutral-300 backdrop-blur transition-colors group-hover:bg-white/10"
+			>
+				Click para ampliar
+			</span>
+		</button>
 	</section>
 
 	<!-- ============= ABOUT (Spanish) ============= -->
@@ -336,6 +353,9 @@
 				<h2 class="mt-4 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
 					Screenshots.
 				</h2>
+				<p class="mt-2 text-sm text-neutral-500">
+					Click en cualquier imagen para abrir el visor.
+				</p>
 			</div>
 			<p class="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 sm:block">
 				AVIF · WebP · JPG · 1x & 2x
@@ -343,17 +363,17 @@
 		</div>
 
 		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-			{#each screenshots as n (n)}
-				<a
-					href={PLAY_STORE}
-					target="_blank"
-					rel="noreferrer noopener"
+			{#each screenshots as n, i (n)}
+				<button
+					type="button"
+					onclick={() => openLightbox(i)}
 					data-reveal
-					class="group/shot relative block aspect-[9/16] overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] transition-all duration-500 hover:border-white/30 hover:bg-white/[0.04]"
+					aria-label="Abrir pantalla {n} en el visor"
+					class="group/shot relative block aspect-[9/16] cursor-zoom-in overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] transition-all duration-500 hover:border-white/30 hover:bg-white/[0.04]"
 				>
 					<OptimizedPicture
 						src="/apps/anticall/{n}"
-						alt="AntiCallCL screenshot {n}"
+						alt="AntiCallCL · pantalla {n}"
 						class="size-full object-cover transition-transform duration-500 group-hover/shot:scale-[1.04]"
 						width={540}
 						height={1200}
@@ -366,7 +386,7 @@
 					>
 						{n}
 					</span>
-				</a>
+				</button>
 			{/each}
 		</div>
 	</section>
@@ -385,6 +405,9 @@
 			<h2 class="mt-4 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
 				Cómo está hecho.
 			</h2>
+			<p class="mt-2 max-w-2xl text-sm text-neutral-500">
+				La app corre 100% en el teléfono. Sin backend, sin servidores, sin cuentas.
+			</p>
 		</div>
 
 		<div class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5 md:grid-cols-2">
@@ -402,14 +425,61 @@
 							{s.detail}
 						</p>
 					</div>
-					<ArrowUpRight
-						size={16}
-						weight="bold"
-						class="mt-1 shrink-0 text-neutral-600 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-neutral-200"
+					<DeviceMobile
+						size={18}
+						weight="duotone"
+						class="mt-1 shrink-0 text-neutral-600 transition-colors group-hover:text-violet-300"
 					/>
 				</div>
 			{/each}
 		</div>
+	</section>
+
+	<!-- ============= PRIVACY ============= -->
+	<section bind:this={privacyEl} class="scroll-mt-24 py-16 sm:py-20">
+		<Separator class="mb-12 bg-white/5" />
+
+		<div class="mb-10" data-reveal>
+			<Badge
+				variant="outline"
+				class="border-emerald-400/20 bg-emerald-500/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-emerald-300"
+			>
+				Privacidad
+			</Badge>
+			<h2 class="mt-4 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
+				Sin nube, sin cuentas.
+			</h2>
+		</div>
+
+		<div class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5 md:grid-cols-2">
+			{#each privacyPoints as p, i (i)}
+				<div
+					data-reveal
+					class="flex items-start gap-3 bg-neutral-950 p-5"
+				>
+					<span
+						class="font-mono text-[10px] text-neutral-600 transition-colors group-hover:text-neutral-400"
+						>0{i + 1}</span
+					>
+					<p class="text-sm leading-relaxed text-neutral-300">{p}</p>
+				</div>
+			{/each}
+		</div>
+
+		<a
+			href={PRIVACY}
+			target="_blank"
+			rel="noreferrer noopener"
+			class="mt-6 inline-flex items-center gap-1.5 font-mono text-[11px] text-neutral-400 transition-colors hover:text-neutral-100"
+		>
+			<Lock size={11} weight="bold" />
+			Leer la política de privacidad completa
+			<ArrowUpRight
+				size={10}
+				weight="bold"
+				class="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+			/>
+		</a>
 	</section>
 
 	<!-- ============= JOIN BETA ============= -->
@@ -430,7 +500,7 @@
 			></div>
 
 			<div class="relative grid grid-cols-12 gap-6 p-8 sm:p-12 lg:gap-10">
-				<div class="col-span-12 lg:col-span-7">
+				<div class="col-span-12 lg:col-span-8">
 					<Badge
 						variant="outline"
 						class="border-amber-400/30 bg-amber-500/5 px-2.5 py-0.5 font-mono text-[10px] font-normal uppercase tracking-wider text-amber-300"
@@ -450,17 +520,17 @@
 						Únete al programa beta.
 					</h2>
 					<p class="mt-4 max-w-xl text-balance text-base text-neutral-400 sm:text-lg">
-						AntiCallCL está en desarrollo activo. Los testers beta acceden antes, reportan
-						prefijos nuevos y moldean el roadmap.
+						Probá las últimas builds antes del release público. Tu feedback ayuda a definir
+						el roadmap.
 					</p>
 
 					<ul class="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
-						{#each betaPerks as perk, i (i)}
+						{#each betaPerks as perk (perk)}
 							<li
 								data-reveal
 								class="flex items-start gap-2.5 rounded-xl border border-white/5 bg-white/[0.02] p-3 text-sm text-neutral-300"
 							>
-								<Sparkle size={14} weight="duotone" class="mt-0.5 shrink-0 text-amber-300" />
+								<Users size={14} weight="duotone" class="mt-0.5 shrink-0 text-amber-300" />
 								<span>{perk}</span>
 							</li>
 						{/each}
@@ -497,68 +567,54 @@
 					</div>
 				</div>
 
-				<div class="col-span-12 lg:col-span-5">
+				<div class="col-span-12 lg:col-span-4">
 					<div
-						class="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5"
+						class="relative h-full overflow-hidden rounded-2xl border border-white/5 bg-neutral-950 p-6"
 					>
-						{#each metrics as m (m.label)}
-							<div class="bg-neutral-950 p-5">
-								<p class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">
-									{m.label}
+						<div
+							aria-hidden="true"
+							class="pointer-events-none absolute -top-12 -right-12 size-40 rounded-full bg-gradient-to-br from-violet-500/15 to-transparent blur-2xl"
+						></div>
+						<div class="relative space-y-4">
+							<div class="flex items-center gap-2">
+								<Code size={14} weight="duotone" class="text-violet-300" />
+								<p
+									class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500"
+								>
+									Contacto
 								</p>
-								<p class="mt-2 font-mono text-3xl font-semibold text-neutral-50">{m.value}</p>
 							</div>
-						{/each}
+							<p class="text-sm text-neutral-300">
+								¿Dudas, sugerencias o quieres reportar un número?
+							</p>
+							<a
+								href={`mailto:${CONTACT_EMAIL}`}
+								class="group inline-flex items-center gap-1.5 break-all font-mono text-xs text-neutral-200 transition-colors hover:text-violet-300"
+							>
+								{CONTACT_EMAIL}
+								<ArrowUpRight
+									size={10}
+									weight="bold"
+									class="shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+								/>
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- ============= REPOS ============= -->
-	<section class="scroll-mt-24 py-16 sm:py-20">
-		<Separator class="mb-12 bg-white/5" />
-
-		<div class="mb-10" data-reveal>
-			<Badge
-				variant="outline"
-				class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
-			>
-				Repos
-			</Badge>
-			<h2 class="mt-4 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
-				Open source.
-			</h2>
-		</div>
-
-		<div class="grid grid-cols-1 gap-3 md:grid-cols-3">
-			{#each relatedRepos as r (r.title)}
-				<a
-					href={r.href}
-					target="_blank"
-					rel="noreferrer noopener"
-					data-reveal
-					class="group/repo flex items-center justify-between gap-4 rounded-2xl border border-white/5 bg-white/[0.015] p-5 transition-all duration-500 hover:border-white/20 hover:bg-white/[0.04]"
-				>
-					<div>
-						<div class="text-base font-semibold text-neutral-100">{r.title}</div>
-						<div class="mt-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
-							{r.sub}
-						</div>
-					</div>
-					<ArrowUpRight
-						size={14}
-						weight="bold"
-						class="text-neutral-500 transition-all group-hover/repo:-translate-y-0.5 group-hover/repo:translate-x-0.5 group-hover/repo:text-neutral-200"
-					/>
-				</a>
-			{/each}
-		</div>
-	</section>
-
 	<footer class="border-t border-white/5 py-12">
 		<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-600">
-			© {new Date().getFullYear()} · AntiCallCL · Kotlin + Flutter · seba3567.cl
+			© {new Date().getFullYear()} · AntiCallCL · Flutter + Kotlin · seba3567.cl
 		</p>
 	</footer>
 </main>
+
+<Lightbox
+	bind:open={lightboxOpen}
+	bind:index={lightboxIndex}
+	images={galleryItems}
+	onClose={() => (lightboxOpen = false)}
+/>
