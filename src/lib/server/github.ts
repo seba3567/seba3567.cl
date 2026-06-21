@@ -28,10 +28,15 @@ export type RepoWithLanguages = GitHubRepo & {
 };
 
 const USER_AGENT = 'seba3567-cl/0.1 (+https://seba3567.cl)';
-const CACHE_TTL_MS = 1000 * 60 * 60; // 1h — how long a successful response stays fresh
+/**
+ * Cache TTL: how long a successful response stays "fresh" before we
+ * consider it stale and trigger a background refresh. 15 min sits
+ * right in the middle of the 10-20 min window the user asked for.
+ */
+const CACHE_TTL_MS = 15 * 60 * 1000; // 15 min
 
 /**
- * Cooldown between GitHub API calls.
+ * Cooldown between actual GitHub API calls.
  *
  * GitHub's unauthenticated rate limit is 60 req/hour/IP. With ~90 repos
  * on seba3567's profile, fetchPublicRepos alone does 1 + N (≥90) requests
@@ -39,6 +44,12 @@ const CACHE_TTL_MS = 1000 * 60 * 60; // 1h — how long a successful response st
  * well under the limit we serialize everything through a single
  * 20-minute cooldown — at most 1 actual API call per 20 min, regardless
  * of cache state.
+ *
+ * This cooldown is independent of CACHE_TTL_MS: the cache can be
+ * stale (older than 15 min) but we still won't hit the API if the
+ * cooldown hasn't elapsed. The page reads from cache regardless —
+ * stale-while-revalidate. The cooldown only gates when the background
+ * refresh actually runs.
  *
  * 20 min was chosen because:
  *   - 60 req / hour = 1 req / min average. A burst of 90 requests costs
@@ -49,11 +60,6 @@ const CACHE_TTL_MS = 1000 * 60 * 60; // 1h — how long a successful response st
  *     = 2 cache misses = rate limit hit.
  *   - 20 min is the sweet spot: still feels "live" but well under
  *     the 60/h limit even in the worst case.
- *
- * If a call is requested inside the cooldown window:
- *   - Fresh cache    -> return it (no API call)
- *   - Stale cache     -> return it (stale-while-cooldown) + warn
- *   - Cold cache      -> throw COOLDOWN so caller can fall back
  */
 const API_COOLDOWN_MS = 20 * 60 * 1000; // 20 min
 
@@ -209,6 +215,119 @@ export type RepoStats = {
 	languages: Array<{ name: string; count: number; bytes: number }>;
 	topics: Array<{ name: string; count: number }>;
 };
+
+// =====================================================================
+// Stale-while-revalidate public API
+// =====================================================================
+//
+// The page-load functions (getCachedRepos / getCachedTopRepos) ALWAYS
+// return from cache. The cache is refreshed in the background after
+// CACHE_TTL_MS (15 min), gated by API_COOLDOWN_MS (20 min) so we
+// never burn the 60/h GitHub limit.
+//
+// Flow on each page request:
+//   1. Page calls getCachedRepos()
+//   2. If cache is fresh   -> return it (zero work)
+//   3. If cache is stale   -> return stale data IMMEDIATELY, fire a
+//                               background refresh (gated by cooldown)
+//   4. If no cache at all  -> block on the first fetch (cold start)
+//
+// The page never sees a 429/COOLDOWN error. Worst case the user gets
+// data that's up to 15 min old; best case it's always fresh.
+
+const repoListUrl = (user: string) =>
+	`https://api.github.com/users/${user}/repos?per_page=100&sort=updated&type=owner`;
+
+let backgroundRefreshInFlight = new Set<string>();
+
+function triggerBackgroundRefresh(user: string, fn: () => Promise<unknown>) {
+	if (withinCooldown()) {
+		// The page just got stale data; we'll retry on the next page load.
+		return;
+	}
+	if (backgroundRefreshInFlight.has(user)) return;
+	backgroundRefreshInFlight.add(user);
+	fn()
+		.catch((err) => {
+			console.warn(
+				`[github] background refresh for ${user} failed: ${(err as Error).message}`,
+			);
+		})
+		.finally(() => {
+			backgroundRefreshInFlight.delete(user);
+		});
+}
+
+/**
+ * getCachedRepos: returns the cached public repos for the user.
+ *
+ * - Cache fresh    -> return cached value
+ * - Cache stale    -> return stale value, fire background refresh
+ * - No cache       -> block on the first fetch (cold start, only once)
+ *
+ * Never throws. If the cold-start fetch fails (e.g. rate-limited
+ * before any cache exists), returns an empty array so the page
+ * renders an empty state instead of a 500.
+ */
+export async function getCachedRepos(user: string): Promise<PublicRepo[]> {
+	const key = repoListUrl(user);
+	const cached = cache.get(key);
+
+	if (cached) {
+		if (cached.expiresAt < Date.now()) {
+			// Stale-while-revalidate: return stale, refresh in background
+			console.warn(
+				`[github] serving stale cache for ${user} (age: ${Math.round(
+					(Date.now() - (cached.expiresAt - CACHE_TTL_MS)) / 1000,
+				)}s), triggering background refresh`,
+			);
+			triggerBackgroundRefresh(user, () => fetchPublicRepos(user));
+		}
+		return cached.value as PublicRepo[];
+	}
+
+	// Cold start: no cache, must fetch.
+	try {
+		return await fetchPublicRepos(user);
+	} catch (err) {
+		console.error(`[github] cold-start fetch failed for ${user}:`, err);
+		return [];
+	}
+}
+
+/**
+ * getCachedTopRepos: lightweight variant for the home page.
+ * Single API call (no languages enrichment).
+ */
+export async function getCachedTopRepos(
+	user: string,
+	limit: number,
+): Promise<GitHubRepo[]> {
+	const key = repoListUrl(user);
+	const cached = cache.get(key);
+
+	if (cached) {
+		if (cached.expiresAt < Date.now()) {
+			triggerBackgroundRefresh(user, () => fetchTopRepos(user, limit));
+		}
+		// Slice from the cached full list (already filtered+sorted in
+		// the original fetchTopRepos, but we re-apply to be safe since
+		// the cache holds the raw GitHubRepo[] and the slice may differ).
+		const all = (cached.value as GitHubRepo[])
+			.filter((r) => !r.archived && !r.fork && !r.private && !r.disabled)
+			.sort(
+				(a, b) => new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime(),
+			);
+		return all.slice(0, limit);
+	}
+
+	try {
+		return await fetchTopRepos(user, limit);
+	} catch (err) {
+		console.error(`[github] cold-start fetch (top) failed for ${user}:`, err);
+		return [];
+	}
+}
 
 export function computeStats(repos: PublicRepo[]): RepoStats {
 	const totalStars = repos.reduce((s, r) => s + r.stargazers_count, 0);

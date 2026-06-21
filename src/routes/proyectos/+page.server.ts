@@ -1,22 +1,20 @@
 import type { PageServerLoad } from './$types';
-import { fetchPublicRepos, computeStats, type RepoStats } from '$lib/server/github';
+import {
+	computeStats,
+	type RepoStats,
+	getCachedRepos,
+} from '$lib/server/github';
 import { featuredProjects } from '$lib/data/featured';
-import type { PublicRepo } from '$lib/server/github';
 
 export const load: PageServerLoad = async ({ setHeaders }) => {
 	const GITHUB_USER = 'seba3567';
 
-	let repos: PublicRepo[] = [];
-	let stats: RepoStats = { total: 0, stars: 0, forks: 0, languages: [], topics: [] };
-	let loadError: string | null = null;
-
-	try {
-		repos = await fetchPublicRepos(GITHUB_USER);
-		stats = computeStats(repos);
-	} catch (err) {
-		loadError = err instanceof Error ? err.message : 'Unknown GitHub API error';
-		console.error('[seba3567.cl] GitHub load failed:', loadError);
-	}
+	// getCachedRepos: ALWAYS returns from cache. If cache is fresh, zero
+	// work. If stale, returns stale data immediately and fires a
+	// background refresh. If no cache, blocks on the first fetch.
+	// Never throws — if the cold-start fetch fails, returns [].
+	const repos = await getCachedRepos(GITHUB_USER);
+	const stats = computeStats(repos);
 
 	setHeaders({
 		'cache-control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400',
@@ -31,7 +29,6 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 		languages,
 		featuredProjects: featuredProjects.filter((p) => !p.hero),
 		heroProject: featuredProjects.find((p) => p.hero) ?? null,
-		loadError,
 		loadedAt: new Date().toISOString(),
 	};
 };

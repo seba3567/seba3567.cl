@@ -568,13 +568,6 @@
 					</a>
 				{/each}
 			</div>
-			{#if data.loadError}
-				<p
-					class="mt-6 rounded-2xl border border-amber-400/20 bg-amber-500/5 p-4 text-xs text-amber-200/80"
-				>
-					⚠ GitHub API unavailable ({data.loadError}). Showing fallback list.
-				</p>
-			{/if}
 		</div>
 	</section>
 
