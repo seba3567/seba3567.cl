@@ -5,6 +5,7 @@
 		LinkedinLogo,
 		EnvelopeSimple,
 		ArrowUpRight,
+		PhoneX,
 	} from 'phosphor-svelte';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as Card from '$lib/components/ui/card';
@@ -27,10 +28,11 @@
 		{
 			n: '01',
 			title: 'AntiCallCL.',
-			sub: 'Android · Kotlin · Python',
-			tags: ['Kotlin', 'Python', 'REST'],
-			href: 'https://github.com/seba3567/anticall_pages',
+			sub: 'Android app · Kotlin',
+			tags: ['Kotlin', 'Android', 'Play Store'],
+			href: '/apps/anticall',
 			span: 'col-span-12 lg:col-span-7 row-span-2',
+			featured: true,
 		},
 		{
 			n: '02',
@@ -340,7 +342,7 @@
 							<Card.Description class="mt-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
 								{w.sub}
 							</Card.Description>
-							<div class="mt-2.5 flex flex-wrap gap-1">
+							<div class="mt-2.5 flex flex-wrap items-center gap-1">
 								{#each w.tags as t (t)}
 									<Badge
 										variant="outline"
@@ -349,6 +351,15 @@
 										{t}
 									</Badge>
 								{/each}
+								{#if w.featured}
+									<Badge
+										variant="outline"
+										class="ml-auto border-violet-400/20 bg-violet-500/5 px-1.5 py-0 text-[9px] font-normal text-violet-300"
+									>
+										<PhoneX size={8} weight="duotone" data-icon="inline-start" />
+										App
+									</Badge>
+								{/if}
 							</div>
 						</div>
 					</a>

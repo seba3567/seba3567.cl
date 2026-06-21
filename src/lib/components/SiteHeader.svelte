@@ -32,6 +32,7 @@
 		submenu?: NavItem[];
 	}[] = [
 		{ label: 'Index', href: '/', match: (p) => p === '/' },
+		{ label: 'Apps', href: '/apps', match: (p) => p.startsWith('/apps') },
 		{
 			label: 'Work',
 			href: '/proyectos',
