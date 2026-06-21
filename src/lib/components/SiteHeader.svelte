@@ -248,7 +248,7 @@
 		</a>
 
 		<!-- Desktop nav -->
-		<NavigationMenu.Root class="hidden md:flex">
+		<NavigationMenu.Root viewport={false} class="hidden md:flex">
 			<NavigationMenu.List class="gap-0.5">
 				<NavigationMenu.Item>
 					<NavigationMenu.Link
@@ -285,11 +285,11 @@
 							/>
 						</NavigationMenu.Trigger>
 						<NavigationMenu.Content
-							class="glass-liquid-static !mt-3 w-[460px] rounded-2xl !p-2 data-[motion=from-start]:animate-none data-[motion=from-end]:animate-none data-[motion=to-start]:animate-none data-[motion=to-end]:animate-none"
+							class="absolute left-0 top-full z-50 mt-2 w-[460px] overflow-hidden rounded-2xl border border-white/10 bg-neutral-950/95 p-0 shadow-2xl shadow-black/60 backdrop-blur-xl data-[motion=from-start]:animate-none data-[motion=from-end]:animate-none data-[motion=to-start]:animate-none data-[motion=to-end]:animate-none"
 						>
 							<!-- Header: visual label + secondary action -->
 							<div
-								class="flex items-center justify-between border-b border-white/5 px-3 pb-2 pt-1.5"
+								class="flex items-center justify-between border-b border-white/5 px-4 py-2.5"
 							>
 								<p
 									class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500"
@@ -298,7 +298,6 @@
 								</p>
 								<a
 									href={group.href}
-									onclick={() => (searchOpen = false)}
 									class="group/seeall inline-flex items-center gap-1 font-mono text-[10px] text-neutral-400 transition-colors hover:text-neutral-100"
 								>
 									Ver todo
@@ -310,8 +309,8 @@
 								</a>
 							</div>
 
-							<!-- Items: 2-col grid, generous padding, circular icon container -->
-							<ul class="grid grid-cols-1 gap-1 p-1.5">
+							<!-- Items list -->
+							<ul class="flex flex-col gap-0.5 p-1.5">
 								{#each group.items as item (item.href)}
 									{@const Icon = item.icon}
 									<li>
@@ -319,7 +318,7 @@
 											href={item.href}
 											target={isExternal(item.href) ? '_blank' : undefined}
 											rel={isExternal(item.href) ? 'noreferrer noopener' : undefined}
-											class="group/item flex items-center gap-3.5 rounded-xl p-3 transition-all hover:bg-white/[0.04] hover:ring-1 hover:ring-white/10"
+											class="group/item flex items-center gap-3.5 rounded-xl p-3 transition-all hover:bg-white/[0.04] focus:bg-white/[0.04] focus:outline-none"
 										>
 											<div
 												class="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-gradient-to-br from-white/[0.04] to-white/[0.01] transition-all group-hover/item:scale-105 group-hover/item:border-mint-400/30 group-hover/item:from-mint-500/10 group-hover/item:to-mint-500/[0.02]"
@@ -348,19 +347,11 @@
 													{item.description}
 												</p>
 											</div>
-											{#if isExternal(item.href)}
-												<ArrowUpRight
-													size={12}
-													weight="bold"
-													class="shrink-0 text-neutral-500 transition-all group-hover/item:-translate-y-0.5 group-hover/item:translate-x-0.5 group-hover/item:text-neutral-200"
-												/>
-											{:else}
-												<ArrowUpRight
-													size={12}
-													weight="bold"
-													class="shrink-0 text-neutral-600 transition-all group-hover/item:-translate-y-0.5 group-hover/item:translate-x-0.5 group-hover/item:text-neutral-200"
-												/>
-											{/if}
+											<ArrowUpRight
+												size={12}
+												weight="bold"
+												class="shrink-0 text-neutral-500 transition-all group-hover/item:-translate-y-0.5 group-hover/item:translate-x-0.5 group-hover/item:text-neutral-200"
+											/>
 										</NavigationMenu.Link>
 									</li>
 								{/each}
