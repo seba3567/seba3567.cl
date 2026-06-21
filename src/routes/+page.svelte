@@ -160,8 +160,26 @@
 	const INTRANET = 'https://intranet.seba3567.cl/';
 
 	// ----- Horizontal scroll state -----
+	const SECTIONS = [
+		{ id: 'hero', label: 'Inicio' },
+		{ id: 'seleccion', label: 'Selección' },
+		{ id: 'stack', label: 'Stack' },
+		{ id: 'especialidades', label: 'Especialidades' },
+		{ id: 'contacto', label: 'Contacto' },
+	] as const;
+
+	type SectionId = (typeof SECTIONS)[number]['id'];
 	let trackEl: HTMLElement | undefined = $state();
+	let activeSection: string = $state('hero');
 	let mounted = $state(false);
+
+	function scrollToSection(id: string) {
+		const track = trackEl;
+		if (!track) return;
+		const el = document.getElementById(id);
+		if (!el) return;
+		track.scrollTo({ left: el.offsetLeft - track.offsetLeft, behavior: 'smooth' });
+	}
 
 	onMount(() => {
 		mounted = true;
@@ -178,6 +196,22 @@
 			track.scrollBy({ left: step, behavior: 'auto' });
 		};
 		track.addEventListener('wheel', onWheel, { passive: false });
+
+		// Track active section via IntersectionObserver
+		const obs = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+						activeSection = (entry.target as HTMLElement).id;
+					}
+				}
+			},
+			{ root: track, threshold: [0.5, 0.75] },
+		);
+		for (const s of SECTIONS) {
+			const el = document.getElementById(s.id);
+			if (el) obs.observe(el);
+		}
 
 		// Entrance animations
 		animate('.panel-h1', {
@@ -197,6 +231,7 @@
 
 		return () => {
 			track.removeEventListener('wheel', onWheel);
+			obs.disconnect();
 		};
 	});
 </script>
@@ -566,7 +601,38 @@
 	</section>
 </div>
 
-<!-- Slide indicator removed: clean horizontal scroll without UI overlay. -->
+<!-- Slide indicator: dots at the bottom-center of the viewport (vertical layout,
+   not inside the horizontal track). Shows active panel + label. -->
+<div class="pointer-events-none fixed inset-x-0 bottom-6 z-30 flex justify-center">
+	<GlassCard
+		variant="strong"
+		class="pointer-events-auto flex items-center gap-1 rounded-md px-2 py-1.5"
+	>
+		{#each SECTIONS as s (s.id)}
+			<button
+				type="button"
+				onclick={() => scrollToSection(s.id)}
+				aria-label={'Ir a ' + s.label}
+				title={s.label}
+				class="group/dot flex items-center gap-1.5 rounded px-2 py-1 transition-colors hover:bg-white/5"
+			>
+				<span
+					class="size-1.5 rounded-full transition-all duration-500 {s.id === activeSection
+						? 'w-5 bg-violet-300'
+						: 'bg-neutral-600 group-hover/dot:bg-neutral-400'}"
+				></span>
+				<span
+					class="hidden font-mono text-[10px] uppercase tracking-wider text-neutral-400 transition-opacity duration-300 sm:inline {s.id ===
+					activeSection
+						? 'opacity-100'
+						: 'opacity-0'}"
+				>
+					{s.label}
+				</span>
+			</button>
+		{/each}
+	</GlassCard>
+</div>
 
 <style>
 	/* Horizontal scroll track for the home page */

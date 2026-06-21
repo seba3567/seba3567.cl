@@ -451,6 +451,19 @@
 	}
 }
 
+/* ===== Hide native browser scrollbar globally =====
+   We use our own indicators + anime.js for everything. */
+html {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+	width: 0;
+	height: 0;
+	display: none;
+}
+
 /* ===== @starting-style: progressive enhancement =====
    If JS hydrates and sets opacity:0, the page will still be visible
    before that runs (SSR + initial paint show the content). Once
