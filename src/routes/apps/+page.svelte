@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import {
-		PhoneX,
 		ArrowUpRight,
 		Flask,
 		Star,
@@ -13,6 +12,7 @@
 	import SiteFooter from '$lib/components/SiteFooter.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
+	import AntiCallLogo from '$lib/components/AntiCallLogo.svelte';
 	import { revealOnScroll, revealChars } from '$lib/animations';
 
 	const BETA_PROGRAM =
@@ -99,13 +99,13 @@
 				></div>
 
 				<div class="relative grid grid-cols-12 items-center gap-6 p-6 sm:p-8">
-					<!-- Icon -->
+					<!-- Logo -->
 					<div class="col-span-12 sm:col-span-3 lg:col-span-2">
 						<div class="flex items-center gap-4">
 							<div
-								class="flex size-16 items-center justify-center rounded-2xl bg-mint-500 ring-1 ring-mint-400/30"
+								class="flex size-16 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] p-2"
 							>
-								<PhoneX size={28} weight="duotone" class="text-neutral-950" />
+								<AntiCallLogo size={48} class="drop-shadow-[0_4px_16px_rgba(16,185,129,0.2)]" />
 							</div>
 							<div class="block sm:hidden">
 								<Badge

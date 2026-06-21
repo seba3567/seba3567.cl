@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import {
-		PhoneX,
 		ArrowUpRight,
 		Flask,
 		ShieldCheck,
@@ -18,6 +17,7 @@
 	import Lightbox from '$lib/components/Lightbox.svelte';
 	import PrivacyDialog from '$lib/components/PrivacyDialog.svelte';
 	import GlassCard from '$lib/components/GlassCard.svelte';
+	import AntiCallLogo from '$lib/components/AntiCallLogo.svelte';
 	import { animate, stagger } from 'animejs';
 	import { revealOnScroll, revealChars } from '$lib/animations';
 
@@ -291,42 +291,39 @@
 				</div>
 			</div>
 
-			<!-- Right: stats 2x2 -->
-			<div class="grid grid-cols-2 gap-3" data-panel-anim>
-				<div class="glass flex items-center gap-3 rounded-2xl p-4">
-					<div class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5">
-						<DeviceMobile size={16} weight="duotone" class="text-neutral-300" />
-					</div>
-					<div>
-						<div class="font-mono text-xl font-bold text-neutral-50 sm:text-2xl">Flutter</div>
-						<div class="truncate text-[10px] uppercase tracking-wider text-neutral-500">UI</div>
-					</div>
+			<!-- Right: logo + quick stats -->
+			<div class="flex flex-col items-stretch gap-3" data-panel-anim>
+				<!-- Big logo card: el escudo manda visualmente -->
+				<div
+					class="glass flex flex-1 items-center justify-center rounded-2xl p-8"
+				>
+					<AntiCallLogo
+						size={200}
+						class="drop-shadow-[0_12px_40px_rgba(16,185,129,0.18)]"
+					/>
 				</div>
-				<div class="glass flex items-center gap-3 rounded-2xl p-4">
-					<div class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5">
-						<Code size={16} weight="duotone" class="text-neutral-300" />
+
+				<!-- Compact 4-stat strip below the logo -->
+				<div class="grid grid-cols-4 gap-2">
+					<div class="glass flex flex-col items-center gap-1 rounded-xl p-3 text-center">
+						<DeviceMobile size={14} weight="duotone" class="text-neutral-300" />
+						<div class="font-mono text-sm font-bold text-neutral-50">Flutter</div>
+						<div class="text-[8px] uppercase tracking-wider text-neutral-500">UI</div>
 					</div>
-					<div>
-						<div class="font-mono text-xl font-bold text-neutral-50 sm:text-2xl">Kotlin</div>
-						<div class="truncate text-[10px] uppercase tracking-wider text-neutral-500">Nativo</div>
+					<div class="glass flex flex-col items-center gap-1 rounded-xl p-3 text-center">
+						<Code size={14} weight="duotone" class="text-neutral-300" />
+						<div class="font-mono text-sm font-bold text-neutral-50">Kotlin</div>
+						<div class="text-[8px] uppercase tracking-wider text-neutral-500">Nativo</div>
 					</div>
-				</div>
-				<div class="glass flex items-center gap-3 rounded-2xl p-4">
-					<div class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5">
-						<ShieldCheck size={16} weight="duotone" class="text-neutral-300" />
+					<div class="glass flex flex-col items-center gap-1 rounded-xl p-3 text-center">
+						<ShieldCheck size={14} weight="duotone" class="text-mint-300" />
+						<div class="font-mono text-sm font-bold text-mint-300">100%</div>
+						<div class="text-[8px] uppercase tracking-wider text-neutral-500">Local</div>
 					</div>
-					<div>
-						<div class="font-mono text-xl font-bold text-neutral-50 sm:text-2xl">100%</div>
-						<div class="truncate text-[10px] uppercase tracking-wider text-neutral-500">Local</div>
-					</div>
-				</div>
-				<div class="glass flex items-center gap-3 rounded-2xl p-4">
-					<div class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5">
-						<Database size={16} weight="duotone" class="text-neutral-300" />
-					</div>
-					<div>
-						<div class="font-mono text-xl font-bold text-neutral-50 sm:text-2xl">0</div>
-						<div class="truncate text-[10px] uppercase tracking-wider text-neutral-500">Servidores</div>
+					<div class="glass flex flex-col items-center gap-1 rounded-xl p-3 text-center">
+						<Database size={14} weight="duotone" class="text-neutral-300" />
+						<div class="font-mono text-sm font-bold text-neutral-50">0</div>
+						<div class="text-[8px] uppercase tracking-wider text-neutral-500">Servers</div>
 					</div>
 				</div>
 			</div>
