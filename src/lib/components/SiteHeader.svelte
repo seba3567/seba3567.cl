@@ -296,6 +296,7 @@ function scrollToSection(e: MouseEvent, id: string) {
 				<NavigationMenu.Item>
 					<NavigationMenu.Link
 						href="/"
+						aria-current={isActive('/') ? 'page' : undefined}
 						class="rounded-md px-3 py-1.5 text-xs font-medium transition-all {isActive('/')
 							? 'bg-white/10 text-neutral-50'
 							: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
@@ -307,6 +308,7 @@ function scrollToSection(e: MouseEvent, id: string) {
 				<NavigationMenu.Item>
 					<NavigationMenu.Link
 						href="/proyectos"
+						aria-current={isProjects ? 'page' : undefined}
 						class="rounded-md px-3 py-1.5 text-xs font-medium transition-all {isProjects
 							? 'bg-white/10 text-neutral-50'
 							: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
@@ -448,6 +450,7 @@ function scrollToSection(e: MouseEvent, id: string) {
 						</div>
 						<a
 							href="/"
+							aria-current={isActive('/') ? 'page' : undefined}
 							onclick={() => (mobileOpen = false)}
 							class="rounded-lg px-3 py-2 text-sm font-medium transition-colors {isActive('/')
 								? 'bg-white/10 text-neutral-50'
@@ -457,6 +460,7 @@ function scrollToSection(e: MouseEvent, id: string) {
 						</a>
 						<a
 							href="/proyectos"
+							aria-current={isProjects ? 'page' : undefined}
 							onclick={() => (mobileOpen = false)}
 							class="mt-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors {isProjects
 								? 'bg-white/10 text-neutral-50'

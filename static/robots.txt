@@ -1,3 +1,7 @@
-# allow crawling everything by default
+# Allow crawling everything by default. Static-only site, no
+# user-specific URLs, nothing to hide.
 User-agent: *
 Disallow:
+
+# Sitemap lives at the root.
+Sitemap: https://seba3567.cl/sitemap.xml
