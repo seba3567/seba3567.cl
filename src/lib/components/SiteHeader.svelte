@@ -298,12 +298,12 @@
 							/>
 						</NavigationMenu.Trigger>
 						<NavigationMenu.Content
-							class="absolute left-1/2 top-full z-50 mt-2 w-[640px] -translate-x-1/2 overflow-hidden rounded-2xl border border-white/10 bg-neutral-950/95 p-0 shadow-2xl shadow-black/60 backdrop-blur-xl data-[motion=from-start]:animate-none data-[motion=from-end]:animate-none data-[motion=to-start]:animate-none data-[motion=to-end]:animate-none"
+							class="absolute left-1/2 top-full z-50 mt-2 !w-[640px] min-w-[640px] -translate-x-1/2 overflow-hidden rounded-2xl border border-white/10 bg-neutral-950/95 p-0 shadow-2xl shadow-black/60 backdrop-blur-xl data-[motion=from-start]:animate-none data-[motion=from-end]:animate-none data-[motion=to-start]:animate-none data-[motion=to-end]:animate-none"
 						>
-							<div class="flex">
+							<div class="flex w-full">
 								<!-- LEFT: brand card (bits-ui style) -->
 								<div
-									class="flex w-[220px] shrink-0 flex-col justify-between gap-6 border-r border-white/5 bg-gradient-to-br from-white/[0.04] via-white/[0.01] to-transparent p-5"
+									class="flex w-[220px] min-w-[220px] shrink-0 flex-col justify-between gap-6 border-r border-white/5 bg-gradient-to-br from-white/[0.04] via-white/[0.01] to-transparent p-5"
 								>
 									<div class="flex flex-col gap-3">
 										<span
@@ -334,7 +334,7 @@
 								</div>
 
 								<!-- RIGHT: 2-col items list -->
-								<div class="grid flex-1 grid-cols-2 gap-x-2 gap-y-1 p-4">
+								<div class="grid min-w-0 flex-1 grid-cols-2 gap-x-2 gap-y-1 p-4">
 									{#each group.items as item (item.href)}
 										{@const Icon = item.icon}
 										<NavigationMenu.Link
