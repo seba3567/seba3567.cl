@@ -242,14 +242,125 @@ export function revealChars(
 }
 
 /**
- * Re-triggerable scroll observer (for `data-reveal-replay`).
- * Same as revealOnScroll but replays each time the element re-enters view.
+ * Reveal children sliding in from the LEFT (x: -offsetX → 0).
+ * Best for horizontal-scroll rows: items enter as the user scrolls
+ * horizontally into them.
  */
-export function replayOnScroll(
-	root: HTMLElement,
-	options: Parameters<typeof revealOnScroll>[1] = {},
+export function revealFromLeft(
+	target: HTMLElement | NodeListOf<Element> | string,
+	options: { offsetX?: number; staggerMs?: number; duration?: number; threshold?: number } = {},
 ): () => void {
-	return revealOnScroll(root, { ...options, once: false });
+	return revealFromSide(target, -1, options);
+}
+
+/**
+ * Reveal children sliding in from the RIGHT (x: +offsetX → 0).
+ */
+export function revealFromRight(
+	target: HTMLElement | NodeListOf<Element> | string,
+	options: { offsetX?: number; staggerMs?: number; duration?: number; threshold?: number } = {},
+): () => void {
+	return revealFromSide(target, 1, options);
+}
+
+function revealFromSide(
+	target: HTMLElement | NodeListOf<Element> | string,
+	direction: -1 | 1,
+	options: { offsetX?: number; staggerMs?: number; duration?: number; threshold?: number },
+): () => void {
+	const { offsetX = 60, staggerMs = 70, duration = 700, threshold = 0.2 } = options;
+
+	const targets: HTMLElement[] =
+		typeof target === 'string'
+			? Array.from(document.querySelectorAll<HTMLElement>(target))
+			: target instanceof NodeList
+				? (Array.from(target) as HTMLElement[])
+				: [target as HTMLElement];
+
+	if (!targets.length) return () => {};
+	if (prefersReducedMotion()) {
+		for (const el of targets) {
+			el.style.opacity = '1';
+			el.style.transform = 'none';
+		}
+		return () => {};
+	}
+
+	for (const el of targets) {
+		el.style.opacity = '0';
+		el.style.transform = `translateX(${direction * offsetX}px)`;
+	}
+
+	const observer = new IntersectionObserver(
+		(entries) => {
+			for (const entry of entries) {
+				if (entry.isIntersecting) {
+					animate(targets, {
+						opacity: [0, 1],
+						translateX: [direction * offsetX, 0],
+						delay: stagger(staggerMs),
+						duration,
+						ease: ease.out,
+					});
+					observer.disconnect();
+				}
+			}
+		},
+		{ threshold },
+	);
+
+	// Observe the parent if possible, otherwise each target
+	const parent = targets[0].parentElement;
+	if (parent) observer.observe(parent);
+	else for (const t of targets) observer.observe(t);
+
+	return () => {
+		observer.disconnect();
+		for (const el of targets) {
+			el.style.opacity = '';
+			el.style.transform = '';
+		}
+	};
+}
+
+/**
+ * Build a horizontally-scrolling marquee animation.
+ * Animates `el`'s `translateX` from `0` to `-50%` (or `+50%` for reverse),
+ * looping infinitely. Pause when `prefers-reduced-motion`.
+ *
+ * Expects the children inside `el` to be duplicated so the scroll loops
+ * seamlessly.
+ */
+export function startMarquee(
+	el: HTMLElement,
+	options: { duration?: number; reverse?: boolean; pauseOnHover?: boolean } = {},
+): () => void {
+	const { duration = 30000, reverse = false, pauseOnHover = true } = options;
+	if (!el || prefersReducedMotion()) return () => {};
+
+	const anim = animate(el, {
+		translateX: reverse ? ['-50%', '0%'] : ['0%', '-50%'],
+		duration,
+		ease: 'linear',
+		loop: true,
+		autoplay: true,
+	});
+
+	if (pauseOnHover) {
+		const onEnter = () => anim.pause();
+		const onLeave = () => anim.play();
+		el.addEventListener('mouseenter', onEnter);
+		el.addEventListener('mouseleave', onLeave);
+		return () => {
+			anim.revert();
+			el.removeEventListener('mouseenter', onEnter);
+			el.removeEventListener('mouseleave', onLeave);
+		};
+	}
+
+	return () => {
+		anim.revert();
+	};
 }
 
 /** Re-export for convenience. */

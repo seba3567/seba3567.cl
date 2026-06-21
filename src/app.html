@@ -17,6 +17,40 @@
 		<meta property="og:type" content="website" />
 		%sveltekit.head%
 	</head>
+	<style>
+		@view-transition {
+			navigation: auto;
+		}
+		::view-transition-old(root),
+		::view-transition-new(root) {
+			animation-duration: 280ms;
+			animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+		}
+		::view-transition-old(root) {
+			animation-name: vt-out;
+		}
+		::view-transition-new(root) {
+			animation-name: vt-in;
+		}
+		@keyframes vt-out {
+			to {
+				opacity: 0;
+				transform: translateY(-6px);
+			}
+		}
+		@keyframes vt-in {
+			from {
+				opacity: 0;
+				transform: translateY(6px);
+			}
+		}
+		@media (prefers-reduced-motion: reduce) {
+			::view-transition-old(root),
+			::view-transition-new(root) {
+				animation: none;
+			}
+		}
+	</style>
 	<body data-sveltekit-preload-data="hover" class="bg-neutral-950 text-neutral-100 antialiased">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>

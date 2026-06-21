@@ -17,6 +17,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
 	import Lightbox from '$lib/components/Lightbox.svelte';
+	import PrivacyDialog from '$lib/components/PrivacyDialog.svelte';
 	import { revealOnScroll, revealChars } from '$lib/animations';
 
 	const PLAY_STORE =
@@ -102,6 +103,7 @@
 
 	let lightboxOpen = $state(false);
 	let lightboxIndex = $state(0);
+	let privacyOpen = $state(false);
 
 	function openLightbox(i: number) {
 		lightboxIndex = i;
@@ -117,6 +119,10 @@
 				revealOnScroll(sec, { selector: '[data-reveal]', staggerMs: 70, offsetY: 24, duration: 700 });
 			}
 		}
+		// Listen for cross-page privacy requests (e.g. from CommandPalette)
+		const onPrivacy = () => (privacyOpen = true);
+		window.addEventListener('seba:privacy', onPrivacy as EventListener);
+		return () => window.removeEventListener('seba:privacy', onPrivacy as EventListener);
 	});
 </script>
 
@@ -199,15 +205,14 @@
 						</svg>
 						Play Store
 					</a>
-					<a
-						href={PRIVACY}
-						target="_blank"
-						rel="noreferrer noopener"
+					<button
+						type="button"
+						onclick={() => (privacyOpen = true)}
 						class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-neutral-100 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
 					>
 						<Lock size={14} weight="bold" />
 						Privacidad
-					</a>
+					</button>
 				</div>
 			</div>
 
@@ -616,5 +621,9 @@
 	bind:open={lightboxOpen}
 	bind:index={lightboxIndex}
 	images={galleryItems}
+	onClose={() => (lightboxOpen = false)}
+/>
+
+<PrivacyDialog bind:open={privacyOpen} onOpenChange={(v) => (privacyOpen = v)} />
 	onClose={() => (lightboxOpen = false)}
 />

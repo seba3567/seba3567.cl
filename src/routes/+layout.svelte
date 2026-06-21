@@ -4,6 +4,7 @@
 	import BackgroundBlobs from '$lib/components/BackgroundBlobs.svelte';
 	import SiteHeader from '$lib/components/SiteHeader.svelte';
 	import SiteFooter from '$lib/components/SiteFooter.svelte';
+	import CommandPalette from '$lib/components/CommandPalette.svelte';
 
 	let { children } = $props();
 </script>
@@ -19,3 +20,5 @@
 	{@render children()}
 	<SiteFooter />
 </div>
+
+<CommandPalette open={false} onOpenChange={() => {}} />
