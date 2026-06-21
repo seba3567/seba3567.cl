@@ -377,104 +377,108 @@
 		id="hero"
 		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-20 sm:px-12 lg:px-20"
 	>
-		<div class="mx-auto w-full max-w-5xl">
-			<div class="flex items-center gap-3" data-panel-anim>
-				<Badge
-					variant="outline"
-					class="border-violet-400/30 bg-violet-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-violet-300"
+		<div
+			class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 lg:grid-cols-[1.35fr_1fr] lg:items-center lg:gap-14"
+		>
+			<!-- LEFT: name, intro, CTAs -->
+			<div>
+				<div class="flex items-center gap-3" data-panel-anim>
+					<Badge
+						variant="outline"
+						class="border-emerald-400/30 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-300"
+					>
+						<span class="size-1.5 rounded-full bg-emerald-300"></span>
+						Disponible para colaborar
+					</Badge>
+					<Badge
+						variant="outline"
+						class="border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-medium text-neutral-300"
+					>
+						<DeviceMobile size={10} weight="duotone" class="mr-1" />
+						{profile.location}
+					</Badge>
+				</div>
+
+				<h1
+					class="panel-h1 mt-10 text-[clamp(3.5rem,10vw,8.5rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
+					style="opacity: 0;"
 				>
-					<span class="size-1.5 rounded-full bg-violet-300"></span>
-					Disponible para colaborar
-				</Badge>
-				<Badge
-					variant="outline"
-					class="border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-medium text-neutral-300"
+					Sebastián<br />
+					<span class="text-neutral-600">Muñoz.</span>
+				</h1>
+
+				<p
+					class="panel-h1 mt-8 max-w-xl text-balance text-lg leading-relaxed text-neutral-400 sm:text-xl"
+					style="opacity: 0;"
 				>
-					<DeviceMobile size={10} weight="duotone" class="mr-1" />
-					{profile.location}
-				</Badge>
+					{profile.intro}
+				</p>
+
+				<div
+					class="panel-h1 mt-7 flex flex-wrap items-center gap-2"
+					style="opacity: 0;"
+				>
+					<a
+						href="/apps"
+						data-magnetic
+						class="group inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-neutral-950 shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:scale-[1.02] hover:bg-emerald-400 hover:shadow-emerald-500/50"
+					>
+						<Rocket
+							size={16}
+							weight="fill"
+							class="transition-transform duration-500 group-hover:-rotate-12 group-hover:translate-y-[-1px]"
+						/>
+						Ver apps
+						<ArrowUpRight
+							size={12}
+							weight="bold"
+							class="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+						/>
+					</a>
+					<a
+						href="https://github.com/seba3567"
+						target="_blank"
+						rel="noreferrer noopener"
+						data-magnetic
+						class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-neutral-100 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
+					>
+						<GithubLogo
+							size={16}
+							weight="fill"
+							class="transition-transform duration-300 group-hover:rotate-[-8deg]"
+						/>
+						GitHub
+					</a>
+					<a
+						href="mailto:seba3567.dev@gmail.com"
+						data-magnetic
+						class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-neutral-100 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
+					>
+						<EnvelopeSimple
+							size={16}
+							weight="fill"
+							class="transition-transform duration-300 group-hover:-translate-y-0.5"
+						/>
+						Email
+					</a>
+				</div>
 			</div>
 
-			<h1
-				class="panel-h1 mt-10 text-[clamp(3.5rem,12vw,9rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
-				style="opacity: 0;"
-			>
-				Sebastián<br />
-				<span class="text-neutral-600">Muñoz.</span>
-			</h1>
-
-			<p
-				class="panel-h1 mt-8 max-w-2xl text-balance text-lg leading-relaxed text-neutral-400 sm:text-xl"
-				style="opacity: 0;"
-			>
-				{profile.intro}
-			</p>
-
-			<div
-				class="panel-h1 mt-7 flex flex-wrap items-center gap-2"
-				style="opacity: 0;"
-			>
-				<a
-					href="/apps"
-					data-magnetic
-					class="group inline-flex items-center gap-2 rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-500 px-4 py-2.5 text-sm font-semibold text-neutral-950 shadow-lg shadow-violet-500/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-violet-500/40"
-				>
-					<Rocket
-						size={16}
-						weight="fill"
-						class="transition-transform duration-500 group-hover:-rotate-12 group-hover:translate-y-[-1px]"
-					/>
-					Ver apps
-					<ArrowUpRight
-						size={12}
-						weight="bold"
-						class="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-					/>
-				</a>
-				<a
-					href="https://github.com/seba3567"
-					target="_blank"
-					rel="noreferrer noopener"
-					data-magnetic
-					class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-neutral-100 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
-				>
-					<GithubLogo
-						size={16}
-						weight="fill"
-						class="transition-transform duration-300 group-hover:rotate-[-8deg]"
-					/>
-					GitHub
-				</a>
-				<a
-					href="mailto:seba3567.dev@gmail.com"
-					data-magnetic
-					class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-neutral-100 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
-				>
-					<EnvelopeSimple
-						size={16}
-						weight="fill"
-						class="transition-transform duration-300 group-hover:-translate-y-0.5"
-					/>
-					Email
-				</a>
-			</div>
-
-			<!-- Stats strip -->
-			<div class="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+			<!-- RIGHT: stats 2x2 (no clash with the name) -->
+			<div class="grid grid-cols-2 gap-3" data-panel-anim>
 				{#each [{ label: 'Lenguajes', value: '4', icon: Cpu }, { label: 'Repos', value: '90+', icon: Stack }, { label: 'Apps', value: '1', icon: DeviceMobile }, { label: 'Stack', value: '4', icon: Stack }] as stat (stat.label)}
 					{@const Icon = stat.icon}
 					<div
-						data-panel-anim
 						data-stat-card
 						class="glass group/stat flex items-center gap-3 rounded-2xl p-4 transition-all duration-500 hover:-translate-y-0.5 hover:border-white/15 hover:bg-white/[0.06]"
 					>
 						<div
-							class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all duration-500 group-hover/stat:border-violet-400/40 group-hover/stat:bg-violet-500/10"
+							class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all duration-500 group-hover/stat:border-emerald-400/40 group-hover/stat:bg-emerald-500/10"
 						>
 							<Icon
 								size={16}
 								weight="duotone"
-								class="text-neutral-300 transition-colors group-hover/stat:text-violet-300"
+								class="text-neutral-300 transition-colors group-hover/stat:text-emerald-300"
 							/>
 						</div>
 						<div class="min-w-0">

@@ -5,7 +5,6 @@
 		GithubLogo,
 		List,
 		MagnifyingGlass,
-		BracketsCurly,
 		Stack,
 		DeviceMobile,
 		Folder,
@@ -36,6 +35,8 @@
 	let searchOpen = $state(false);
 	let mobileOpen = $state(false);
 	let searchTriggerEl: HTMLButtonElement | undefined = $state();
+	let avatarEl: HTMLDivElement | undefined = $state();
+	let avatarWrapEl: HTMLDivElement | undefined = $state();
 
 	type NavGroup = {
 		trigger: string;
@@ -146,10 +147,69 @@
 		};
 		triggerPulse();
 
+		// 3D avatar: entrance (scale + rotateY) + hover tilt
+		let avatarCleanups: Array<() => void> = [];
+		const aEl = avatarEl;
+		const wEl = avatarWrapEl;
+		if (aEl) {
+			animate(aEl, {
+				scale: [0.4, 1],
+				rotateY: [-90, 0],
+				opacity: [0, 1],
+				duration: 900,
+				ease: 'out(4)',
+				delay: 200,
+			});
+
+			// Subtle continuous "breathing" tilt so the 3D feels alive
+			const breathe = animate(aEl, {
+				rotateX: [0, 4, 0, -2, 0],
+				duration: 6000,
+				ease: 'inOut(2)',
+				loop: true,
+			});
+			avatarCleanups.push(() => {
+				try {
+					breathe.revert();
+				} catch {
+					/* noop */
+				}
+			});
+
+			// Hover tilt (more pronounced)
+			if (wEl) {
+				const onEnter = () => {
+					animate(aEl, {
+						rotateY: 18,
+						rotateX: 10,
+						scale: 1.06,
+						duration: 500,
+						ease: 'out(3)',
+					});
+				};
+				const onLeave = () => {
+					animate(aEl, {
+						rotateY: 0,
+						rotateX: 0,
+						scale: 1,
+						duration: 700,
+						ease: 'out(4)',
+					});
+				};
+				wEl.addEventListener('mouseenter', onEnter);
+				wEl.addEventListener('mouseleave', onLeave);
+				avatarCleanups.push(() => {
+					wEl.removeEventListener('mouseenter', onEnter);
+					wEl.removeEventListener('mouseleave', onLeave);
+				});
+			}
+		}
+
 		return () => {
 			window.removeEventListener('seba:open-search', onOpenSearch as EventListener);
 			window.removeEventListener('keydown', onKey);
 			if (pulseTimer) clearTimeout(pulseTimer);
+			avatarCleanups.forEach((fn) => fn());
 		};
 	});
 
@@ -174,16 +234,31 @@
 	<div
 		class="glass-liquid flex items-center justify-between gap-2 rounded-xl px-3 py-2 sm:gap-3 sm:px-4"
 	>
-		<!-- Brand -->
+		<!-- Brand: GitHub avatar in a 3D card with emerald accent -->
 		<a
 			href="/"
 			class="group flex items-center gap-2.5 rounded-md px-1 py-1 transition-opacity hover:opacity-90"
 			aria-label="Inicio"
 		>
-			<div
-				class="relative flex size-8 items-center justify-center rounded-md bg-gradient-to-br from-violet-500/90 via-fuchsia-500/80 to-amber-500/70 shadow-md ring-1 ring-white/10"
-			>
-				<BracketsCurly size={14} weight="bold" class="text-neutral-950" />
+			<div bind:this={avatarWrapEl} class="avatar-3d-wrap">
+				<div
+					bind:this={avatarEl}
+					class="avatar-3d relative flex size-9 items-center justify-center overflow-hidden rounded-md bg-emerald-500 ring-1 ring-emerald-400/30"
+				>
+					<img
+						src="https://avatars.githubusercontent.com/u/44386561?v=4"
+						alt="Sebastián Muñoz"
+						class="size-full object-cover"
+						loading="eager"
+						decoding="async"
+					/>
+					<span
+						class="pointer-events-none absolute inset-0 bg-gradient-to-tr from-emerald-500/30 via-transparent to-emerald-300/10 mix-blend-overlay"
+					></span>
+					<span
+						class="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10 rounded-md"
+					></span>
+				</div>
 			</div>
 			<div class="hidden flex-col leading-tight sm:flex">
 				<span class="text-sm font-semibold tracking-tight text-neutral-50">seba3567</span>
@@ -370,3 +445,31 @@
 </header>
 
 <SearchPanel />
+
+<style>
+	/* ===== 3D avatar card =====
+	   Wraps the GitHub profile image in a tilted 3D surface.
+	   anime.js drives the entrance + hover tilt; CSS gives the
+	   perspective container and the multi-layer green-tinted
+	   shadow that creates the depth illusion. */
+	:global(.avatar-3d-wrap) {
+		perspective: 500px;
+	}
+	:global(.avatar-3d) {
+		transform-style: preserve-3d;
+		will-change: transform, box-shadow;
+		box-shadow:
+			0 1px 2px rgb(0 0 0 / 0.5),
+			0 4px 8px rgb(0 0 0 / 0.35),
+			0 10px 20px rgb(16 185 129 / 0.25),
+			0 0 0 1px rgb(16 185 129 / 0.15);
+		transition: box-shadow 500ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	:global(.avatar-3d-wrap:hover .avatar-3d) {
+		box-shadow:
+			0 2px 4px rgb(0 0 0 / 0.55),
+			0 8px 16px rgb(0 0 0 / 0.45),
+			0 18px 36px rgb(16 185 129 / 0.4),
+			0 0 0 1px rgb(16 185 129 / 0.3);
+	}
+</style>
