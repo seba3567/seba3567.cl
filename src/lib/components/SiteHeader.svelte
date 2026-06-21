@@ -5,12 +5,8 @@
 		GithubLogo,
 		List,
 		MagnifyingGlass,
-		Stack,
 		DeviceMobile,
-		Folder,
-		Flask,
 		ShieldCheck,
-		Storefront,
 		CaretDown,
 		ArrowUpRight,
 	} from 'phosphor-svelte';
@@ -61,36 +57,16 @@
 			href: '/apps',
 			match: (p) => p.startsWith('/apps'),
 			items: [
+				// Solo Catálogo: las apps específicas (AntiCallCL, Beta,
+				// Play Store) ahora viven en /apps/anticall (horizontal
+				// scroll). El dropdown se mantiene como punto de entrada
+				// al catálogo general.
 				{
 					title: 'Catálogo',
 					href: '/apps',
 					description: 'Apps publicadas y en beta',
 					icon: DeviceMobile,
 					section: 'general',
-				},
-				{
-					title: 'AntiCallCL',
-					href: '/apps/anticall',
-					description: 'App principal · Android',
-					icon: ShieldCheck,
-					tag: 'App',
-					section: 'android',
-				},
-				{
-					title: 'Unirme a la beta',
-					href: 'https://play.google.com/apps/testing/com.seba3567.anticall_chile',
-					description: 'Programa de testing en Google Play',
-					icon: Flask,
-					tag: 'Beta',
-					section: 'android',
-				},
-				{
-					title: 'Play Store',
-					href: 'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile',
-					description: 'Instalar o actualizar',
-					icon: Storefront,
-					tag: 'Externo',
-					section: 'android',
 				},
 			],
 		},
@@ -298,72 +274,58 @@
 							/>
 						</NavigationMenu.Trigger>
 						<NavigationMenu.Content
-							class="absolute left-1/2 top-full z-50 mt-2 !w-[640px] min-w-[640px] -translate-x-1/2 overflow-hidden rounded-2xl border border-white/10 bg-neutral-950/95 p-0 shadow-2xl shadow-black/60 backdrop-blur-xl data-[motion=from-start]:animate-none data-[motion=from-end]:animate-none data-[motion=to-start]:animate-none data-[motion=to-end]:animate-none"
+							class="absolute left-1/2 top-full z-50 mt-2 !w-[320px] min-w-[320px] -translate-x-1/2 overflow-hidden rounded-2xl border border-white/10 bg-neutral-950/95 p-0 shadow-2xl shadow-black/60 backdrop-blur-xl data-[motion=from-start]:animate-none data-[motion=from-end]:animate-none data-[motion=to-start]:animate-none data-[motion=to-end]:animate-none"
 						>
-							<div class="flex w-full">
-								<!-- LEFT: brand card (bits-ui style) -->
+							<div class="flex w-full flex-col">
+								<!-- Header: brand label -->
 								<div
-									class="flex w-[220px] min-w-[220px] shrink-0 flex-col justify-between gap-6 border-r border-white/5 bg-gradient-to-br from-white/[0.04] via-white/[0.01] to-transparent p-5"
+									class="flex items-center justify-between border-b border-white/5 px-4 py-2.5"
 								>
-									<div class="flex flex-col gap-3">
-										<span
-											class="font-mono text-[10px] uppercase tracking-[0.25em] text-mint-300"
-											>seba3567.cl</span
-										>
-										<h3
-											class="text-balance text-2xl font-semibold leading-[1.05] tracking-[-0.02em] text-neutral-50"
-										>
-											Android.
-										</h3>
-										<p class="text-sm leading-relaxed text-neutral-400">
-											AntiCallCL · la app principal de seba3567 para
-											bloqueo de llamadas no deseadas.
-										</p>
-									</div>
+									<p
+										class="font-mono text-[10px] uppercase tracking-[0.2em] text-mint-300"
+									>
+										{group.trigger} · {group.items.length}
+									</p>
 									<a
 										href={group.href}
-										class="group/seeall inline-flex items-center gap-1 self-start rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-mono text-[11px] text-neutral-200 transition-colors hover:border-mint-400/30 hover:bg-mint-500/10 hover:text-mint-200"
+										class="group/seeall inline-flex items-center gap-1 font-mono text-[10px] text-neutral-400 transition-colors hover:text-neutral-100"
 									>
-										Ver todas las apps
+										Ver todo
 										<ArrowUpRight
-											size={11}
+											size={10}
 											weight="bold"
 											class="transition-transform group-hover/seeall:-translate-y-0.5 group-hover/seeall:translate-x-0.5"
 										/>
 									</a>
 								</div>
 
-								<!-- RIGHT: 2-col items list -->
-								<div class="grid min-w-0 flex-1 grid-cols-2 gap-x-2 gap-y-1 p-4">
+								<!-- Items: simple list (only Catálogo now) -->
+								<div class="flex flex-col gap-0.5 p-1.5">
 									{#each group.items as item (item.href)}
 										{@const Icon = item.icon}
 										<NavigationMenu.Link
 											href={item.href}
-											target={isExternal(item.href) ? '_blank' : undefined}
-											rel={isExternal(item.href) ? 'noreferrer noopener' : undefined}
-											class="group/item flex flex-col gap-1 rounded-lg p-3 transition-all hover:bg-white/[0.04] focus:bg-white/[0.04] focus:outline-none"
+											class="group/item flex items-center gap-3 rounded-lg p-3 transition-all hover:bg-white/[0.04] focus:bg-white/[0.04] focus:outline-none"
 										>
-											<div class="flex items-center gap-2">
+											<div
+												class="flex size-9 shrink-0 items-center justify-center rounded-md border border-white/10 bg-gradient-to-br from-white/[0.04] to-white/[0.01] transition-all group-hover/item:scale-105 group-hover/item:border-mint-400/30 group-hover/item:from-mint-500/10 group-hover/item:to-mint-500/[0.02]"
+											>
 												<Icon
-													size={14}
+													size={16}
 													weight="duotone"
-													class="shrink-0 text-neutral-400 transition-colors group-hover/item:text-mint-300"
+													class="text-neutral-300 transition-colors group-hover/item:text-mint-300"
 												/>
-												<span
-													class="text-[13px] font-semibold tracking-tight text-neutral-100"
-													>{item.title}</span
-												>
-												{#if item.tag}
-													<span
-														class="ml-auto rounded-md border border-white/10 bg-white/5 px-1.5 py-0 font-mono text-[9px] uppercase tracking-wider text-neutral-500"
-													>
-														{item.tag}
-													</span>
-												{/if}
 											</div>
-											<p class="pl-[22px] text-[11px] leading-relaxed text-neutral-500">
-												{item.description}
-											</p>
+											<div class="min-w-0 flex-1">
+												<div
+													class="text-sm font-semibold tracking-tight text-neutral-100"
+												>
+													{item.title}
+												</div>
+												<p class="mt-0.5 truncate text-xs text-neutral-500">
+													{item.description}
+												</p>
+											</div>
 										</NavigationMenu.Link>
 									{/each}
 								</div>

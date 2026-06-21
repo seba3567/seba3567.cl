@@ -6,28 +6,26 @@
 		Flask,
 		ShieldCheck,
 		Database,
+		Eye,
+		Lock,
+		DeviceMobile,
 		Code,
 		Users,
-		DeviceMobile,
-		Lock,
-		Eye,
 	} from 'phosphor-svelte';
 	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Separator } from '$lib/components/ui/separator';
 	import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
 	import Lightbox from '$lib/components/Lightbox.svelte';
 	import PrivacyDialog from '$lib/components/PrivacyDialog.svelte';
-	import SiteFooter from '$lib/components/SiteFooter.svelte';
+	import GlassCard from '$lib/components/GlassCard.svelte';
+	import { animate, stagger } from 'animejs';
 	import { revealOnScroll, revealChars } from '$lib/animations';
 
 	const PLAY_STORE =
 		'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile&hl=en-US';
 	const BETA_PROGRAM =
 		'https://play.google.com/apps/testing/com.seba3567.anticall_chile';
-	const PRIVACY =
-		'https://seba3567.github.io/anticall_pages/';
-	const CONTACT_EMAIL = 'seba3567.dev@gmail.com';
+	const PRIVACY = 'https://seba3567.github.io/anticall_pages/';
 
 	const screenshots = [1, 2, 3, 4, 5, 6];
 	const featuredShot = 1;
@@ -94,36 +92,100 @@
 		'Prefijos actualizados con cada build',
 	];
 
-	let titleEl: HTMLElement | undefined = $state();
-	let featuredEl: HTMLElement | undefined = $state();
-	let aboutEl: HTMLElement | undefined = $state();
-	let galleryEl: HTMLElement | undefined = $state();
-	let stackEl: HTMLElement | undefined = $state();
-	let privacyEl: HTMLElement | undefined = $state();
-	let betaEl: HTMLElement | undefined = $state();
+	// ----- Horizontal scroll state -----
+	const SECTIONS = [
+		{ id: 'hero', label: 'Inicio' },
+		{ id: 'screenshot', label: 'Pantalla' },
+		{ id: 'about', label: 'About' },
+		{ id: 'gallery', label: 'Gallery' },
+		{ id: 'stack', label: 'Stack' },
+		{ id: 'privacy', label: 'Privacidad' },
+		{ id: 'beta', label: 'Beta' },
+	] as const;
 
+	type SectionId = (typeof SECTIONS)[number]['id'];
+	let trackEl: HTMLElement | undefined = $state();
+	let activeSection: string = $state('hero');
+	let mounted = $state(false);
+
+	let titleEl: HTMLElement | undefined = $state();
 	let lightboxOpen = $state(false);
 	let lightboxIndex = $state(0);
 	let privacyOpen = $state(false);
+
+	function scrollToSection(id: string) {
+		const track = trackEl;
+		if (!track) return;
+		const el = document.getElementById(id);
+		if (!el) return;
+		track.scrollTo({ left: el.offsetLeft - track.offsetLeft, behavior: 'smooth' });
+	}
 
 	function openLightbox(i: number) {
 		lightboxIndex = i;
 		lightboxOpen = true;
 	}
 
+	function langColor(name: string | null): string {
+		if (!name) return '#888';
+		const map: Record<string, string> = {
+			Dart: '#00B4AB',
+			Kotlin: '#A97BFF',
+		};
+		return map[name] ?? '#888';
+	}
+
 	onMount(() => {
+		mounted = true;
+		const track = trackEl;
+		if (!track) return;
+
+		// Map vertical wheel to horizontal scroll
+		const onWheel = (e: WheelEvent) => {
+			if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+			e.preventDefault();
+			const step = e.deltaY === 0 ? e.deltaX : e.deltaY;
+			track.scrollBy({ left: step, behavior: 'auto' });
+		};
+		track.addEventListener('wheel', onWheel, { passive: false });
+
+		// Track active section via IntersectionObserver
+		const obs = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+						activeSection = (entry.target as HTMLElement).id;
+					}
+				}
+			},
+			{ root: track, threshold: [0.5, 0.75] },
+		);
+		for (const s of SECTIONS) {
+			const el = document.getElementById(s.id);
+			if (el) obs.observe(el);
+		}
+
+		// Entrance animations
 		if (titleEl) {
-			revealChars(titleEl, { staggerMs: 32, offsetY: 60, duration: 700, delay: 200 });
+			revealChars(titleEl, { staggerMs: 28, offsetY: 50, duration: 700, delay: 200 });
 		}
-		for (const sec of [featuredEl, aboutEl, galleryEl, stackEl, privacyEl, betaEl]) {
-			if (sec) {
-				revealOnScroll(sec, { selector: '[data-reveal]', staggerMs: 70, offsetY: 24, duration: 700 });
-			}
-		}
-		// Listen for cross-page privacy requests (e.g. from CommandPalette)
+		animate('[data-panel-anim]', {
+			opacity: [0, 1],
+			translateY: [20, 0],
+			delay: stagger(60, { start: 300 }),
+			duration: 600,
+			ease: 'out(3)',
+		});
+
+		// Privacy listener
 		const onPrivacy = () => (privacyOpen = true);
 		window.addEventListener('seba:privacy', onPrivacy as EventListener);
-		return () => window.removeEventListener('seba:privacy', onPrivacy as EventListener);
+
+		return () => {
+			track.removeEventListener('wheel', onWheel);
+			obs.disconnect();
+			window.removeEventListener('seba:privacy', onPrivacy as EventListener);
+		};
 	});
 </script>
 
@@ -135,60 +197,72 @@
 	/>
 </svelte:head>
 
-<main class="relative mx-auto w-full max-w-6xl flex-1 px-6 sm:px-10">
-	<!-- ============= HERO ============= -->
-	<header class="pt-20 pb-16 sm:pt-28 sm:pb-20">
-		<div class="flex items-center gap-2 font-mono text-xs text-neutral-500">
-			<a href="/apps" class="transition-colors hover:text-neutral-300">/ apps</a>
-			<span class="text-neutral-700">/</span>
-			<span class="text-neutral-300">anticall</span>
-		</div>
+<!-- Breadcrumb floating top-left -->
+<div class="pointer-events-none fixed inset-x-0 top-4 z-40 flex justify-center px-4">
+	<div class="pointer-events-auto flex items-center gap-2 rounded-md border border-white/5 bg-neutral-950/80 px-3 py-1.5 font-mono text-[11px] text-neutral-500 backdrop-blur">
+		<a href="/apps" class="transition-colors hover:text-neutral-300">/ apps</a>
+		<span class="text-neutral-700">/</span>
+		<span class="text-neutral-300">anticall</span>
+	</div>
+</div>
 
-		<div class="mt-10 grid grid-cols-12 items-end gap-6">
-			<div class="col-span-12 lg:col-span-9">
-				<div class="flex items-center gap-4">
-					<div
-						class="flex size-14 items-center justify-center rounded-2xl bg-mint-500 ring-1 ring-mint-400/30"
-					>
-						<PhoneX size={26} weight="duotone" class="text-neutral-950" />
-					</div>
+<!-- Horizontal scroll track -->
+<div id="anticall-track" bind:this={trackEl} class="anticall-horizontal relative">
+	<!-- ============= PANEL 1: HERO ============= -->
+	<section
+		id="hero"
+		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-20 sm:px-12 lg:px-20"
+	>
+		<div class="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-8 lg:grid-cols-[1.3fr_1fr]">
+			<!-- Left: title + intro + CTAs -->
+			<div>
+				<div class="flex items-center gap-3" data-panel-anim>
 					<Badge
 						variant="outline"
-						class="border-amber-400/20 bg-amber-500/5 px-2 py-0.5 font-mono text-[10px] font-normal uppercase tracking-wider text-amber-300"
+						class="border-amber-400/30 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-300"
 					>
 						<span class="relative flex size-1.5">
-							<span
-								class="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75"
-							></span>
-							<span class="relative inline-flex size-1.5 rounded-full bg-amber-400"></span>
+							<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-60"></span>
+							<span class="relative inline-flex size-1.5 rounded-full bg-amber-300"></span>
 						</span>
 						Beta abierta
+					</Badge>
+					<Badge
+						variant="outline"
+						class="border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-medium text-neutral-300"
+					>
+						<DeviceMobile size={10} weight="duotone" class="mr-1" />
+						Android 8+
 					</Badge>
 				</div>
 
 				<h1
 					bind:this={titleEl}
-					class="mt-8 text-[clamp(3rem,9vw,7rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
+					class="mt-10 text-[clamp(3rem,9vw,7.5rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
+					style="opacity: 0;"
 				>
 					AntiCallCL<span class="text-neutral-600">.</span>
 				</h1>
 
-				<p class="mt-6 max-w-xl text-balance text-lg leading-relaxed text-neutral-400 sm:text-xl">
+				<p
+					class="panel-h1 mt-8 max-w-xl text-balance text-lg leading-relaxed text-neutral-400 sm:text-xl"
+					style="opacity: 0;"
+				>
 					Gestor de llamadas no deseadas para Android. Trabaja entera en tu teléfono, sin
 					servidores ni cuentas. Tú decides qué hacer con cada llamada.
 				</p>
 
-				<div class="mt-7 flex flex-wrap items-center gap-2">
+				<div class="mt-7 flex flex-wrap items-center gap-2" data-panel-anim>
 					<a
 						href={BETA_PROGRAM}
 						target="_blank"
 						rel="noreferrer noopener"
-						class="group inline-flex items-center gap-2 rounded-lg bg-mint-500 px-4 py-2.5 text-sm font-semibold text-neutral-950 shadow-lg shadow-mint-500/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-mint-500/40"
+						class="group inline-flex items-center gap-2 rounded-lg bg-mint-500 px-4 py-2.5 text-sm font-semibold text-neutral-950 shadow-lg shadow-mint-500/30 transition-all duration-300 hover:scale-[1.02] hover:bg-mint-400 hover:shadow-mint-500/50"
 					>
-						<Flask size={14} weight="fill" />
+						<Flask size={16} weight="fill" class="transition-transform duration-500 group-hover:-rotate-12" />
 						Unirme a la beta
 						<ArrowUpRight
-							size={11}
+							size={12}
 							weight="bold"
 							class="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
 						/>
@@ -217,304 +291,348 @@
 				</div>
 			</div>
 
-			<div class="col-span-12 lg:col-span-3" data-reveal>
-				<dl class="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5">
-					<div class="bg-neutral-950 p-4">
-						<dt class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">UI</dt>
-						<dd class="mt-2 font-mono text-sm font-semibold text-neutral-100">Flutter</dd>
+			<!-- Right: stats 2x2 -->
+			<div class="grid grid-cols-2 gap-3" data-panel-anim>
+				<div class="glass flex items-center gap-3 rounded-2xl p-4">
+					<div class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5">
+						<DeviceMobile size={16} weight="duotone" class="text-neutral-300" />
 					</div>
-					<div class="bg-neutral-950 p-4">
-						<dt class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">Nativo</dt>
-						<dd class="mt-2 font-mono text-sm font-semibold text-neutral-100">Kotlin</dd>
+					<div>
+						<div class="font-mono text-xl font-bold text-neutral-50 sm:text-2xl">Flutter</div>
+						<div class="truncate text-[10px] uppercase tracking-wider text-neutral-500">UI</div>
 					</div>
-					<div class="bg-neutral-950 p-4">
-						<dt class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">Plataforma</dt>
-						<dd class="mt-2 font-mono text-sm font-semibold text-neutral-100">Android 8+</dd>
+				</div>
+				<div class="glass flex items-center gap-3 rounded-2xl p-4">
+					<div class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5">
+						<Code size={16} weight="duotone" class="text-neutral-300" />
 					</div>
-					<div class="bg-neutral-950 p-4">
-						<dt class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">Procesamiento</dt>
-						<dd class="mt-2 font-mono text-sm font-semibold text-mint-300">100% local</dd>
+					<div>
+						<div class="font-mono text-xl font-bold text-neutral-50 sm:text-2xl">Kotlin</div>
+						<div class="truncate text-[10px] uppercase tracking-wider text-neutral-500">Nativo</div>
 					</div>
-				</dl>
+				</div>
+				<div class="glass flex items-center gap-3 rounded-2xl p-4">
+					<div class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5">
+						<ShieldCheck size={16} weight="duotone" class="text-neutral-300" />
+					</div>
+					<div>
+						<div class="font-mono text-xl font-bold text-neutral-50 sm:text-2xl">100%</div>
+						<div class="truncate text-[10px] uppercase tracking-wider text-neutral-500">Local</div>
+					</div>
+				</div>
+				<div class="glass flex items-center gap-3 rounded-2xl p-4">
+					<div class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5">
+						<Database size={16} weight="duotone" class="text-neutral-300" />
+					</div>
+					<div>
+						<div class="font-mono text-xl font-bold text-neutral-50 sm:text-2xl">0</div>
+						<div class="truncate text-[10px] uppercase tracking-wider text-neutral-500">Servidores</div>
+					</div>
+				</div>
 			</div>
 		</div>
-	</header>
+	</section>
 
-	<!-- ============= FEATURED SCREENSHOT ============= -->
-	<section bind:this={featuredEl} class="scroll-mt-24 py-8 sm:py-12">
-		<Separator class="mb-12 bg-white/5" />
+	<!-- ============= PANEL 2: SCREENSHOT ============= -->
+	<section
+		id="screenshot"
+		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-16 sm:px-12 lg:px-20"
+	>
+		<div class="mx-auto w-full max-w-5xl">
+			<div class="mb-8 flex items-end justify-between gap-6" data-panel-anim>
+				<div>
+					<Badge
+						variant="outline"
+						class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
+					>
+						01
+					</Badge>
+					<h2 class="mt-3 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
+						Pantalla principal.
+					</h2>
+				</div>
+				<p class="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 sm:block">
+					Click para ampliar
+				</p>
+			</div>
 
-		<button
-			type="button"
-			onclick={() => openLightbox(featuredShot - 1)}
-			data-reveal
-			class="group relative mx-auto block max-w-md cursor-zoom-in"
-			aria-label="Abrir pantalla {featuredShot} en el visor"
-		>
-			<div
-				aria-hidden="true"
-				class="absolute -inset-6 -z-10 rounded-3xl bg-gradient-to-br from-mint-500/10 to-transparent opacity-60 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
-			></div>
-			<div
-				class="relative mx-auto aspect-[9/16] w-full overflow-hidden rounded-[2rem] border border-white/10 bg-neutral-950 shadow-2xl shadow-black/60 transition-transform duration-500 group-hover:scale-[1.01]"
+			<button
+				type="button"
+				onclick={() => openLightbox(featuredShot - 1)}
+				data-panel-anim
+				class="group relative mx-auto block max-w-md cursor-zoom-in"
+				aria-label="Abrir pantalla {featuredShot} en el visor"
 			>
-				<OptimizedPicture
-					src="/apps/anticall/{featuredShot}"
-					alt="AntiCallCL — pantalla principal"
-					class="size-full object-cover"
-					width={540}
-					height={1200}
-					loading="eager"
-				/>
 				<div
 					aria-hidden="true"
-					class="pointer-events-none absolute inset-0 bg-gradient-to-t from-neutral-950/40 via-transparent to-transparent"
+					class="absolute -inset-6 -z-10 rounded-3xl bg-gradient-to-br from-mint-500/15 to-transparent opacity-60 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
 				></div>
-			</div>
-			<div
-				aria-hidden="true"
-				class="pointer-events-none absolute -top-3 left-1/2 -translate-x-1/2 h-1.5 w-20 rounded-full bg-white/20 blur-md"
-			></div>
-			<span
-				class="absolute right-3 bottom-3 inline-flex items-center gap-1 rounded-full border border-white/10 bg-neutral-950/80 px-2.5 py-1 font-mono text-[10px] text-neutral-300 backdrop-blur transition-colors group-hover:bg-white/10"
-			>
-				Click para ampliar
-			</span>
-		</button>
-	</section>
-
-	<!-- ============= ABOUT (Spanish) ============= -->
-	<section bind:this={aboutEl} class="scroll-mt-24 py-16 sm:py-20">
-		<Separator class="mb-12 bg-white/5" />
-
-		<div class="mb-12" data-reveal>
-			<Badge
-				variant="outline"
-				class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
-			>
-				About
-			</Badge>
-			<h2 class="mt-4 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
-				Qué es AntiCallCL.
-			</h2>
-		</div>
-
-		<div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
-			<div class="space-y-5 text-pretty text-base leading-relaxed text-neutral-300 lg:col-span-7">
-				{#each aboutParagraphs as p, i (i)}
-					<p data-reveal class="text-balance">
-						{p}
-					</p>
-				{/each}
-			</div>
-
-			<aside class="space-y-3 lg:col-span-5" data-reveal>
-				{#each features as f, i (f.title)}
-					{@const Icon = f.icon}
-					<Card.Root
-						data-slot="card"
-						class="group flex items-start gap-4 rounded-2xl border-white/5 bg-white/[0.015] p-4 transition-all duration-500 hover:border-white/15 hover:bg-white/[0.04]"
-					>
-						<div class="flex shrink-0 items-center gap-3">
-							<span
-								class="font-mono text-[10px] text-neutral-600 transition-colors group-hover:text-neutral-400"
-								>0{i + 1}</span
-							>
-							<div
-								class="flex size-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all group-hover:scale-110 group-hover:border-mint-400/40 group-hover:bg-mint-500/10"
-							>
-								<Icon
-									size={16}
-									weight="duotone"
-									class="text-neutral-300 transition-colors group-hover:text-mint-300"
-								/>
-							</div>
-						</div>
-						<div class="min-w-0">
-							<Card.Title class="text-sm font-semibold text-neutral-100">
-								{f.title}
-							</Card.Title>
-							<Card.Description class="mt-1 text-xs leading-relaxed text-neutral-400">
-								{f.body}
-							</Card.Description>
-						</div>
-					</Card.Root>
-				{/each}
-			</aside>
+				<div
+					class="relative mx-auto aspect-[9/16] w-full overflow-hidden rounded-[2rem] border border-white/10 bg-neutral-950 shadow-2xl shadow-black/60 transition-transform duration-500 group-hover:scale-[1.02]"
+				>
+					<OptimizedPicture
+						src="/apps/anticall/{featuredShot}"
+						alt="AntiCallCL — pantalla principal"
+						class="size-full object-cover"
+						width={540}
+						height={1200}
+						loading="eager"
+					/>
+					<div
+						aria-hidden="true"
+						class="pointer-events-none absolute inset-0 bg-gradient-to-t from-neutral-950/40 via-transparent to-transparent"
+					></div>
+				</div>
+				<span
+					class="absolute right-3 bottom-3 inline-flex items-center gap-1 rounded-full border border-white/10 bg-neutral-950/80 px-2.5 py-1 font-mono text-[10px] text-neutral-300 backdrop-blur transition-colors group-hover:bg-white/10"
+				>
+					Click para ampliar
+				</span>
+			</button>
 		</div>
 	</section>
 
-	<!-- ============= GALLERY ============= -->
-	<section bind:this={galleryEl} class="scroll-mt-24 py-16 sm:py-20">
-		<Separator class="mb-12 bg-white/5" />
-
-		<div class="mb-10 flex items-end justify-between gap-6" data-reveal>
-			<div>
+	<!-- ============= PANEL 3: ABOUT ============= -->
+	<section
+		id="about"
+		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-16 sm:px-12 lg:px-20"
+	>
+		<div class="mx-auto w-full max-w-5xl">
+			<div class="mb-10" data-panel-anim>
 				<Badge
 					variant="outline"
 					class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
 				>
-					Gallery
+					02
 				</Badge>
-				<h2 class="mt-4 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
-					Screenshots.
+				<h2 class="mt-3 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
+					Qué es AntiCallCL.
 				</h2>
-				<p class="mt-2 text-sm text-neutral-500">
-					Click en cualquier imagen para abrir el visor.
+			</div>
+
+			<div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
+				<div class="space-y-5 text-pretty text-base leading-relaxed text-neutral-300 lg:col-span-7">
+					{#each aboutParagraphs as p, i (i)}
+						<p data-panel-anim class="text-balance">{p}</p>
+					{/each}
+				</div>
+
+				<aside class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1">
+					{#each features as f, i (f.title)}
+						{@const Icon = f.icon}
+						<Card.Root
+							data-slot="card"
+							data-panel-anim
+							class="group flex items-start gap-4 rounded-2xl border-white/5 bg-white/[0.015] p-4 transition-all duration-500 hover:-translate-y-0.5 hover:border-mint-400/20 hover:bg-white/[0.04]"
+						>
+							<div class="flex shrink-0 items-center gap-3">
+								<span
+									class="font-mono text-[10px] text-neutral-600 transition-colors group-hover:text-neutral-400"
+									>0{i + 1}</span
+								>
+								<div
+									class="flex size-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all group-hover:scale-110 group-hover:border-mint-400/40 group-hover:bg-mint-500/10"
+								>
+									<Icon
+										size={16}
+										weight="duotone"
+										class="text-neutral-300 transition-colors group-hover:text-mint-300"
+									/>
+								</div>
+							</div>
+							<div class="min-w-0">
+								<Card.Title class="text-sm font-semibold text-neutral-100">
+									{f.title}
+								</Card.Title>
+								<Card.Description class="mt-1 text-xs leading-relaxed text-neutral-400">
+									{f.body}
+								</Card.Description>
+							</div>
+						</Card.Root>
+					{/each}
+				</aside>
+			</div>
+		</div>
+	</section>
+
+	<!-- ============= PANEL 4: GALLERY ============= -->
+	<section
+		id="gallery"
+		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-16 sm:px-12 lg:px-20"
+	>
+		<div class="mx-auto w-full max-w-5xl">
+			<div class="mb-8 flex items-end justify-between gap-6" data-panel-anim>
+				<div>
+					<Badge
+						variant="outline"
+						class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
+					>
+						03
+					</Badge>
+					<h2 class="mt-3 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
+						Screenshots.
+					</h2>
+					<p class="mt-2 text-sm text-neutral-500">Click en cualquier imagen para abrir el visor.</p>
+				</div>
+				<p class="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 sm:block">
+					AVIF · WebP · JPG
 				</p>
 			</div>
-			<p class="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 sm:block">
-				AVIF · WebP · JPG · 1x & 2x
-			</p>
-		</div>
 
-		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-			{#each screenshots as n, i (n)}
+			<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+				{#each screenshots as n, i (n)}
+					<button
+						type="button"
+						onclick={() => openLightbox(i)}
+						data-panel-anim
+						aria-label="Abrir pantalla {n} en el visor"
+						class="group/shot relative block aspect-[9/16] cursor-zoom-in overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] transition-all duration-500 hover:-translate-y-0.5 hover:border-mint-400/30 hover:bg-white/[0.04]"
+					>
+						<OptimizedPicture
+							src="/apps/anticall/{n}"
+							alt="AntiCallCL · pantalla {n}"
+							class="size-full object-cover transition-transform duration-500 group-hover/shot:scale-[1.04]"
+							width={540}
+							height={1200}
+						/>
+						<div
+							class="pointer-events-none absolute inset-0 bg-gradient-to-t from-neutral-950/60 to-transparent opacity-0 transition-opacity duration-500 group-hover/shot:opacity-100"
+						></div>
+						<span
+							class="absolute right-2 bottom-2 rounded-md border border-white/10 bg-neutral-950/80 px-1.5 py-0.5 font-mono text-[9px] text-neutral-300 backdrop-blur"
+						>
+							{n}
+						</span>
+					</button>
+				{/each}
+			</div>
+		</div>
+	</section>
+
+	<!-- ============= PANEL 5: STACK ============= -->
+	<section
+		id="stack"
+		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-16 sm:px-12 lg:px-20"
+	>
+		<div class="mx-auto w-full max-w-5xl">
+			<div class="mb-10" data-panel-anim>
+				<Badge
+					variant="outline"
+					class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
+				>
+					04
+				</Badge>
+				<h2 class="mt-3 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
+					Cómo está hecho.
+				</h2>
+				<p class="mt-2 max-w-2xl text-sm text-neutral-500">
+					La app corre 100% en el teléfono. Sin backend, sin servidores, sin cuentas.
+				</p>
+			</div>
+
+			<div class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5 md:grid-cols-2">
+				{#each stackLayers as s (s.layer)}
+					<div
+						data-panel-anim
+						class="group flex items-start justify-between gap-4 bg-neutral-950 p-6 transition-colors hover:bg-white/[0.02]"
+					>
+						<div class="min-w-0">
+							<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+								{s.layer}
+							</p>
+							<p class="mt-3 text-xl text-neutral-100 sm:text-2xl">{s.tech}</p>
+							<p class="mt-2 text-sm leading-relaxed text-neutral-400">{s.detail}</p>
+						</div>
+						<DeviceMobile
+							size={18}
+							weight="duotone"
+							class="mt-1 shrink-0 text-neutral-600 transition-colors group-hover:text-mint-300"
+						/>
+					</div>
+				{/each}
+			</div>
+		</div>
+	</section>
+
+	<!-- ============= PANEL 6: PRIVACY ============= -->
+	<section
+		id="privacy"
+		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-16 sm:px-12 lg:px-20"
+	>
+		<div class="mx-auto w-full max-w-5xl">
+			<div class="mb-10" data-panel-anim>
+				<Badge
+					variant="outline"
+					class="border-mint-400/20 bg-mint-500/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-mint-300"
+				>
+					05
+				</Badge>
+				<h2 class="mt-3 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
+					Sin nube, sin cuentas.
+				</h2>
+			</div>
+
+			<div class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5 md:grid-cols-2">
+				{#each privacyPoints as p, i (i)}
+					<div
+						data-panel-anim
+						class="flex items-start gap-3 bg-neutral-950 p-5"
+					>
+						<span class="font-mono text-[10px] text-neutral-600">0{i + 1}</span>
+						<p class="text-sm leading-relaxed text-neutral-300">{p}</p>
+					</div>
+				{/each}
+			</div>
+
+			<div class="mt-6 flex flex-wrap items-center gap-3" data-panel-anim>
+				<a
+					href={PRIVACY}
+					target="_blank"
+					rel="noreferrer noopener"
+					class="inline-flex items-center gap-1.5 font-mono text-[11px] text-neutral-400 transition-colors hover:text-neutral-100"
+				>
+					<Lock size={11} weight="bold" />
+					Leer la política completa
+					<ArrowUpRight size={10} weight="bold" />
+				</a>
 				<button
 					type="button"
-					onclick={() => openLightbox(i)}
-					data-reveal
-					aria-label="Abrir pantalla {n} en el visor"
-					class="group/shot relative block aspect-[9/16] cursor-zoom-in overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] transition-all duration-500 hover:border-white/30 hover:bg-white/[0.04]"
+					onclick={() => (privacyOpen = true)}
+					class="inline-flex items-center gap-1.5 rounded-md border border-mint-400/20 bg-mint-500/5 px-3 py-1.5 font-mono text-[11px] text-mint-200 transition-colors hover:bg-mint-500/15"
 				>
-					<OptimizedPicture
-						src="/apps/anticall/{n}"
-						alt="AntiCallCL · pantalla {n}"
-						class="size-full object-cover transition-transform duration-500 group-hover/shot:scale-[1.04]"
-						width={540}
-						height={1200}
-					/>
-					<div
-						class="pointer-events-none absolute inset-0 bg-gradient-to-t from-neutral-950/60 to-transparent opacity-0 transition-opacity duration-500 group-hover/shot:opacity-100"
-					></div>
-					<span
-						class="absolute right-2 bottom-2 rounded-md border border-white/10 bg-neutral-950/80 px-1.5 py-0.5 font-mono text-[9px] text-neutral-300 backdrop-blur"
-					>
-						{n}
-					</span>
+					<ShieldCheck size={11} weight="bold" />
+					Ver resumen interactivo
 				</button>
-			{/each}
+			</div>
 		</div>
 	</section>
 
-	<!-- ============= STACK ============= -->
-	<section bind:this={stackEl} class="scroll-mt-24 py-16 sm:py-20">
-		<Separator class="mb-12 bg-white/5" />
-
-		<div class="mb-10" data-reveal>
-			<Badge
-				variant="outline"
-				class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
-			>
-				Stack
-			</Badge>
-			<h2 class="mt-4 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
-				Cómo está hecho.
-			</h2>
-			<p class="mt-2 max-w-2xl text-sm text-neutral-500">
-				La app corre 100% en el teléfono. Sin backend, sin servidores, sin cuentas.
-			</p>
-		</div>
-
-		<div class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5 md:grid-cols-2">
-			{#each stackLayers as s (s.layer)}
-				<div
-					data-reveal
-					class="group flex items-start justify-between gap-4 bg-neutral-950 p-6 transition-colors hover:bg-white/[0.02]"
-				>
-					<div class="min-w-0">
-						<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
-							{s.layer}
-						</p>
-						<p class="mt-3 text-xl text-neutral-100 sm:text-2xl">{s.tech}</p>
-						<p class="mt-2 text-sm leading-relaxed text-neutral-400">
-							{s.detail}
-						</p>
-					</div>
-					<DeviceMobile
-						size={18}
-						weight="duotone"
-						class="mt-1 shrink-0 text-neutral-600 transition-colors group-hover:text-mint-300"
-					/>
-				</div>
-			{/each}
-		</div>
-	</section>
-
-	<!-- ============= PRIVACY ============= -->
-	<section bind:this={privacyEl} class="scroll-mt-24 py-16 sm:py-20">
-		<Separator class="mb-12 bg-white/5" />
-
-		<div class="mb-10" data-reveal>
-			<Badge
-				variant="outline"
-				class="border-mint-400/20 bg-mint-500/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-mint-300"
-			>
-				Privacidad
-			</Badge>
-			<h2 class="mt-4 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
-				Sin nube, sin cuentas.
-			</h2>
-		</div>
-
-		<div class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5 md:grid-cols-2">
-			{#each privacyPoints as p, i (i)}
-				<div
-					data-reveal
-					class="flex items-start gap-3 bg-neutral-950 p-5"
-				>
-					<span
-						class="font-mono text-[10px] text-neutral-600 transition-colors group-hover:text-neutral-400"
-						>0{i + 1}</span
-					>
-					<p class="text-sm leading-relaxed text-neutral-300">{p}</p>
-				</div>
-			{/each}
-		</div>
-
-		<a
-			href={PRIVACY}
-			target="_blank"
-			rel="noreferrer noopener"
-			class="mt-6 inline-flex items-center gap-1.5 font-mono text-[11px] text-neutral-400 transition-colors hover:text-neutral-100"
-		>
-			<Lock size={11} weight="bold" />
-			Leer la política de privacidad completa
-			<ArrowUpRight
-				size={10}
-				weight="bold"
-				class="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-			/>
-		</a>
-	</section>
-
-	<!-- ============= JOIN BETA ============= -->
-	<section bind:this={betaEl} class="scroll-mt-24 py-16 sm:py-20">
-		<Separator class="mb-12 bg-white/5" />
-
+	<!-- ============= PANEL 7: BETA ============= -->
+	<section
+		id="beta"
+		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-16 sm:px-12 lg:px-20"
+	>
 		<div
-			class="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02]"
-			data-reveal
+			class="relative mx-auto w-full max-w-5xl overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-8 sm:p-12"
+			data-panel-anim
 		>
 			<div
 				aria-hidden="true"
-				class="pointer-events-none absolute -top-32 -right-32 size-96 rounded-full bg-gradient-to-br from-mint-500/20 via-mint-500/10 to-transparent blur-3xl"
+				class="pointer-events-none absolute -top-32 -right-32 size-96 rounded-full bg-gradient-to-br from-mint-500/15 via-mint-500/5 to-transparent blur-3xl"
 			></div>
 			<div
 				aria-hidden="true"
 				class="pointer-events-none absolute -bottom-32 -left-32 size-96 rounded-full bg-gradient-to-tr from-mint-500/10 to-transparent blur-3xl"
 			></div>
 
-			<div class="relative grid grid-cols-12 gap-6 p-8 sm:p-12 lg:gap-10">
-				<div class="col-span-12 lg:col-span-8">
+			<div class="relative grid grid-cols-12 gap-6 lg:gap-10">
+				<div class="col-span-12 lg:col-span-7">
 					<Badge
 						variant="outline"
 						class="border-amber-400/30 bg-amber-500/5 px-2.5 py-0.5 font-mono text-[10px] font-normal uppercase tracking-wider text-amber-300"
 					>
 						<span class="relative flex size-1.5">
-							<span
-								class="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75"
-							></span>
+							<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75"></span>
 							<span class="relative inline-flex size-1.5 rounded-full bg-amber-400"></span>
 						</span>
 						Beta abierta
@@ -533,7 +651,7 @@
 					<ul class="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
 						{#each betaPerks as perk (perk)}
 							<li
-								data-reveal
+								data-panel-anim
 								class="flex items-start gap-2.5 rounded-xl border border-white/5 bg-white/[0.02] p-3 text-sm text-neutral-300"
 							>
 								<Users size={14} weight="duotone" class="mt-0.5 shrink-0 text-amber-300" />
@@ -547,10 +665,10 @@
 							href={BETA_PROGRAM}
 							target="_blank"
 							rel="noreferrer noopener"
-							class="group inline-flex items-center gap-2 rounded-lg bg-mint-500 px-5 py-3 text-sm font-semibold text-neutral-950 shadow-lg shadow-amber-500/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-amber-500/40"
+							class="group inline-flex items-center gap-2 rounded-lg bg-mint-500 px-5 py-3 text-sm font-semibold text-neutral-950 shadow-lg shadow-mint-500/30 transition-all duration-300 hover:scale-[1.02] hover:bg-mint-400 hover:shadow-mint-500/50"
 						>
 							<Flask size={15} weight="fill" />
-							Unirme a la beta — Google Play
+							Unirme a la beta
 							<ArrowUpRight
 								size={12}
 								weight="bold"
@@ -572,53 +690,68 @@
 						</a>
 					</div>
 				</div>
-
-				<div class="col-span-12 lg:col-span-4">
-					<div
-						class="relative h-full overflow-hidden rounded-2xl border border-white/5 bg-neutral-950 p-6"
-					>
-						<div
-							aria-hidden="true"
-							class="pointer-events-none absolute -top-12 -right-12 size-40 rounded-full bg-gradient-to-br from-mint-500/15 to-transparent blur-2xl"
-						></div>
-						<div class="relative space-y-4">
-							<div class="flex items-center gap-2">
-								<Code size={14} weight="duotone" class="text-mint-300" />
-								<p
-									class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500"
-								>
-									Contacto
-								</p>
-							</div>
-							<p class="text-sm text-neutral-300">
-								¿Dudas, sugerencias o quieres reportar un número?
-							</p>
-							<a
-								href={`mailto:${CONTACT_EMAIL}`}
-								class="group inline-flex items-center gap-1.5 break-all font-mono text-xs text-neutral-200 transition-colors hover:text-mint-300"
-							>
-								{CONTACT_EMAIL}
-								<ArrowUpRight
-									size={10}
-									weight="bold"
-									class="shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-								/>
-							</a>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 	</section>
+</div>
 
-	<footer class="border-t border-white/5 py-12">
-		<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-600">
-			© {new Date().getFullYear()} · AntiCallCL · Flutter + Kotlin · seba3567.cl
-		</p>
-	</footer>
+<!-- Slide indicator: dots at the bottom-center of the viewport -->
+<div class="pointer-events-none fixed inset-x-0 bottom-6 z-30 flex justify-center">
+	<GlassCard
+		variant="strong"
+		class="pointer-events-auto flex items-center gap-1 rounded-md px-2 py-1.5"
+	>
+		{#each SECTIONS as s (s.id)}
+			<button
+				type="button"
+				onclick={() => scrollToSection(s.id)}
+				aria-label={'Ir a ' + s.label}
+				title={s.label}
+				class="group/dot flex items-center gap-1.5 rounded px-2 py-1 transition-colors hover:bg-white/5"
+			>
+				<span
+					class="size-1.5 rounded-full transition-all duration-500 {s.id === activeSection
+						? 'w-5 bg-mint-300'
+						: 'bg-neutral-600 group-hover/dot:bg-neutral-400'}"
+				></span>
+				<span
+					class="hidden font-mono text-[10px] uppercase tracking-wider text-neutral-400 transition-opacity duration-300 sm:inline {s.id ===
+					activeSection
+						? 'opacity-100'
+						: 'opacity-0'}"
+				>
+					{s.label}
+				</span>
+			</button>
+		{/each}
+	</GlassCard>
+</div>
 
-	<SiteFooter />
-</main>
+<style>
+	/* Horizontal scroll track for the anticall page */
+	:global(.anticall-horizontal) {
+		display: flex;
+		flex-direction: row;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x mandatory;
+		scroll-behavior: smooth;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+	}
+	:global(.anticall-horizontal::-webkit-scrollbar) {
+		display: none;
+	}
+	:global(.anticall-horizontal .panel) {
+		flex: 0 0 100vw;
+		min-width: 100vw;
+		height: 100vh;
+		scroll-snap-align: start;
+		scroll-snap-stop: always;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+</style>
 
 <Lightbox
 	bind:open={lightboxOpen}
@@ -628,5 +761,3 @@
 />
 
 <PrivacyDialog bind:open={privacyOpen} onOpenChange={(v) => (privacyOpen = v)} />
-	onClose={() => (lightboxOpen = false)}
-/>
