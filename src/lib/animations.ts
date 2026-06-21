@@ -9,7 +9,7 @@
  * - All mutations are reverted on cleanup (returned by the setup helpers).
  */
 
-import { animate, stagger, type AnimationParams } from 'animejs';
+import { type AnimationParams, animate, stagger } from 'animejs';
 
 /** Respect prefers-reduced-motion. */
 function prefersReducedMotion(): boolean {
@@ -107,7 +107,12 @@ export function revealOnScroll(
  */
 export function revealImmediate(
 	target: HTMLElement | NodeListOf<Element> | string,
-	options: { staggerMs?: number; offsetY?: number; duration?: number; delay?: number } = {},
+	options: {
+		staggerMs?: number;
+		offsetY?: number;
+		duration?: number;
+		delay?: number;
+	} = {},
 ): () => void {
 	const { staggerMs = 80, offsetY = 30, duration = 900, delay = 100 } = options;
 
@@ -157,9 +162,17 @@ export function revealImmediate(
 export function countUpOnVisible(
 	el: HTMLElement,
 	to: number,
-	options: { duration?: number; delay?: number; format?: (n: number) => string } = {},
+	options: {
+		duration?: number;
+		delay?: number;
+		format?: (n: number) => string;
+	} = {},
 ): () => void {
-	const { duration = 1200, delay = 200, format = (n) => Math.round(n).toString() } = options;
+	const {
+		duration = 1200,
+		delay = 200,
+		format = (n) => Math.round(n).toString(),
+	} = options;
 	if (!el) return () => {};
 
 	if (prefersReducedMotion()) {
@@ -206,7 +219,12 @@ export function countUpOnVisible(
  */
 export function revealChars(
 	el: HTMLElement,
-	options: { staggerMs?: number; offsetY?: number; duration?: number; delay?: number } = {},
+	options: {
+		staggerMs?: number;
+		offsetY?: number;
+		duration?: number;
+		delay?: number;
+	} = {},
 ): () => void {
 	const { staggerMs = 30, offsetY = 60, duration = 600, delay = 200 } = options;
 	if (!el) return () => {};
@@ -248,7 +266,12 @@ export function revealChars(
  */
 export function revealFromLeft(
 	target: HTMLElement | NodeListOf<Element> | string,
-	options: { offsetX?: number; staggerMs?: number; duration?: number; threshold?: number } = {},
+	options: {
+		offsetX?: number;
+		staggerMs?: number;
+		duration?: number;
+		threshold?: number;
+	} = {},
 ): () => void {
 	return revealFromSide(target, -1, options);
 }
@@ -258,7 +281,12 @@ export function revealFromLeft(
  */
 export function revealFromRight(
 	target: HTMLElement | NodeListOf<Element> | string,
-	options: { offsetX?: number; staggerMs?: number; duration?: number; threshold?: number } = {},
+	options: {
+		offsetX?: number;
+		staggerMs?: number;
+		duration?: number;
+		threshold?: number;
+	} = {},
 ): () => void {
 	return revealFromSide(target, 1, options);
 }
@@ -266,9 +294,19 @@ export function revealFromRight(
 function revealFromSide(
 	target: HTMLElement | NodeListOf<Element> | string,
 	direction: -1 | 1,
-	options: { offsetX?: number; staggerMs?: number; duration?: number; threshold?: number },
+	options: {
+		offsetX?: number;
+		staggerMs?: number;
+		duration?: number;
+		threshold?: number;
+	},
 ): () => void {
-	const { offsetX = 60, staggerMs = 70, duration = 700, threshold = 0.2 } = options;
+	const {
+		offsetX = 60,
+		staggerMs = 70,
+		duration = 700,
+		threshold = 0.2,
+	} = options;
 
 	const targets: HTMLElement[] =
 		typeof target === 'string'
@@ -333,7 +371,11 @@ function revealFromSide(
  */
 export function startMarquee(
 	el: HTMLElement,
-	options: { duration?: number; reverse?: boolean; pauseOnHover?: boolean } = {},
+	options: {
+		duration?: number;
+		reverse?: boolean;
+		pauseOnHover?: boolean;
+	} = {},
 ): () => void {
 	const { duration = 30000, reverse = false, pauseOnHover = true } = options;
 	if (!el || prefersReducedMotion()) return () => {};
@@ -363,6 +405,6 @@ export function startMarquee(
 	};
 }
 
+export type { AnimationParams };
 /** Re-export for convenience. */
 export { animate, stagger };
-export type { AnimationParams };

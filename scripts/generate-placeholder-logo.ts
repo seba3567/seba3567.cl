@@ -92,4 +92,4 @@ const buf = await sharp(Buffer.from(svg))
 	.toBuffer();
 
 await writeFile('static/iconos/anticall/icono.png', buf);
-console.log('placeholder icono.png generated (' + buf.length + ' bytes)');
+	console.log(`placeholder icono.png generated (${buf.length} bytes)`);

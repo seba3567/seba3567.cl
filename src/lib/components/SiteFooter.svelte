@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { GithubLogo, EnvelopeSimple, ArrowUpRight } from 'phosphor-svelte';
-	import { Button } from '$lib/components/ui/button';
-	import GlassCard from './GlassCard.svelte';
+import { ArrowUpRight, EnvelopeSimple, GithubLogo } from 'phosphor-svelte';
+import { Button } from '$lib/components/ui/button';
+import GlassCard from './GlassCard.svelte';
 
-	const INTRANET = 'https://intranet.seba3567.cl/';
-	const EMAIL = 'mailto:seba3567.dev@gmail.com';
-	const GITHUB = 'https://github.com/seba3567';
+const INTRANET = 'https://intranet.seba3567.cl/';
+const EMAIL = 'mailto:seba3567.dev@gmail.com';
+const GITHUB = 'https://github.com/seba3567';
 </script>
 
 <footer class="relative z-10 mx-auto mt-16 w-full max-w-6xl px-4 pb-8">

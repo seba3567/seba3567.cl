@@ -1,201 +1,206 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import {
-		ArrowUpRight,
-		Flask,
-		ShieldCheck,
-		Database,
-		Eye,
-		Lock,
-		DeviceMobile,
-		Code,
-		Users,
-	} from 'phosphor-svelte';
-	import * as Card from '$lib/components/ui/card';
-	import { Badge } from '$lib/components/ui/badge';
-	import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
-	import Lightbox from '$lib/components/Lightbox.svelte';
-	import PrivacyDialog from '$lib/components/PrivacyDialog.svelte';
-	import GlassCard from '$lib/components/GlassCard.svelte';
-	import AntiCallLogo from '$lib/components/AntiCallLogo.svelte';
-	import { animate, stagger } from 'animejs';
-	import { revealOnScroll } from '$lib/animations';
+import { animate, stagger } from 'animejs';
+import {
+	ArrowUpRight,
+	Code,
+	Database,
+	DeviceMobile,
+	Eye,
+	Flask,
+	Lock,
+	ShieldCheck,
+	Users,
+} from 'phosphor-svelte';
+import { onMount } from 'svelte';
+import { revealOnScroll } from '$lib/animations';
+import AntiCallLogo from '$lib/components/AntiCallLogo.svelte';
+import GlassCard from '$lib/components/GlassCard.svelte';
+import Lightbox from '$lib/components/Lightbox.svelte';
+import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
+import PrivacyDialog from '$lib/components/PrivacyDialog.svelte';
+import { Badge } from '$lib/components/ui/badge';
+import * as Card from '$lib/components/ui/card';
 
-	const PLAY_STORE =
-		'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile&hl=en-US';
-	const BETA_PROGRAM =
-		'https://play.google.com/apps/testing/com.seba3567.anticall_chile';
-	const PRIVACY = 'https://seba3567.github.io/anticall_pages/';
+const PLAY_STORE =
+	'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile&hl=en-US';
+const BETA_PROGRAM =
+	'https://play.google.com/apps/testing/com.seba3567.anticall_chile';
+const PRIVACY = 'https://seba3567.github.io/anticall_pages/';
 
-	const screenshots = [1, 2, 3, 4, 5, 6];
-	const featuredShot = 1;
+const screenshots = [1, 2, 3, 4, 5, 6];
+const featuredShot = 1;
 
-	const galleryItems = screenshots.map((n) => ({
-		src: `/apps/anticall/${n}`,
-		alt: `AntiCallCL · pantalla ${n}`,
-		caption: `Pantalla ${n} de ${screenshots.length}`,
-	}));
+const galleryItems = screenshots.map((n) => ({
+	src: `/apps/anticall/${n}`,
+	alt: `AntiCallCL · pantalla ${n}`,
+	caption: `Pantalla ${n} de ${screenshots.length}`,
+}));
 
-	const aboutParagraphs = [
-		'Anticall nació como respuesta al problema creciente de las llamadas no deseadas: empresas y servicios que llaman de forma repetida — a veces varias veces en pocas horas —, sumadas a nuevas formas de estafa y spam telefónico que afectan a miles de personas en Chile cada día.',
-		'La aplicación permite filtrar y gestionar llamadas por prefijo, ayudando a identificar rangos de números usados para campañas de marketing o intentos sospechosos. Esto le da al usuario el control sobre su tiempo y su privacidad, reduciendo interrupciones y riesgos.',
-		'Anticall no bloquea llamadas automáticamente ni accede a información personal: ofrece herramientas claras y útiles para que cada persona decida cómo manejar las llamadas entrantes.',
-	];
+const aboutParagraphs = [
+	'Anticall nació como respuesta al problema creciente de las llamadas no deseadas: empresas y servicios que llaman de forma repetida — a veces varias veces en pocas horas —, sumadas a nuevas formas de estafa y spam telefónico que afectan a miles de personas en Chile cada día.',
+	'La aplicación permite filtrar y gestionar llamadas por prefijo, ayudando a identificar rangos de números usados para campañas de marketing o intentos sospechosos. Esto le da al usuario el control sobre su tiempo y su privacidad, reduciendo interrupciones y riesgos.',
+	'Anticall no bloquea llamadas automáticamente ni accede a información personal: ofrece herramientas claras y útiles para que cada persona decida cómo manejar las llamadas entrantes.',
+];
 
-	const features = [
-		{
-			icon: ShieldCheck,
-			title: 'Filtrar por prefijo',
-			body: 'Rangos de números identificables para marketing, telemarketing o intentos de estafa.',
-		},
-		{
-			icon: Eye,
-			title: 'Tú decides',
-			body: 'No bloquea en automático. Te entrega la información y la decisión queda en tu lado.',
-		},
-		{
-			icon: Database,
-			title: 'Base curada CL',
-			body: 'Lista de prefijos chilenos verificables, editables y exportables desde la app.',
-		},
-		{
-			icon: Lock,
-			title: '100% local',
-			body: 'Sin cuentas, sin servidores, sin nube. Todo se procesa y guarda en tu teléfono.',
-		},
-	];
+const features = [
+	{
+		icon: ShieldCheck,
+		title: 'Filtrar por prefijo',
+		body: 'Rangos de números identificables para marketing, telemarketing o intentos de estafa.',
+	},
+	{
+		icon: Eye,
+		title: 'Tú decides',
+		body: 'No bloquea en automático. Te entrega la información y la decisión queda en tu lado.',
+	},
+	{
+		icon: Database,
+		title: 'Base curada CL',
+		body: 'Lista de prefijos chilenos verificables, editables y exportables desde la app.',
+	},
+	{
+		icon: Lock,
+		title: '100% local',
+		body: 'Sin cuentas, sin servidores, sin nube. Todo se procesa y guarda en tu teléfono.',
+	},
+];
 
-	const stackLayers = [
-		{
-			layer: 'UI',
-			tech: 'Flutter',
-			detail: 'Interfaz cross-platform, theming, navegación, formularios y estados.',
-		},
-		{
-			layer: 'Nativo Android',
-			tech: 'Kotlin',
-			detail: 'CallScreeningService, contactos, permisos sensibles y persistencia local.',
-		},
-	];
+const stackLayers = [
+	{
+		layer: 'UI',
+		tech: 'Flutter',
+		detail:
+			'Interfaz cross-platform, theming, navegación, formularios y estados.',
+	},
+	{
+		layer: 'Nativo Android',
+		tech: 'Kotlin',
+		detail:
+			'CallScreeningService, contactos, permisos sensibles y persistencia local.',
+	},
+];
 
-	const privacyPoints = [
-		'Tus listas y métricas viven solo en tu dispositivo',
-		'La app opera sin registro, sin cuentas, sin nube',
-		'Puedes borrar todo desde los ajustes en cualquier momento',
-		'Al desinstalar se eliminan automáticamente todos los datos',
-	];
+const privacyPoints = [
+	'Tus listas y métricas viven solo en tu dispositivo',
+	'La app opera sin registro, sin cuentas, sin nube',
+	'Puedes borrar todo desde los ajustes en cualquier momento',
+	'Al desinstalar se eliminan automáticamente todos los datos',
+];
 
-	const betaPerks = [
-		'Acceso anticipado antes del release público',
-		'Canal directo con el equipo de desarrollo',
-		'Ayuda a moldear el roadmap con tu feedback',
-		'Prefijos actualizados con cada build',
-	];
+const betaPerks = [
+	'Acceso anticipado antes del release público',
+	'Canal directo con el equipo de desarrollo',
+	'Ayuda a moldear el roadmap con tu feedback',
+	'Prefijos actualizados con cada build',
+];
 
-	// ----- Horizontal scroll state -----
-	const SECTIONS = [
-		{ id: 'hero', label: 'Inicio' },
-		{ id: 'screenshot', label: 'Pantalla' },
-		{ id: 'about', label: 'About' },
-		{ id: 'gallery', label: 'Gallery' },
-		{ id: 'stack', label: 'Stack' },
-		{ id: 'privacy', label: 'Privacidad' },
-		{ id: 'beta', label: 'Beta' },
-	] as const;
+// ----- Horizontal scroll state -----
+const SECTIONS = [
+	{ id: 'hero', label: 'Inicio' },
+	{ id: 'screenshot', label: 'Pantalla' },
+	{ id: 'about', label: 'About' },
+	{ id: 'gallery', label: 'Gallery' },
+	{ id: 'stack', label: 'Stack' },
+	{ id: 'privacy', label: 'Privacidad' },
+	{ id: 'beta', label: 'Beta' },
+] as const;
 
-	type SectionId = (typeof SECTIONS)[number]['id'];
-	let trackEl: HTMLElement | undefined = $state();
-	let activeSection: string = $state('hero');
-	let mounted = $state(false);
+type SectionId = (typeof SECTIONS)[number]['id'];
+let trackEl: HTMLElement | undefined = $state();
+let activeSection: string = $state('hero');
+let mounted = $state(false);
 
-	let titleEl: HTMLElement | undefined = $state();
-	let lightboxOpen = $state(false);
-	let lightboxIndex = $state(0);
-	let privacyOpen = $state(false);
+let titleEl: HTMLElement | undefined = $state();
+let lightboxOpen = $state(false);
+let lightboxIndex = $state(0);
+let privacyOpen = $state(false);
 
-	function scrollToSection(id: string) {
-		const track = trackEl;
-		if (!track) return;
-		const el = document.getElementById(id);
-		if (!el) return;
-		track.scrollTo({ left: el.offsetLeft - track.offsetLeft, behavior: 'smooth' });
-	}
-
-	function openLightbox(i: number) {
-		lightboxIndex = i;
-		lightboxOpen = true;
-	}
-
-	function langColor(name: string | null): string {
-		if (!name) return '#888';
-		const map: Record<string, string> = {
-			Dart: '#00B4AB',
-			Kotlin: '#A97BFF',
-		};
-		return map[name] ?? '#888';
-	}
-
-	onMount(() => {
-		mounted = true;
-		const track = trackEl;
-		if (!track) return;
-
-		// Map vertical wheel to horizontal scroll
-		const onWheel = (e: WheelEvent) => {
-			if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-			e.preventDefault();
-			const step = e.deltaY === 0 ? e.deltaX : e.deltaY;
-			track.scrollBy({ left: step, behavior: 'auto' });
-		};
-		track.addEventListener('wheel', onWheel, { passive: false });
-
-		// Track active section via IntersectionObserver
-		const obs = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-						activeSection = (entry.target as HTMLElement).id;
-					}
-				}
-			},
-			{ root: track, threshold: [0.5, 0.75] },
-		);
-		for (const s of SECTIONS) {
-			const el = document.getElementById(s.id);
-			if (el) obs.observe(el);
-		}
-
-		// Entrance animations
-		animate('[data-panel-anim]', {
-			opacity: [0, 1],
-			translateY: [20, 0],
-			delay: stagger(60, { start: 200 }),
-			duration: 600,
-			ease: 'out(3)',
-		});
-
-		// Title: simple fade-in (no char split — those leave the
-		// element invisible if the JS races with the initial paint)
-		if (titleEl) {
-			animate(titleEl, {
-				opacity: [0, 1],
-				translateY: [30, 0],
-				duration: 800,
-				delay: 100,
-				ease: 'out(4)',
-			});
-		}
-
-		// Privacy listener
-		const onPrivacy = () => (privacyOpen = true);
-		window.addEventListener('seba:privacy', onPrivacy as EventListener);
-
-		return () => {
-			track.removeEventListener('wheel', onWheel);
-			obs.disconnect();
-			window.removeEventListener('seba:privacy', onPrivacy as EventListener);
-		};
+function scrollToSection(id: string) {
+	const track = trackEl;
+	if (!track) return;
+	const el = document.getElementById(id);
+	if (!el) return;
+	track.scrollTo({
+		left: el.offsetLeft - track.offsetLeft,
+		behavior: 'smooth',
 	});
+}
+
+function openLightbox(i: number) {
+	lightboxIndex = i;
+	lightboxOpen = true;
+}
+
+function langColor(name: string | null): string {
+	if (!name) return '#888';
+	const map: Record<string, string> = {
+		Dart: '#00B4AB',
+		Kotlin: '#A97BFF',
+	};
+	return map[name] ?? '#888';
+}
+
+onMount(() => {
+	mounted = true;
+	const track = trackEl;
+	if (!track) return;
+
+	// Map vertical wheel to horizontal scroll
+	const onWheel = (e: WheelEvent) => {
+		if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+		e.preventDefault();
+		const step = e.deltaY === 0 ? e.deltaX : e.deltaY;
+		track.scrollBy({ left: step, behavior: 'auto' });
+	};
+	track.addEventListener('wheel', onWheel, { passive: false });
+
+	// Track active section via IntersectionObserver
+	const obs = new IntersectionObserver(
+		(entries) => {
+			for (const entry of entries) {
+				if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+					activeSection = (entry.target as HTMLElement).id;
+				}
+			}
+		},
+		{ root: track, threshold: [0.5, 0.75] },
+	);
+	for (const s of SECTIONS) {
+		const el = document.getElementById(s.id);
+		if (el) obs.observe(el);
+	}
+
+	// Entrance animations
+	animate('[data-panel-anim]', {
+		opacity: [0, 1],
+		translateY: [20, 0],
+		delay: stagger(60, { start: 200 }),
+		duration: 600,
+		ease: 'out(3)',
+	});
+
+	// Title: simple fade-in (no char split — those leave the
+	// element invisible if the JS races with the initial paint)
+	if (titleEl) {
+		animate(titleEl, {
+			opacity: [0, 1],
+			translateY: [30, 0],
+			duration: 800,
+			delay: 100,
+			ease: 'out(4)',
+		});
+	}
+
+	// Privacy listener
+	const onPrivacy = () => (privacyOpen = true);
+	window.addEventListener('seba:privacy', onPrivacy as EventListener);
+
+	return () => {
+		track.removeEventListener('wheel', onWheel);
+		obs.disconnect();
+		window.removeEventListener('seba:privacy', onPrivacy as EventListener);
+	};
+});
 </script>
 
 <svelte:head>

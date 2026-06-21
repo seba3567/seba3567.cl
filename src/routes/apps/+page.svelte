@@ -1,42 +1,46 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import {
-		ArrowUpRight,
-		Flask,
-		Star,
-		Lock,
-		Sparkle,
-	} from 'phosphor-svelte';
-	import * as Card from '$lib/components/ui/card';
-	import { Badge } from '$lib/components/ui/badge';
-	import SiteFooter from '$lib/components/SiteFooter.svelte';
-	import { Separator } from '$lib/components/ui/separator';
-	import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
-	import AntiCallLogo from '$lib/components/AntiCallLogo.svelte';
-	import { revealOnScroll, revealChars } from '$lib/animations';
+import { ArrowUpRight, Flask, Lock, Sparkle, Star } from 'phosphor-svelte';
+import { onMount } from 'svelte';
+import { revealChars, revealOnScroll } from '$lib/animations';
+import AntiCallLogo from '$lib/components/AntiCallLogo.svelte';
+import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
+import SiteFooter from '$lib/components/SiteFooter.svelte';
+import { Badge } from '$lib/components/ui/badge';
+import * as Card from '$lib/components/ui/card';
+import { Separator } from '$lib/components/ui/separator';
 
-	const BETA_PROGRAM =
-		'https://play.google.com/apps/testing/com.seba3567.anticall_chile';
-	const PLAY_STORE =
-		'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile&hl=en-US';
-	const PRIVACY = 'https://seba3567.github.io/anticall_pages/';
-	const APP_DETAIL = '/apps/anticall';
-	const CONTACT_EMAIL = 'seba3567.dev@gmail.com';
+const BETA_PROGRAM =
+	'https://play.google.com/apps/testing/com.seba3567.anticall_chile';
+const PLAY_STORE =
+	'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile&hl=en-US';
+const PRIVACY = 'https://seba3567.github.io/anticall_pages/';
+const APP_DETAIL = '/apps/anticall';
+const CONTACT_EMAIL = 'seba3567.dev@gmail.com';
 
-	let titleEl: HTMLElement | undefined = $state();
-	let listEl: HTMLElement | undefined = $state();
-	let ctaEl: HTMLElement | undefined = $state();
+let titleEl: HTMLElement | undefined = $state();
+let listEl: HTMLElement | undefined = $state();
+let ctaEl: HTMLElement | undefined = $state();
 
-	onMount(() => {
-		if (titleEl) {
-			revealChars(titleEl, { staggerMs: 32, offsetY: 60, duration: 700, delay: 200 });
+onMount(() => {
+	if (titleEl) {
+		revealChars(titleEl, {
+			staggerMs: 32,
+			offsetY: 60,
+			duration: 700,
+			delay: 200,
+		});
+	}
+	for (const sec of [listEl, ctaEl]) {
+		if (sec) {
+			revealOnScroll(sec, {
+				selector: '[data-reveal]',
+				staggerMs: 70,
+				offsetY: 24,
+				duration: 700,
+			});
 		}
-		for (const sec of [listEl, ctaEl]) {
-			if (sec) {
-				revealOnScroll(sec, { selector: '[data-reveal]', staggerMs: 70, offsetY: 24, duration: 700 });
-			}
-		}
-	});
+	}
+});
 </script>
 
 <svelte:head>

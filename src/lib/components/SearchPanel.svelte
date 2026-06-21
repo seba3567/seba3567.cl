@@ -1,313 +1,337 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
-	import Fuse from 'fuse.js';
-	import {
-		MagnifyingGlass,
-		ArrowRight,
-		House,
-		DeviceMobile,
-		Folder,
-		Lock,
-		GithubLogo,
-		ShieldCheck,
-		ArrowUpRight,
-		Globe,
-		X,
-	} from 'phosphor-svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { animate, stagger, utils } from 'animejs';
+import { animate, stagger, utils } from 'animejs';
+import Fuse from 'fuse.js';
+import {
+	ArrowRight,
+	ArrowUpRight,
+	DeviceMobile,
+	Folder,
+	GithubLogo,
+	Globe,
+	House,
+	Lock,
+	MagnifyingGlass,
+	ShieldCheck,
+	X,
+} from 'phosphor-svelte';
+import { onMount } from 'svelte';
+import { goto } from '$app/navigation';
+import { page } from '$app/state';
+import * as Dialog from '$lib/components/ui/dialog';
 
-	type SearchItem = {
-		id: string;
-		title: string;
-		subtitle: string;
-		href: string;
-		group: 'Página' | 'App' | 'Repo' | 'Externo';
-		keywords: string[];
-		external?: boolean;
-		icon: typeof House;
-	};
+type SearchItem = {
+	id: string;
+	title: string;
+	subtitle: string;
+	href: string;
+	group: 'Página' | 'App' | 'Repo' | 'Externo';
+	keywords: string[];
+	external?: boolean;
+	icon: typeof House;
+};
 
-	const BETA = 'https://play.google.com/apps/testing/com.seba3567.anticall_chile';
-	const PLAY = 'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile&hl=en-US';
-	const PRIVACY = 'https://seba3567.github.io/anticall_pages/';
-	const GITHUB = 'https://github.com/seba3567';
-	const PROJECTS_GH = 'https://github.com/seba3567?tab=repositories';
+const BETA = 'https://play.google.com/apps/testing/com.seba3567.anticall_chile';
+const PLAY =
+	'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile&hl=en-US';
+const PRIVACY = 'https://seba3567.github.io/anticall_pages/';
+const GITHUB = 'https://github.com/seba3567';
+const PROJECTS_GH = 'https://github.com/seba3567?tab=repositories';
 
-	const PAGE_ITEMS: SearchItem[] = [
-		{
-			id: 'page-home',
-			title: 'Inicio',
-			subtitle: 'Perfil + proyectos destacados',
-			href: '/',
-			group: 'Página',
-			keywords: ['home', 'inicio', 'index', 'perfil', 'bio', 'sebastian', 'seba'],
-			icon: House,
-		},
-		{
-			id: 'page-apps',
-			title: 'Apps',
-			subtitle: 'Catálogo de aplicaciones publicadas',
-			href: '/apps',
-			group: 'Página',
-			keywords: ['apps', 'aplicaciones', 'catalogo'],
-			icon: DeviceMobile,
-		},
-		{
-			id: 'page-anticall',
-			title: 'AntiCallCL',
-			subtitle: 'Gestor de llamadas no deseadas · Android',
-			href: '/apps/anticall',
-			group: 'App',
-			keywords: ['anticall', 'android', 'llamadas', 'spam', 'telefono', 'app'],
-			icon: ShieldCheck,
-		},
-		{
-			id: 'page-proyectos',
-			title: 'Proyectos',
-			subtitle: 'Catálogo vivo desde la API de GitHub',
-			href: '/proyectos',
-			group: 'Página',
-			keywords: ['proyectos', 'work', 'github', 'repos', 'repositorio', 'portfolio'],
-			icon: Folder,
-		},
-	];
-
-	const EXTERNAL_ITEMS: SearchItem[] = [
-		{
-			id: 'ext-beta',
-			title: 'Unirme a la beta (AntiCallCL)',
-			subtitle: 'Google Play · early access',
-			href: BETA,
-			group: 'Externo',
-			keywords: ['beta', 'testing', 'anticall', 'play store'],
-			external: true,
-			icon: ShieldCheck,
-		},
-		{
-			id: 'ext-play',
-			title: 'Play Store · AntiCallCL',
-			subtitle: 'Instalar o actualizar',
-			href: PLAY,
-			group: 'Externo',
-			keywords: ['play', 'store', 'instalar', 'android', 'anticall'],
-			external: true,
-			icon: DeviceMobile,
-		},
-		{
-			id: 'ext-privacy',
-			title: 'Política de privacidad',
-			subtitle: 'Página canónica (seba3567.github.io)',
-			href: PRIVACY,
-			group: 'Externo',
-			keywords: ['privacidad', 'privacy', 'policy', 'datos', 'anticall', 'terminos'],
-			external: true,
-			icon: Lock,
-		},
-		{
-			id: 'ext-github',
-			title: 'GitHub · @seba3567',
-			subtitle: 'Perfil completo + repos',
-			href: GITHUB,
-			group: 'Externo',
-			keywords: ['github', 'repos', 'code', 'codigo', 'perfil'],
-			external: true,
-			icon: GithubLogo,
-		},
-		{
-			id: 'ext-projects-gh',
-			title: 'Proyectos en GitHub (web)',
-			subtitle: 'Lista completa de repositorios',
-			href: PROJECTS_GH,
-			group: 'Externo',
-			keywords: ['repos', 'repositorios', 'lista', 'github', 'todos'],
-			external: true,
-			icon: Folder,
-		},
-		{
-			id: 'ext-intranet',
-			title: 'Intranet seba3567',
-			subtitle: 'intranet.seba3567.cl',
-			href: 'https://intranet.seba3567.cl/',
-			group: 'Externo',
-			keywords: ['intranet', 'panel', 'admin', 'privado'],
-			external: true,
-			icon: Globe,
-		},
-	];
-
-	const HOME = PAGE_ITEMS.concat(EXTERNAL_ITEMS);
-
-	const fuseHome = new Fuse(HOME, {
-		keys: [
-			{ name: 'title', weight: 0.5 },
-			{ name: 'subtitle', weight: 0.2 },
-			{ name: 'keywords', weight: 0.3 },
+const PAGE_ITEMS: SearchItem[] = [
+	{
+		id: 'page-home',
+		title: 'Inicio',
+		subtitle: 'Perfil + proyectos destacados',
+		href: '/',
+		group: 'Página',
+		keywords: ['home', 'inicio', 'index', 'perfil', 'bio', 'sebastian', 'seba'],
+		icon: House,
+	},
+	{
+		id: 'page-apps',
+		title: 'Apps',
+		subtitle: 'Catálogo de aplicaciones publicadas',
+		href: '/apps',
+		group: 'Página',
+		keywords: ['apps', 'aplicaciones', 'catalogo'],
+		icon: DeviceMobile,
+	},
+	{
+		id: 'page-anticall',
+		title: 'AntiCallCL',
+		subtitle: 'Gestor de llamadas no deseadas · Android',
+		href: '/apps/anticall',
+		group: 'App',
+		keywords: ['anticall', 'android', 'llamadas', 'spam', 'telefono', 'app'],
+		icon: ShieldCheck,
+	},
+	{
+		id: 'page-proyectos',
+		title: 'Proyectos',
+		subtitle: 'Catálogo vivo desde la API de GitHub',
+		href: '/proyectos',
+		group: 'Página',
+		keywords: [
+			'proyectos',
+			'work',
+			'github',
+			'repos',
+			'repositorio',
+			'portfolio',
 		],
-		threshold: 0.4,
-		ignoreLocation: true,
-		includeScore: true,
+		icon: Folder,
+	},
+];
+
+const EXTERNAL_ITEMS: SearchItem[] = [
+	{
+		id: 'ext-beta',
+		title: 'Unirme a la beta (AntiCallCL)',
+		subtitle: 'Google Play · early access',
+		href: BETA,
+		group: 'Externo',
+		keywords: ['beta', 'testing', 'anticall', 'play store'],
+		external: true,
+		icon: ShieldCheck,
+	},
+	{
+		id: 'ext-play',
+		title: 'Play Store · AntiCallCL',
+		subtitle: 'Instalar o actualizar',
+		href: PLAY,
+		group: 'Externo',
+		keywords: ['play', 'store', 'instalar', 'android', 'anticall'],
+		external: true,
+		icon: DeviceMobile,
+	},
+	{
+		id: 'ext-privacy',
+		title: 'Política de privacidad',
+		subtitle: 'Página canónica (seba3567.github.io)',
+		href: PRIVACY,
+		group: 'Externo',
+		keywords: [
+			'privacidad',
+			'privacy',
+			'policy',
+			'datos',
+			'anticall',
+			'terminos',
+		],
+		external: true,
+		icon: Lock,
+	},
+	{
+		id: 'ext-github',
+		title: 'GitHub · @seba3567',
+		subtitle: 'Perfil completo + repos',
+		href: GITHUB,
+		group: 'Externo',
+		keywords: ['github', 'repos', 'code', 'codigo', 'perfil'],
+		external: true,
+		icon: GithubLogo,
+	},
+	{
+		id: 'ext-projects-gh',
+		title: 'Proyectos en GitHub (web)',
+		subtitle: 'Lista completa de repositorios',
+		href: PROJECTS_GH,
+		group: 'Externo',
+		keywords: ['repos', 'repositorios', 'lista', 'github', 'todos'],
+		external: true,
+		icon: Folder,
+	},
+	{
+		id: 'ext-intranet',
+		title: 'Intranet seba3567',
+		subtitle: 'intranet.seba3567.cl',
+		href: 'https://intranet.seba3567.cl/',
+		group: 'Externo',
+		keywords: ['intranet', 'panel', 'admin', 'privado'],
+		external: true,
+		icon: Globe,
+	},
+];
+
+const HOME = PAGE_ITEMS.concat(EXTERNAL_ITEMS);
+
+const fuseHome = new Fuse(HOME, {
+	keys: [
+		{ name: 'title', weight: 0.5 },
+		{ name: 'subtitle', weight: 0.2 },
+		{ name: 'keywords', weight: 0.3 },
+	],
+	threshold: 0.4,
+	ignoreLocation: true,
+	includeScore: true,
+});
+
+let repoFuse: Fuse<{
+	id: string;
+	title: string;
+	subtitle: string;
+	href: string;
+	keywords: string[];
+}> | null = null;
+const REPO_INDEX_URL =
+	'https://api.github.com/users/seba3567/repos?per_page=100&sort=updated';
+
+type RepoHit = {
+	id: string;
+	title: string;
+	subtitle: string;
+	href: string;
+	keywords: string[];
+};
+
+async function loadRepoIndex() {
+	if (repoFuse) return;
+	try {
+		const res = await fetch(REPO_INDEX_URL, {
+			headers: { Accept: 'application/vnd.github+json' },
+		});
+		if (!res.ok) return;
+		const repos = (await res.json()) as Array<{
+			id: number;
+			name: string;
+			full_name: string;
+			description: string | null;
+			html_url: string;
+			topics?: string[];
+			language: string | null;
+		}>;
+		const items: RepoHit[] = repos
+			.filter((r) => !r.name.endsWith('.github.io'))
+			.map((r) => ({
+				id: String(r.id),
+				title: r.name,
+				subtitle: r.description ?? `${r.language ?? 'code'} · @seba3567`,
+				href: r.html_url,
+				keywords: [
+					...(r.topics ?? []),
+					r.language ?? '',
+					'github',
+					'repo',
+					'codigo',
+				].filter(Boolean),
+			}));
+		repoFuse = new Fuse(items, {
+			keys: [
+				{ name: 'title', weight: 0.6 },
+				{ name: 'subtitle', weight: 0.2 },
+				{ name: 'keywords', weight: 0.2 },
+			],
+			threshold: 0.4,
+			ignoreLocation: true,
+		});
+	} catch {
+		// ignore — repo search is best-effort
+	}
+}
+
+let open = $state(false);
+let query = $state('');
+let inputEl: HTMLInputElement | undefined = $state();
+let listEl: HTMLElement | undefined = $state();
+
+const homeResults = $derived.by(() => {
+	const q = query.trim();
+	if (!q) return HOME.map((item) => ({ item, score: 0 })).slice(0, 6);
+	return fuseHome.search(q, { limit: 6 });
+});
+
+const repoResults = $derived.by(() => {
+	const q = query.trim();
+	if (!q || !repoFuse) return [] as Array<{ item: RepoHit; score: number }>;
+	// Only show repos when query looks "code-like" (no need to search repos for 'inicio')
+	if (q.length < 2) return [];
+	return repoFuse.search(q, { limit: 8 });
+});
+
+const flat = $derived(
+	[
+		...homeResults.map((r) => ({ ...r, kind: 'home' as const })),
+		...repoResults.map((r) => ({ ...r, kind: 'repo' as const })),
+	].slice(0, 10),
+);
+let selectedIndex = $state(0);
+
+$effect(() => {
+	if (selectedIndex >= flat.length) selectedIndex = 0;
+});
+
+$effect(() => {
+	if (open) {
+		query = '';
+		selectedIndex = 0;
+		loadRepoIndex();
+		setTimeout(() => inputEl?.focus(), 60);
+	}
+});
+
+function prefersReducedMotion(): boolean {
+	if (typeof window === 'undefined' || !window.matchMedia) return false;
+	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+// Stagger results in with animejs when query/results change
+$effect(() => {
+	if (!open || !listEl) return;
+	const reduce = prefersReducedMotion();
+	const items = listEl.querySelectorAll<HTMLElement>('[data-result]');
+	if (!items.length) return;
+	animate(items, {
+		opacity: [0, 1],
+		translateY: [12, 0],
+		delay: stagger(reduce ? 0 : 35, { start: reduce ? 0 : 60 }),
+		duration: reduce ? 0 : 360,
+		ease: 'out(3)',
 	});
+});
 
-	let repoFuse: Fuse<{ id: string; title: string; subtitle: string; href: string; keywords: string[] }> | null = null;
-	const REPO_INDEX_URL = 'https://api.github.com/users/seba3567/repos?per_page=100&sort=updated';
+function run(item: SearchItem) {
+	open = false;
+	queueMicrotask(() => {
+		if (item.external) {
+			window.open(item.href, '_blank', 'noopener,noreferrer');
+		} else {
+			goto(item.href);
+		}
+	});
+}
 
-	type RepoHit = {
-		id: string;
-		title: string;
-		subtitle: string;
-		href: string;
-		keywords: string[];
+function handleKey(e: KeyboardEvent) {
+	if (e.key === 'ArrowDown') {
+		e.preventDefault();
+		selectedIndex = Math.min(selectedIndex + 1, flat.length - 1);
+	} else if (e.key === 'ArrowUp') {
+		e.preventDefault();
+		selectedIndex = Math.max(selectedIndex - 1, 0);
+	} else if (e.key === 'Enter') {
+		e.preventDefault();
+		const r = flat[selectedIndex];
+		if (r) run(r.item as SearchItem);
+	}
+}
+
+// Open with /
+onMount(() => {
+	const onKey = (e: KeyboardEvent) => {
+		const t = e.target;
+		const isTyping =
+			t instanceof HTMLElement &&
+			(t.tagName === 'INPUT' ||
+				t.tagName === 'TEXTAREA' ||
+				t.isContentEditable);
+		if (e.key === '/' && !open && !isTyping) {
+			e.preventDefault();
+			open = true;
+		}
+		if (e.key === 'Escape' && open) open = false;
 	};
-
-	async function loadRepoIndex() {
-		if (repoFuse) return;
-		try {
-			const res = await fetch(REPO_INDEX_URL, {
-				headers: { Accept: 'application/vnd.github+json' },
-			});
-			if (!res.ok) return;
-			const repos = (await res.json()) as Array<{
-				id: number;
-				name: string;
-				full_name: string;
-				description: string | null;
-				html_url: string;
-				topics?: string[];
-				language: string | null;
-			}>;
-			const items: RepoHit[] = repos
-				.filter((r) => !r.name.endsWith('.github.io'))
-				.map((r) => ({
-					id: String(r.id),
-					title: r.name,
-					subtitle: r.description ?? `${r.language ?? 'code'} · @seba3567`,
-					href: r.html_url,
-					keywords: [
-						...(r.topics ?? []),
-						r.language ?? '',
-						'github',
-						'repo',
-						'codigo',
-					].filter(Boolean),
-				}));
-			repoFuse = new Fuse(items, {
-				keys: [
-					{ name: 'title', weight: 0.6 },
-					{ name: 'subtitle', weight: 0.2 },
-					{ name: 'keywords', weight: 0.2 },
-				],
-				threshold: 0.4,
-				ignoreLocation: true,
-			});
-		} catch {
-			// ignore — repo search is best-effort
-		}
-	}
-
-	let open = $state(false);
-	let query = $state('');
-	let inputEl: HTMLInputElement | undefined = $state();
-	let listEl: HTMLElement | undefined = $state();
-
-	const homeResults = $derived.by(() => {
-		const q = query.trim();
-		if (!q) return HOME.map((item) => ({ item, score: 0 })).slice(0, 6);
-		return fuseHome.search(q, { limit: 6 });
-	});
-
-	const repoResults = $derived.by(() => {
-		const q = query.trim();
-		if (!q || !repoFuse) return [] as Array<{ item: RepoHit; score: number }>;
-		// Only show repos when query looks "code-like" (no need to search repos for 'inicio')
-		if (q.length < 2) return [];
-		return repoFuse.search(q, { limit: 8 });
-	});
-
-	const flat = $derived(
-		[
-			...homeResults.map((r) => ({ ...r, kind: 'home' as const })),
-			...repoResults.map((r) => ({ ...r, kind: 'repo' as const })),
-		].slice(0, 10),
-	);
-	let selectedIndex = $state(0);
-
-	$effect(() => {
-		if (selectedIndex >= flat.length) selectedIndex = 0;
-	});
-
-	$effect(() => {
-		if (open) {
-			query = '';
-			selectedIndex = 0;
-			loadRepoIndex();
-			setTimeout(() => inputEl?.focus(), 60);
-		}
-	});
-
-	function prefersReducedMotion(): boolean {
-		if (typeof window === 'undefined' || !window.matchMedia) return false;
-		return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-	}
-
-	// Stagger results in with animejs when query/results change
-	$effect(() => {
-		if (!open || !listEl) return;
-		const reduce = prefersReducedMotion();
-		const items = listEl.querySelectorAll<HTMLElement>('[data-result]');
-		if (!items.length) return;
-		animate(items, {
-			opacity: [0, 1],
-			translateY: [12, 0],
-			delay: stagger(reduce ? 0 : 35, { start: reduce ? 0 : 60 }),
-			duration: reduce ? 0 : 360,
-			ease: 'out(3)',
-		});
-	});
-
-	function run(item: SearchItem) {
-		open = false;
-		queueMicrotask(() => {
-			if (item.external) {
-				window.open(item.href, '_blank', 'noopener,noreferrer');
-			} else {
-				goto(item.href);
-			}
-		});
-	}
-
-	function handleKey(e: KeyboardEvent) {
-		if (e.key === 'ArrowDown') {
-			e.preventDefault();
-			selectedIndex = Math.min(selectedIndex + 1, flat.length - 1);
-		} else if (e.key === 'ArrowUp') {
-			e.preventDefault();
-			selectedIndex = Math.max(selectedIndex - 1, 0);
-		} else if (e.key === 'Enter') {
-			e.preventDefault();
-			const r = flat[selectedIndex];
-			if (r) run(r.item as SearchItem);
-		}
-	}
-
-	// Open with /
-	onMount(() => {
-		const onKey = (e: KeyboardEvent) => {
-			const t = e.target;
-			const isTyping =
-				t instanceof HTMLElement &&
-				(t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable);
-			if (e.key === '/' && !open && !isTyping) {
-				e.preventDefault();
-				open = true;
-			}
-			if (e.key === 'Escape' && open) open = false;
-		};
-		window.addEventListener('keydown', onKey);
-		return () => window.removeEventListener('keydown', onKey);
-	});
+	window.addEventListener('keydown', onKey);
+	return () => window.removeEventListener('keydown', onKey);
+});
 </script>
 
 <Dialog.Root bind:open>

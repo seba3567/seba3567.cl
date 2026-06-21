@@ -1,18 +1,20 @@
 <script lang="ts">
-	import type { PublicRepo } from '$lib/server/github';
-	import { featuredProjects } from '$lib/data/featured';
-	import ProjectCard from './ProjectCard.svelte';
+import { featuredProjects } from '$lib/data/featured';
+import type { PublicRepo } from '$lib/server/github';
+import ProjectCard from './ProjectCard.svelte';
 
-	type Props = { repos: PublicRepo[] };
-	let { repos }: Props = $props();
+type Props = { repos: PublicRepo[] };
+let { repos }: Props = $props();
 
-	const featuredSlugs = $derived(
-		new Set(featuredProjects.flatMap((p) => p.relatedRepos ?? [p.slug])),
+const featuredSlugs = $derived(
+	new Set(featuredProjects.flatMap((p) => p.relatedRepos ?? [p.slug])),
+);
+
+function isFeatured(repo: PublicRepo): boolean {
+	return (
+		featuredSlugs.has(repo.name) || featuredSlugs.has(repo.name.toLowerCase())
 	);
-
-	function isFeatured(repo: PublicRepo): boolean {
-		return featuredSlugs.has(repo.name) || featuredSlugs.has(repo.name.toLowerCase());
-	}
+}
 </script>
 
 {#if repos.length === 0}

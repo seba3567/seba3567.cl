@@ -1,32 +1,32 @@
 <script lang="ts">
-	import {
-		PhoneX,
-		ShieldCheck,
-		PhoneSlash,
-		Phone,
-		Database,
-		Globe,
-		GithubLogo,
-		ArrowUpRight,
-		WarningOctagon,
-	} from 'phosphor-svelte';
-	import type { FeaturedProject } from '$lib/data/featured';
-	import { ACCENT_CLASSES, STATUS_LABELS } from '$lib/data/featured';
-	import GlassCard from './GlassCard.svelte';
+import {
+	ArrowUpRight,
+	Database,
+	GithubLogo,
+	Globe,
+	Phone,
+	PhoneSlash,
+	PhoneX,
+	ShieldCheck,
+	WarningOctagon,
+} from 'phosphor-svelte';
+import type { FeaturedProject } from '$lib/data/featured';
+import { ACCENT_CLASSES, STATUS_LABELS } from '$lib/data/featured';
+import GlassCard from './GlassCard.svelte';
 
-	type Props = { project: FeaturedProject };
-	let { project }: Props = $props();
+type Props = { project: FeaturedProject };
+let { project }: Props = $props();
 
-	const accent = $derived(ACCENT_CLASSES[project.accent]);
-	const status = $derived(STATUS_LABELS[project.status]);
+const accent = $derived(ACCENT_CLASSES[project.accent]);
+const status = $derived(STATUS_LABELS[project.status]);
 
-	const callLog = $derived([
-		{ who: '+56 9 4123 8800', blocked: true },
-		{ who: 'Mamá', blocked: false },
-		{ who: '+56 2 2845 1199', blocked: true },
-		{ who: 'Banco Estado', blocked: false },
-		{ who: '+56 9 7845 1102', blocked: true },
-	]);
+const callLog = $derived([
+	{ who: '+56 9 4123 8800', blocked: true },
+	{ who: 'Mamá', blocked: false },
+	{ who: '+56 2 2845 1199', blocked: true },
+	{ who: 'Banco Estado', blocked: false },
+	{ who: '+56 9 7845 1102', blocked: true },
+]);
 </script>
 
 <GlassCard
