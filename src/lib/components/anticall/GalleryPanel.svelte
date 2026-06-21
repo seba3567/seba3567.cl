@@ -1,22 +1,28 @@
 <script lang="ts">
-import { t } from 'svelte-i18n';
-import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
-import { Badge } from '$lib/components/ui/badge';
-import { SCREENSHOTS } from '$lib/data/anticall';
+	import { t } from 'svelte-i18n';
+	import { MagnifyingGlassPlus } from 'phosphor-svelte';
+	import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
+	import { Badge } from '$lib/components/ui/badge';
+	import { SCREENSHOTS } from '$lib/data/anticall';
 
-type Props = {
-	onOpenLightbox: (index: number) => void;
-};
+	type Props = {
+		onOpenLightbox: (index: number) => void;
+	};
 
-let { onOpenLightbox }: Props = $props();
+	let { onOpenLightbox }: Props = $props();
 </script>
 
 <section
 	id="gallery"
-	class="panel relative flex h-full w-screen flex-col justify-center px-6 pt-20 sm:px-12 lg:px-20"
+	class="panel relative flex h-full w-screen flex-col justify-center overflow-y-auto px-6 py-20 sm:px-12 sm:py-24 lg:px-20"
 >
-	<div class="mx-auto w-full max-w-5xl">
-		<div class="mb-8 flex items-end justify-between gap-6" data-panel-anim>
+	<div class="mx-auto flex w-full max-w-6xl flex-col gap-6">
+		<!--
+		  Header: badge + title + subtitle on the left, format
+		  marker on the right. Same pattern as the AOSP stats
+		  row — one thin line, two regions.
+		-->
+		<div class="flex items-end justify-between gap-6" data-panel-anim>
 			<div>
 				<Badge
 					variant="outline"
@@ -24,27 +30,36 @@ let { onOpenLightbox }: Props = $props();
 				>
 					{$t('anticall.gallery.badge')}
 				</Badge>
-				<h2 class="mt-3 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
+				<h2
+					class="mt-3 text-balance text-3xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-4xl lg:text-5xl"
+				>
 					{$t('anticall.gallery.title')}
 				</h2>
-				<p class="mt-2 text-sm text-neutral-500">{$t('anticall.gallery.subtitle')}</p>
+				<p class="mt-2 text-sm text-neutral-500">
+					{$t('anticall.gallery.subtitle')}
+				</p>
 			</div>
-			<p class="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 sm:block">
+			<p
+				class="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 sm:block"
+			>
 				{$t('anticall.gallery.format')}
 			</p>
 		</div>
 
 		<!--
-		  3 columns × 2 rows. The previous layout used 6 columns
-		  which crushed each phone to ~80px wide on common
-		  viewports. 3 columns gives each phone a comfortable
-		  ~250-300px and keeps the 9:16 aspect readable. The
-		  max-h-[58vh] makes sure the row never spills past the
-		  panel's 100vh.
+		  3 cols × 2 rows on desktop, 2 cols on tablet, 1 col on mobile.
+		  Each phone has a fixed aspect ratio (9:16) so all 6 are
+		  the same size and the grid doesn't overflow. The
+		  container has a min-height so the phones are visible
+		  even when the panel is short.
+
+		  The whole tile is a button (big touch target on mobile).
+		  On hover, the image scales slightly + the zoom icon
+		  fades in.
 		-->
 		<div
-			class="mx-auto grid w-full max-w-full grid-cols-3 content-center gap-4 overflow-hidden px-2"
-			style="max-height: 58vh;"
+			class="mx-auto grid w-full gap-3 sm:gap-4"
+			style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));"
 		>
 			{#each SCREENSHOTS as n, i (n)}
 				<button
@@ -52,7 +67,8 @@ let { onOpenLightbox }: Props = $props();
 					onclick={() => onOpenLightbox(i)}
 					data-panel-anim
 					aria-label={$t('anticall.screenshot.ariaOpen', { values: { n } })}
-					class="group/shot relative m-0 block aspect-[9/16] h-full max-h-full w-auto cursor-zoom-in overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] transition-all duration-500 hover:-translate-y-1 hover:border-mint-400/30 hover:bg-white/[0.04]"
+					class="group/shot relative block w-full overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] transition-all duration-500 hover:-translate-y-1 hover:border-mint-400/30 hover:bg-white/[0.04]"
+					style="aspect-ratio: 9 / 16;"
 				>
 					<OptimizedPicture
 						src="/apps/anticall/{n}"
@@ -61,11 +77,19 @@ let { onOpenLightbox }: Props = $props();
 						width={540}
 						height={1200}
 					/>
+					<!-- Bottom gradient so the index pill reads -->
 					<div
-						class="pointer-events-none absolute inset-0 bg-gradient-to-t from-neutral-950/70 to-transparent opacity-0 transition-opacity duration-500 group-hover/shot:opacity-100"
+						class="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-neutral-950/70 to-transparent"
 					></div>
+					<!-- Zoom icon (fades in on hover) -->
+					<div
+						class="pointer-events-none absolute right-2 top-2 rounded-full border border-white/10 bg-neutral-950/80 p-1.5 opacity-0 backdrop-blur transition-opacity duration-300 group-hover/shot:opacity-100"
+					>
+						<MagnifyingGlassPlus size={12} weight="bold" class="text-neutral-200" />
+					</div>
+					<!-- Index pill (bottom-left, like a Polaroid) -->
 					<span
-						class="absolute right-2 bottom-2 rounded-md border border-white/10 bg-neutral-950/80 px-2 py-0.5 font-mono text-[10px] text-neutral-200 backdrop-blur"
+						class="absolute bottom-2 left-2 rounded-md border border-white/10 bg-neutral-950/80 px-2 py-0.5 font-mono text-[10px] text-neutral-200 backdrop-blur"
 					>
 						{n}/{SCREENSHOTS.length}
 					</span>
